@@ -1,0 +1,26 @@
+---
+title: BugMapper
+year: 2023
+status: Completed
+stack: [React.js, Node.js, PostgreSQL, WebSockets, D3.js]
+---
+
+## The Problem
+
+An international agri-tech client needed visibility into disease spread across greenhouse operations in real time — not a daily report, but a live dashboard operators could act on while walking the greenhouse floor.
+
+## What I Built
+
+BugMapper is a React.js web dashboard backed by a Node.js and PostgreSQL API, with WebSockets pushing live updates as new disease-tracking data comes in from the field. D3.js powers the analytics visualizations that let operators see disease spread patterns across the greenhouse over time, rather than reading raw tables of readings.
+
+## Key Challenges
+
+Real-time dashboards live or die on how well they handle a constant stream of updates without the UI stuttering or state getting out of sync. Structuring the WebSocket updates so the D3.js visualizations could patch efficiently — instead of re-rendering the whole dashboard on every incoming data point — was the main engineering focus.
+
+## Results
+
+BugMapper shipped as a real-time analytics and disease-tracking dashboard for the client's greenhouse operations.
+
+## Stack Decisions
+
+WebSockets were used over polling because disease-tracking data needed to reach the dashboard as it happened, not on a fixed interval. D3.js was chosen over a prebuilt charting library for the same reason it was chosen elsewhere in this body of work: the visualizations needed to represent spatial and time-series disease data in ways off-the-shelf charts don't support well.

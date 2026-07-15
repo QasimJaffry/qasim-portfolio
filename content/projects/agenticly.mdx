@@ -1,0 +1,28 @@
+---
+title: Agenticly
+year: 2024
+status: Live
+stack: [React Native, Next.js, Firebase, RevenueCat, Stripe, OpenAI API]
+---
+
+## The Problem
+
+Crypto researchers and traders spend hours a day pulling together fragmented information — on-chain data, news, sentiment — from a dozen tabs and tools. There was room for a single AI-powered assistant that could sit on both mobile and web and do that synthesis on demand, with a subscription model that worked across both platforms.
+
+## What I Built
+
+Agenticly ships as two clients against one backend: a React Native app for mobile and a Next.js app for web, both backed by Firebase for auth, data, and functions. I built the OpenAI API integration for the core research assistant, and wired up two separate payment systems — RevenueCat for mobile subscriptions (to satisfy App Store / Play Store billing rules) and Stripe for web payments — so the same subscription tier works no matter which surface the user signs up on.
+
+I owned the product end to end: architecture, both clients, backend, payments, and the App Store / Play Store submission process.
+
+## Key Challenges
+
+Keeping subscription state in sync across two entirely different billing systems was the hardest part. RevenueCat and Stripe have different webhook shapes, different renewal semantics, and different failure modes — the Firebase backend had to normalize both into a single source of truth for entitlement so a user's access doesn't depend on which platform they paid through.
+
+## Results
+
+Agenticly is live on the Play Store and on the web, generating subscription revenue from both channels. It was built and shipped solo, from architecture through to launch.
+
+## Stack Decisions
+
+React Native and Next.js share a lot of product logic conceptually but not code in this project — the priority was getting to market on both platforms fast, not maximizing code reuse. Firebase was chosen over a custom backend to keep infrastructure overhead low for a solo build. RevenueCat handles the mobile billing complexity that would otherwise require hand-rolling App Store and Play Store receipt validation.

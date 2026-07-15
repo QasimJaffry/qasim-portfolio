@@ -1,0 +1,26 @@
+---
+title: RealTag
+year: 2024
+status: Completed
+stack: [React Native, YOLO11, SAM2, DINOv2, Python, FastAPI]
+---
+
+## The Problem
+
+Detecting an object once in a camera frame is a solved problem. Recognizing that same object again — across different frames, angles, and lighting, in a live feed — is a much harder re-identification problem, and one that needed to run in production, not just in a research notebook.
+
+## What I Built
+
+RealTag pairs a React Native client with a Python/FastAPI backend running a three-model pipeline: YOLO11 for real-time object detection, SAM2 for precise segmentation of detected objects, and DINOv2 for generating embeddings used to re-identify the same object across frames. The mobile client streams live camera frames to the pipeline and renders detection and re-identification results back in real time.
+
+## Key Challenges
+
+Chaining three separate models — detection, segmentation, and embedding — into a single pipeline that still runs fast enough for a live camera feed meant being deliberate about where time was spent at each stage: cropping down to detected regions before running the heavier SAM2 and DINOv2 models, rather than running them on full frames. Keeping the FastAPI backend responsive under a continuous stream of frames from the mobile client was the other core constraint.
+
+## Results
+
+RealTag runs as a production ML pipeline with real-time inference and custom model integration across detection, segmentation, and re-identification.
+
+## Stack Decisions
+
+YOLO11, SAM2, and DINOv2 were combined rather than relying on a single model because each solves a distinct part of the problem — fast detection, precise boundaries, and stable embeddings for re-identification — and no single off-the-shelf model handles all three well. FastAPI was chosen for the inference server for its low overhead when serving PyTorch-based models under real-time constraints.

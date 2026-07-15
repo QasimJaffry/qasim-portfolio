@@ -1,0 +1,26 @@
+---
+title: BSchedule
+year: 2022
+status: Completed
+stack: [React Native, Laravel, MySQL, REST API]
+---
+
+## The Problem
+
+A business client needed a scheduling system that served two very different audiences — staff managing their availability and shifts, and customers booking appointments — without maintaining two disconnected systems that could drift out of sync.
+
+## What I Built
+
+BSchedule is two separate React Native apps, one staff-facing and one customer-facing, both built against a single Laravel REST API backed by MySQL. Keeping both apps on one API meant scheduling logic, availability rules, and booking state lived in exactly one place.
+
+## Key Challenges
+
+Designing a single REST API that cleanly served two apps with different permissions and different views of the same underlying schedule data required careful endpoint design up front — the staff app needed broader read/write access to availability and shift data, while the customer app needed a narrower, booking-focused surface over the same tables.
+
+## Results
+
+BSchedule shipped as a production scheduling system with two client apps — staff and customer portals — running against one shared API.
+
+## Stack Decisions
+
+A single Laravel API serving both apps was chosen over separate backends specifically to avoid the two apps' scheduling data drifting apart, which is the most common failure mode in staff/customer scheduling systems built as two independent stacks.

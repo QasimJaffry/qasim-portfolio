@@ -1,0 +1,26 @@
+---
+title: Decidr
+year: 2024
+status: In Development
+stack: [Next.js, TypeScript, Supabase, Stripe, OpenRouter]
+---
+
+## The Problem
+
+Hard decisions rarely fail because of a lack of information — they fail because that information never gets structured into a clear comparison. Decidr is a personal project exploring whether an AI-native tool can make that structuring step easier.
+
+## What I Built
+
+Decidr is a Next.js and TypeScript SaaS product using Supabase for data and auth, Stripe for payments, and OpenRouter to route between multiple language models rather than depending on a single provider.
+
+## Key Challenges
+
+Using OpenRouter instead of a single model provider means designing the AI-assisted decision workflows to be model-agnostic — prompts and output parsing have to work reasonably well across different underlying models, not tuned to the quirks of one.
+
+## Results
+
+Decidr is currently in development as a personal SaaS project with Stripe payments already integrated.
+
+## Stack Decisions
+
+OpenRouter was chosen over a direct single-provider integration to avoid locking the product's core decision-intelligence feature to one model vendor's pricing and availability. Supabase and Stripe together cover data, auth, and billing without custom backend infrastructure, keeping this personal project's scope manageable.

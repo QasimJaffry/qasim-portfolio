@@ -1,0 +1,28 @@
+---
+title: Qubio Ecosystem
+year: 2022
+status: Completed
+stack: [React Native, Next.js, D3.js, PostgreSQL, GraphQL]
+---
+
+## The Problem
+
+An international client needed a digital identity system that worked across physical touchpoints — QR codes and NFC tags — and gave administrators visibility into how that identity network was actually being used. That meant a mobile scanning experience, a web management layer, and an analytics dashboard, all reading from the same source of truth.
+
+## What I Built
+
+Qubio pairs a React Native mobile app (for scanning and registering QR/NFC identities) with a Next.js web application for management and a D3.js-driven analytics dashboard for visualizing usage patterns across the identity network. A GraphQL API backed by PostgreSQL served as the shared data layer across both clients.
+
+This was an 18-month engagement working with a distributed remote team spread across time zones, deployed for an international client.
+
+## Key Challenges
+
+Coordinating feature work across a distributed team over 18 months meant the GraphQL schema had to be treated as a contract — changes needed careful versioning so mobile and web clients didn't break against each other mid-sprint. Building the D3.js dashboard to stay responsive against a growing PostgreSQL dataset also required pushing more aggregation work down into the database rather than doing it client-side.
+
+## Results
+
+The system shipped and was deployed for the client's international operation, sustained across an 18-month engagement with a distributed team.
+
+## Stack Decisions
+
+GraphQL was chosen over REST specifically because the mobile app, web app, and dashboard each needed different shapes of the same underlying identity data — GraphQL let each client query exactly what it needed without over- or under-fetching. D3.js gave the fine-grained control needed for the custom analytics visualizations that a standard charting library couldn't provide.
