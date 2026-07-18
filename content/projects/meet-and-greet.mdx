@@ -2,7 +2,7 @@
 title: Meet & Greet
 year: 2023
 status: Completed
-stack: [React Native, WebRTC, Agora, Socket.io, Node.js]
+stack: [React Native, WebRTC, Socket.io, Node.js]
 ---
 
 ## The Problem
@@ -11,7 +11,9 @@ Real-time video and voice calling is one of the harder things to get right in mo
 
 ## What I Built
 
-Meet & Greet is a React Native app supporting both 1:1 and group video/voice calls, built on WebRTC for the underlying peer connections and Agora for call infrastructure, with Socket.io handling real-time signaling between clients through a Node.js backend.
+Meet & Greet is a React Native app supporting both 1:1 and group video/voice calls, built on WebRTC for peer media connections, with Socket.io handling real-time signaling between clients through a Node.js backend.
+
+The screens in this case study are UI recreations of the product flows (online presence, dial-by-ID, 1:1, and group call) — not original 2023 production captures.
 
 ## Key Challenges
 
@@ -23,4 +25,4 @@ Meet & Greet shipped with production-grade 1:1 and group calling, built on a rea
 
 ## Stack Decisions
 
-Agora was layered on top of raw WebRTC to offload the call infrastructure and TURN/STUN complexity that would otherwise have to be self-hosted and maintained. Socket.io was chosen for signaling over a custom WebSocket implementation for its reconnection handling, which matters a great deal for calls on mobile networks.
+WebRTC handled the media path end to end — peer connections, ICE negotiation, and STUN/TURN for clients behind restrictive NATs. Socket.io was chosen for signaling over a custom WebSocket implementation for its reconnection handling, which matters a great deal for calls on mobile networks.

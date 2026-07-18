@@ -88,6 +88,47 @@ body::before {
     transform: scaleX(1);
     transform-origin: left;
   }
+
+  /* Case study MDX body — editorial, not “blog template” */
+  .case-study-body {
+    @apply text-[15px] leading-[1.7] text-muted sm:text-base sm:leading-[1.75];
+  }
+
+  .case-study-body > :first-child {
+    @apply mt-0;
+  }
+
+  .case-study-body h2 {
+    @apply mt-12 font-display text-[1.35rem] font-medium tracking-tight text-foreground sm:text-xl;
+  }
+
+  .case-study-body h2:first-child {
+    @apply mt-0;
+  }
+
+  .case-study-body p {
+    @apply mt-3.5;
+  }
+
+  .case-study-body ol {
+    @apply mt-4 list-decimal space-y-2.5 pl-5 marker:text-accent;
+  }
+
+  .case-study-body ul {
+    @apply mt-4 list-disc space-y-2 pl-5 marker:text-accent/70;
+  }
+
+  .case-study-body li {
+    @apply pl-1;
+  }
+
+  .case-study-body li strong {
+    @apply font-medium text-foreground;
+  }
+
+  .case-study-body a {
+    @apply text-foreground underline decoration-border underline-offset-[3px] transition-colors hover:decoration-accent;
+  }
 }
 
 @keyframes underline-grow {

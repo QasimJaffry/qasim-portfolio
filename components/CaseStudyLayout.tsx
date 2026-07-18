@@ -2,14 +2,16 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import type { Project } from "@/lib/data/projects";
 import { resolveProjectImage } from "@/lib/projectImage";
+import { getAdjacentCaseStudies } from "@/lib/projects";
 import FigurePlate from "@/components/FigurePlate";
+import Reveal from "@/components/Reveal";
 
 const linkLabels: Record<string, string> = {
   playStore: "Play Store",
   appStore: "App Store",
   web: "Website",
   github: "GitHub",
-  demo: "Demo",
+  demo: "Live demo",
 };
 
 export default function CaseStudyLayout({
@@ -26,143 +28,161 @@ export default function CaseStudyLayout({
 
   const hero = gallery[0];
   const secondary = gallery.slice(1);
+  const { prev, next } = getAdjacentCaseStudies(project.slug);
 
   return (
-    <article className="pb-20 sm:pb-28">
+    <article className="pb-24 sm:pb-32">
       {/* Intro */}
-      <div className="mx-auto max-w-5xl px-6 pt-16 sm:pt-24">
-        <Link href="/work" className="text-sm text-muted transition-colors hover:text-foreground">
-          ← Back to Work
+      <header className="mx-auto max-w-3xl px-6 pt-16 sm:pt-24">
+        <Link
+          href="/work"
+          className="group inline-flex items-center gap-1.5 text-sm text-muted transition-colors hover:text-foreground"
+        >
+          <span aria-hidden className="transition-transform group-hover:-translate-x-0.5">
+            ←
+          </span>
+          Work
         </Link>
 
-        <div className="mt-8 flex flex-wrap items-center gap-x-3 gap-y-2 text-xs text-muted">
-          <span>{project.year}</span>
-          <span aria-hidden>·</span>
-          <span>{project.category}</span>
-          <span aria-hidden>·</span>
-          <span className="inline-flex items-center gap-1.5">
-            <span
-              className={`h-1.5 w-1.5 rounded-full ${
-                project.status === "Live" ? "bg-accent" : "bg-muted"
-              }`}
-            />
-            {project.status}
-          </span>
-        </div>
+        <p className="mt-10 font-mono text-[11px] uppercase tracking-[0.18em] text-muted">
+          {project.year}
+          <span className="mx-2.5 text-border">/</span>
+          {project.category}
+          <span className="mx-2.5 text-border">/</span>
+          {project.status}
+        </p>
 
-        <h1 className="mt-3 max-w-3xl font-display text-3xl font-medium tracking-tight text-foreground sm:text-5xl">
+        <h1 className="mt-4 font-display text-[2.35rem] font-medium leading-[1.1] tracking-tight text-foreground sm:text-5xl sm:leading-[1.08]">
           {project.title}
         </h1>
-        <p className="mt-3 max-w-2xl text-lg text-muted sm:text-xl">{project.tagline}</p>
+
+        <p className="mt-5 text-xl leading-snug text-foreground/80 sm:text-2xl sm:leading-snug">
+          {project.tagline}
+        </p>
+
+        <p className="mt-6 max-w-2xl text-[15px] leading-relaxed text-muted sm:text-base">
+          {project.description}
+        </p>
 
         {project.metrics.length > 0 && (
-          <ul className="mt-8 flex flex-wrap gap-x-8 gap-y-3 border-y border-border/70 py-5">
+          <ul className="mt-10 space-y-2 border-l-2 border-accent/40 pl-4">
             {project.metrics.map((metric) => (
-              <li key={metric} className="text-sm text-foreground">
+              <li key={metric} className="text-sm leading-snug text-foreground">
                 {metric}
               </li>
             ))}
           </ul>
         )}
-      </div>
+      </header>
 
-      {/* Hero showcase — full width within max */}
+      {/* Hero */}
       {hero && (
-        <div className="mx-auto mt-10 max-w-6xl animate-fade-up px-4 sm:mt-12 sm:px-6">
+        <div className="mx-auto mt-12 max-w-6xl animate-fade-up px-4 sm:mt-16 sm:px-6">
           <FigurePlate
             src={hero}
-            alt={`${project.title} product showcase`}
+            alt={`${project.title}`}
             category={project.category}
             tilt="none"
-            className="shadow-[0_24px_60px_-28px_rgba(21,24,26,0.35)]"
+            className="shadow-[0_28px_70px_-32px_rgba(21,24,26,0.4)]"
           />
         </div>
       )}
 
-      {/* Body */}
-      <div className="mx-auto mt-14 grid max-w-5xl gap-12 px-6 sm:mt-20 sm:grid-cols-[1fr_240px]">
-        <div className="prose-case-study max-w-none text-muted [&_h2]:mt-10 [&_h2]:font-display [&_h2]:text-xl [&_h2]:font-medium [&_h2]:tracking-tight [&_h2]:text-foreground [&_h2:first-child]:mt-0 [&_p]:mt-3 [&_p]:leading-relaxed">
-          {children}
-        </div>
+      {/* Story + meta */}
+      <div className="mx-auto mt-16 grid max-w-5xl gap-14 px-6 sm:mt-24 lg:grid-cols-[minmax(0,1fr)_200px] lg:gap-16">
+        <div className="case-study-body">{children}</div>
 
-        <aside className="h-fit space-y-6 sm:sticky sm:top-24">
-          <div className="rounded-2xl bg-surface p-6 text-sm">
+        <aside className="lg:sticky lg:top-28 lg:self-start">
+          <div className="space-y-8 border-t border-border/80 pt-6 lg:border-t-0 lg:border-l lg:pt-0 lg:pl-6">
             <div>
-              <h2 className="eyebrow">Status</h2>
-              <p className="mt-2 text-foreground">{project.status}</p>
-            </div>
-
-            <div className="mt-6">
-              <h2 className="eyebrow">Year</h2>
-              <p className="mt-2 text-foreground">{project.year}</p>
-            </div>
-
-            <div className="mt-6">
               <h2 className="eyebrow">Stack</h2>
-              <div className="mt-2 flex flex-wrap gap-2">
+              <ul className="mt-3 space-y-1.5">
                 {project.stack.map((tech) => (
-                  <span key={tech} className="tag-pill">
+                  <li key={tech} className="text-sm text-foreground">
                     {tech}
-                  </span>
+                  </li>
                 ))}
-              </div>
+              </ul>
             </div>
 
             {linkEntries.length > 0 && (
-              <div className="mt-6">
+              <div>
                 <h2 className="eyebrow">Links</h2>
-                <div className="mt-2 flex flex-col gap-2">
+                <ul className="mt-3 space-y-2">
                   {linkEntries.map(([key, href]) => (
-                    <a
-                      key={key}
-                      href={href}
-                      className="text-foreground transition-colors hover:text-accent"
-                    >
-                      {linkLabels[key] ?? key} ↗
-                    </a>
+                    <li key={key}>
+                      <a
+                        href={href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="link-underline text-sm text-foreground"
+                      >
+                        {linkLabels[key] ?? key}
+                      </a>
+                    </li>
                   ))}
-                </div>
+                </ul>
               </div>
             )}
           </div>
         </aside>
       </div>
 
-      {/* Detail gallery */}
+      {/* Gallery */}
       {secondary.length > 0 && (
         <section className="mx-auto mt-20 max-w-6xl px-4 sm:mt-28 sm:px-6">
-          <div className="mb-8 flex items-end justify-between gap-4 px-2">
-            <div>
-              <p className="eyebrow">Product screens</p>
-              <h2 className="mt-2 font-display text-2xl font-medium tracking-tight text-foreground sm:text-3xl">
-                Inside the build
-              </h2>
-            </div>
-            <p className="hidden text-sm text-muted sm:block">
-              {secondary.length === 1 ? "1 more view" : `${secondary.length} more views`}
-            </p>
+          <div className="mb-8 max-w-3xl px-2">
+            <h2 className="font-display text-2xl font-medium tracking-tight text-foreground sm:text-3xl">
+              Screens
+            </h2>
           </div>
 
-          <div className="grid gap-5 sm:grid-cols-2">
+          <div className="grid gap-6 sm:grid-cols-2 sm:gap-5">
             {secondary.map((src, i) => (
-              <div
-                key={src}
-                className={`animate-fade-up ${i === 0 && secondary.length === 3 ? "sm:col-span-2" : ""}`}
-                style={{ animationDelay: `${i * 90}ms` }}
-              >
+              <Reveal key={src} delay={i * 80} className={i === 0 && secondary.length > 2 ? "sm:col-span-2" : ""}>
                 <FigurePlate
                   src={src}
-                  alt={`${project.title} screen ${i + 2}`}
+                  alt={`${project.title} — view ${i + 2}`}
                   category={project.category}
                   index={i + 2}
-                  label={i === 0 ? "Primary flow" : i === 1 ? "Supporting view" : "Detail"}
-                  tilt={i % 2 === 0 ? "left" : "right"}
-                  className="transition-transform duration-300 hover:-translate-y-1"
+                  tilt="none"
+                  className="shadow-[0_18px_48px_-28px_rgba(21,24,26,0.32)]"
                 />
-              </div>
+              </Reveal>
             ))}
           </div>
         </section>
+      )}
+
+      {/* Adjacent projects */}
+      {(prev || next) && (
+        <nav
+          aria-label="More work"
+          className="mx-auto mt-24 max-w-5xl border-t border-border/80 px-6 pt-10 sm:mt-32"
+        >
+          <div className="grid gap-8 sm:grid-cols-2">
+            {prev ? (
+              <Link href={`/work/${prev.slug}`} className="group block sm:pr-6">
+                <p className="text-xs text-muted">Previous</p>
+                <p className="mt-1 font-display text-lg font-medium tracking-tight text-foreground transition-colors group-hover:text-accent sm:text-xl">
+                  {prev.title}
+                </p>
+                <p className="mt-1 line-clamp-2 text-sm text-muted">{prev.tagline}</p>
+              </Link>
+            ) : (
+              <div />
+            )}
+            {next ? (
+              <Link href={`/work/${next.slug}`} className="group block text-right sm:pl-6">
+                <p className="text-xs text-muted">Next</p>
+                <p className="mt-1 font-display text-lg font-medium tracking-tight text-foreground transition-colors group-hover:text-accent sm:text-xl">
+                  {next.title}
+                </p>
+                <p className="mt-1 line-clamp-2 text-sm text-muted">{next.tagline}</p>
+              </Link>
+            ) : null}
+          </div>
+        </nav>
       )}
     </article>
   );

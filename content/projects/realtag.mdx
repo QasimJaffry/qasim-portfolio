@@ -1,6 +1,6 @@
 ---
 title: RealTag
-year: 2024
+year: 2026
 status: Completed
 stack: [React Native, YOLO11, SAM2, DINOv2, Python, FastAPI]
 ---
@@ -12,6 +12,8 @@ Detecting an object once in a camera frame is a solved problem. Recognizing that
 ## What I Built
 
 RealTag pairs a React Native client with a Python/FastAPI backend running a three-model pipeline: YOLO11 for real-time object detection, SAM2 for precise segmentation of detected objects, and DINOv2 for generating embeddings used to re-identify the same object across frames. The mobile client streams live camera frames to the pipeline and renders detection and re-identification results back in real time.
+
+Case study visuals are captures from the live hybrid app + inference server — auto YOLO detection with segmentation masks, tap-to-segment manual masking (SAM2), tagging, and saved-tag state.
 
 ## Key Challenges
 

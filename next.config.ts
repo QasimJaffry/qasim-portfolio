@@ -1,7 +1,24 @@
 import type { NextConfig } from "next";
 
+const repo = "qasim-portfolio";
+const isGithubPages = process.env.GITHUB_PAGES === "true";
+const basePath = isGithubPages ? `/${repo}` : "";
+
 const nextConfig: NextConfig = {
-  /* config options here */
+  output: "export",
+  trailingSlash: true,
+  images: {
+    unoptimized: true,
+  },
+  env: {
+    NEXT_PUBLIC_BASE_PATH: basePath,
+  },
+  ...(isGithubPages
+    ? {
+        basePath,
+        assetPrefix: `${basePath}/`,
+      }
+    : {}),
 };
 
 export default nextConfig;

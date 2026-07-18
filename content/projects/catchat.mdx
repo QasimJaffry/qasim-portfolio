@@ -1,26 +1,49 @@
 ---
 title: CatChat
-year: 2023
-status: Completed
-stack: [Next.js, Firebase, OpenAI API, TypeScript]
+year: 2023–present
+status: Live
+stack: [Next.js, Firebase, Cloud Functions, OpenAI / OpenRouter]
 ---
 
 ## The Problem
 
-Building an AI companion app solo means every layer — product design, the conversational experience, and the infrastructure behind it — has to be handled by one person, end to end.
+Most “AI chat” demos are a text box wrapped around a generic model. That gets boring fast: no characters, no memory of who you’re talking to, and nothing that feels like a product people would open again.
+
+[CatChat](https://catchatapp-6f11c.web.app/) needed the opposite — a browsable cast of cat companions, each with a personality and scenario, and chats that stay in character.
 
 ## What I Built
 
-CatChat is a Next.js web app, built solo in TypeScript, using Firebase for auth and data and the OpenAI API for the AI companion's conversational core. I owned the full product lifecycle — design, engineering, and deployment.
+I built the **CatChat web app / PWA** end to end — Next.js UI, Firebase Auth and Firestore, and the Cloud Functions API that generates cats and drives chat. A teammate contributed on the functions side; I owned the product surface and the majority of the stack.
+
+## Major Features
+
+### For people chatting with cats
+
+- **Companion grid** — Browse AI-generated cats with name, personality, scenario, and portrait.
+- **Character modal** — Open a cat to see personality + scenario, then start chat (auth-gated).
+- **In-character chat** — Two-pane desktop chat (list + thread) and a mobile-friendly thread with typing indicator and quick-start prompts.
+- **Auth & profile** — Email/password sign-in, profile modal, feedback form.
+- **Installable PWA** — Static export hosted on Firebase with a service worker for app-like use.
+
+### Under the hood
+
+- **Character pipeline** — LLM writes cat profiles; image generation produces portraits; files land in cloud storage and Firestore.
+- **Persona-bound replies** — System prompt binds name, personality, description, and scenario; recent thread history is sent as context.
+- **Per-user threads** — Chat docs keyed by user + cat, with `user` / `cat` roles in the message thread.
+- **Ops tools** — Internal stats page to initialize cats, regenerate images, and inspect usage (not part of the public product UI).
 
 ## Key Challenges
 
-As a solo build, the constraint was scope discipline: making deliberate calls about what the companion experience needed versus what could be cut to ship. On the technical side, shaping the OpenAI API prompts and conversation state management in Firebase to give the companion a consistent, coherent personality across sessions was the core problem.
+**Stay in character without sounding like a chatbot.** Replies had to feel feline (meows, *actions*, short beats) while staying family-safe and not leaking “as an AI…” phrasing.
+
+**Static front end, live AI back end.** The Next.js app exports to Firebase Hosting; chat and cat generation run on Cloud Functions so the PWA can stay static.
+
+**Character inventory has to be real content.** Blank or hand-seeded avatars wouldn’t sell the product — generation + regeneration had to produce a usable catalog.
 
 ## Results
 
-CatChat shipped as a complete solo product — from initial design through deployment — with full ownership across the stack.
+CatChat is live at [catchatapp-6f11c.web.app](https://catchatapp-6f11c.web.app/): pick a companion, sign in, and chat in character from desktop or phone as a PWA.
 
-## Stack Decisions
+## Approach
 
-Next.js and Firebase were chosen together as a fast path to a production web app without standing up custom backend infrastructure, which mattered given this was a solo, self-funded build.
+Next.js App Router with static export for the PWA shell. Firebase Auth + Firestore for users, cats, and threads. Express on Cloud Functions for chat and cat generation, with swappable LLM providers. Stack details live in the sidebar.

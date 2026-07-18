@@ -1,0 +1,51 @@
+---
+title: SafeDeal
+year: 2023–present
+status: Live
+stack: [React Native, Expo, WebView, React Query]
+---
+
+## The Problem
+
+Shopping on Amazon, eBay, or AliExpress means reading long review threads, guessing whether a discount is real, and trusting seller badges that don’t always tell the full story. That work is worse on a phone, where comparison tabs and extension overlays don’t exist.
+
+[Safe Deal](https://www.joinsafedeal.com/) already had a desktop browser extension for this. Mobile needed the same decision layer without asking people to leave the product page.
+
+## What I Built
+
+I was the **React Native frontend** engineer on the Safe Deal mobile app — an Expo shopping browser that opens marketplace product pages in an in-app WebView and surfaces a buy/caution verdict with evidence on top of the live page. Shipped for Android and iOS.
+
+## Major Features
+
+### For shoppers
+
+- **Marketplace hub** — One-tap shortcuts into AliExpress, Amazon, and eBay, plus custom links you add yourself.
+- **In-app browser** — Search or paste a URL, back/forward, and browse product pages without hopping to Chrome or Safari.
+- **Product insights** — Rule checklist for reviews, seller tenure, price vs average, and store satisfaction, plus a price-history chart.
+- **AI insights** — Review text rolled into pros, cons, and “good to know” so you don’t read hundreds of comments.
+- **Customer images & review videos** — Real buyer photos and a YouTube reviews search from the same analysis sheet.
+- **Share into SafeDeal** — Share a product link from another app; Safe Deal opens it and runs the analysis.
+- **Languages** — Large locale set so the same flows work across markets.
+
+### Under the hood
+
+- **Site-aware product detection** — Recognizes Amazon / eBay / AliExpress item URLs so the analysis UI only appears on real product pages.
+- **Injected page cleanup** — WebView scripts tighten the viewport and hide noisy marketplace chrome so the product — and the Safe Deal sheet — stay readable.
+- **Cached analysis by URL** — React Query keeps conclusions keyed to the page you’re on while you move between tabs in the sheet.
+- **Share-intent entry** — OS share target opens the shared product URL directly in the browser shell.
+
+## Key Challenges
+
+**The app is a browser and a decision UI at once.** Navigation, URL validity, and home shortcuts had to stay simple while the analysis modal stayed one tap away from any product page.
+
+**Analysis must feel ambient, not bolted on.** The footer shield turns green / amber / red with the conclusion so status is visible while you still see the marketplace page behind the sheet.
+
+**Mobile is part of a larger product.** The React Native client had to match Safe Deal’s extension story (same retailers, same “recommended / not recommended” language) without owning the whole desktop pipeline.
+
+## Results
+
+The app is live on [Google Play](https://play.google.com/store/apps/details?id=com.safedeal.navigator&pli=1) (**5K+ downloads**, **4.5★**) and iOS, alongside the product site at [joinsafedeal.com](https://www.joinsafedeal.com/). The broader Safe Deal platform reports **6M+ products checked** and **590K+ reviews checked**.
+
+## Approach
+
+React Native with Expo for iOS and Android. React Native WebView for the shopping shell. React Query for analysis fetches. Stack details live in the sidebar.

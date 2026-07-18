@@ -1,26 +1,58 @@
 ---
 title: BugMapper
-year: 2023
-status: Completed
-stack: [React.js, Node.js, PostgreSQL, WebSockets, D3.js]
+year: 2023–present
+status: Live
+stack: [React Native, Expo, SQLite, Offline-first, Web]
 ---
 
 ## The Problem
 
-An international agri-tech client needed visibility into disease spread across greenhouse operations in real time — not a daily report, but a live dashboard operators could act on while walking the greenhouse floor.
+[BugMapper](https://www.bugmapper.com.tr/) helps greenhouse teams monitor pests and diseases: traps in the house, a portable PIM® unit for trap photos, a phone app for field work, and a web app for charts and maps.
+
+The hard part was the field. Connectivity inside a greenhouse is unreliable, but work cannot pause. Crews still need to place traps, record counts, and get photos off the PIM unit — then get that data into the cloud so advisors can actually use the web charts.
 
 ## What I Built
 
-BugMapper is a React.js web dashboard backed by a Node.js and PostgreSQL API, with WebSockets pushing live updates as new disease-tracking data comes in from the field. D3.js powers the analytics visualizations that let operators see disease spread patterns across the greenhouse over time, rather than reading raw tables of readings.
+I was the **frontend engineer for the mobile and web sides** of that loop — React Native field app for Android greenhouse work, and the web UI where advisors see counts, charts, and maps after data syncs.
+
+## Major Features
+
+### For the people in the greenhouse
+
+- **QR trap deploy** — Scan trap and location codes to place a trap at a specific spot.
+- **Count and collect** — Record pest counts on deployed traps, or collect a trap with a final count.
+- **Offline sync queue** — Keep working without signal; review and flush pending deployments when you’re back online.
+- **PIM® photos** — Pull trap images from the on-site PIM unit over the local network, then upload them to the cloud.
+- **Disease scouting** — Log plant and disease observations tied to sector / tunnel / row.
+- **Treatments (PPP)** — Record plant-protection applications by QR or manual entry.
+- **Field and season context** — Switch company, field, and season so every action lands in the right greenhouse.
+
+### For advisors on the web
+
+- **Charts and maps** — Pest density, risk trends, and location views fed by the same cloud the field app uploads into.
+- **Trap and season context** — Review work by greenhouse / season instead of raw dumps of field actions.
+
+### Under the hood (what made that reliable)
+
+- **Local offline queue** — Trap work is stored on-device and synced when the network returns, with a clear Pending Sync screen.
+- **Phone as a data mule** — Discover the PIM unit on the LAN, stage files on the phone, upload to cloud, confirm back — so photos don’t depend on the greenhouse having stable internet.
+- **Separate sync paths** — Trap actions and PIM files don’t share one vague upload button; each backlog is visible on its own.
+- **Typed QR flows** — Trap, location, and chemical codes drive different workflows instead of a generic scanner screen.
 
 ## Key Challenges
 
-Real-time dashboards live or die on how well they handle a constant stream of updates without the UI stuttering or state getting out of sync. Structuring the WebSocket updates so the D3.js visualizations could patch efficiently — instead of re-rendering the whole dashboard on every incoming data point — was the main engineering focus.
+**Offline had to feel normal, not broken.** Deployments needed to sit on the phone safely and sync from a queue you could see and control.
+
+**Photos and trap actions are different jobs.** A failed photo upload should never look like a failed trap deploy.
+
+**Mobile and web had to tell one story.** Field capture and advisor charts share the same traps → PIM® → cloud pipeline — not two parallel products.
 
 ## Results
 
-BugMapper shipped as a real-time analytics and disease-tracking dashboard for the client's greenhouse operations.
+Field crews can walk a greenhouse, work offline, pull photos from the PIM® unit, and clear sync when they have signal. That data lands in BugMapper’s cloud for the same charts and maps advisors already use on the web.
 
-## Stack Decisions
+Public coverage of the product ([Daily Sabah](https://www.dailysabah.com/turkiye/ai-improves-pest-detection-in-kayseris-soilless-farming/news), AA) reports trap reads in about **10 seconds** versus **5–10 minutes** of manual sticky-trap counting, **30–50% seasonal chemical savings** in geothermal, soil-based, and soilless houses, and deployments across **Kayseri, Yozgat, Afyon, and Mersin**. The broader system is a TÜBİTAK-backed plant-protection decision support stack.
 
-WebSockets were used over polling because disease-tracking data needed to reach the dashboard as it happened, not on a fixed interval. D3.js was chosen over a prebuilt charting library for the same reason it was chosen elsewhere in this body of work: the visualizations needed to represent spatial and time-series disease data in ways off-the-shelf charts don't support well.
+## Approach
+
+React Native with Expo for Android field devices; web frontend for advisor charts and maps. Local storage for the offline queue and staged photos. Explicit sync and upload screens so pending work stays visible. Stack details live in the sidebar.

@@ -50,3 +50,18 @@ export function getProjectsWithCaseStudies(): string[] {
   const slugs = getAllCaseStudySlugs();
   return projects.filter((p) => slugs.includes(p.slug)).map((p) => p.slug);
 }
+
+/** Previous / next among projects that have a case study, in portfolio order. */
+export function getAdjacentCaseStudies(slug: string): {
+  prev: Project | null;
+  next: Project | null;
+} {
+  const withCaseStudy = new Set(getAllCaseStudySlugs());
+  const ordered = projects.filter((p) => withCaseStudy.has(p.slug));
+  const index = ordered.findIndex((p) => p.slug === slug);
+  if (index === -1) return { prev: null, next: null };
+  return {
+    prev: index > 0 ? ordered[index - 1] : null,
+    next: index < ordered.length - 1 ? ordered[index + 1] : null,
+  };
+}
