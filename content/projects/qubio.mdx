@@ -2,27 +2,40 @@
 title: Qubio Ecosystem
 year: 2022
 status: Completed
-stack: [React Native, Next.js, D3.js, PostgreSQL, GraphQL]
+stack: [React Native, React, D3.js, Node.js, NFC / QR]
 ---
 
 ## The Problem
 
-An international client needed a digital identity system that worked across physical touchpoints — QR codes and NFC tags — and gave administrators visibility into how that identity network was actually being used. That meant a mobile scanning experience, a web management layer, and an analytics dashboard, all reading from the same source of truth.
+An international client needed digital identity that lived on **QR and NFC** touchpoints — pages people could open from a tap or scan — plus admin tools and analytics so the network’s usage wasn’t a black box.
 
 ## What I Built
 
-Qubio pairs a React Native mobile app (for scanning and registering QR/NFC identities) with a Next.js web application for management and a D3.js-driven analytics dashboard for visualizing usage patterns across the identity network. A GraphQL API backed by PostgreSQL served as the shared data layer across both clients.
+Qubio is a cross-platform identity system I worked on across an **18-month** engagement with a distributed remote team:
 
-This was an 18-month engagement working with a distributed remote team spread across time zones, deployed for an international client.
+- **React Native** for scanning/registering identities and editing page content on the phone.
+- **Web admin** for managing pages and the identity network.
+- **Analytics dashboard** (D3) for scan/tap visibility across the network.
+- Shared backend so mobile and web read the same source of truth.
+
+Product surface: [pages.qubio.me](https://pages.qubio.me/).
+
+## Major Features
+
+- **QR / NFC identity pages** — open, share, and present a digital presence from a physical tag.
+- **In-app page editing** — add blocks / update content without a separate CMS dance.
+- **Web management** — desktop admin for the same identity graph.
+- **Usage analytics** — dashboard views of how the network is actually used.
+- **Long-running delivery** — sustained feature work across time zones for an international deploy.
 
 ## Key Challenges
 
-Coordinating feature work across a distributed team over 18 months meant the GraphQL schema had to be treated as a contract — changes needed careful versioning so mobile and web clients didn't break against each other mid-sprint. Building the D3.js dashboard to stay responsive against a growing PostgreSQL dataset also required pushing more aggregation work down into the database rather than doing it client-side.
+Treating the API as a contract mattered: mobile and web couldn’t break each other mid-sprint over 18 months. Analytics had to stay responsive as usage grew — push aggregation down rather than chart raw dumps client-side.
 
 ## Results
 
-The system shipped and was deployed for the client's international operation, sustained across an 18-month engagement with a distributed team.
+The system shipped and ran in the client’s international operation across the engagement window.
 
 ## Stack Decisions
 
-GraphQL was chosen over REST specifically because the mobile app, web app, and dashboard each needed different shapes of the same underlying identity data — GraphQL let each client query exactly what it needed without over- or under-fetching. D3.js gave the fine-grained control needed for the custom analytics visualizations that a standard charting library couldn't provide.
+Native mobile for field scan/edit, web for admin density, D3 for custom analytics control. A shared API kept identity data from forking into two products.

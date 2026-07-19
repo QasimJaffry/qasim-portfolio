@@ -1,26 +1,42 @@
 ---
 title: Decidr
-year: 2024
+year: 2026
 status: In Development
 stack: [Next.js, TypeScript, Supabase, Stripe, OpenRouter]
 ---
 
 ## The Problem
 
-Hard decisions rarely fail because of a lack of information — they fail because that information never gets structured into a clear comparison. Decidr is a personal project exploring whether an AI-native tool can make that structuring step easier.
+Hard decisions rarely fail because of a lack of information — they fail because that information never gets structured into a clear comparison. Spreadsheets and chat threads bury the trade-offs; Decidr is a personal SaaS exploring whether an AI-native tool can make the structuring step feel obvious.
 
 ## What I Built
 
-Decidr is a Next.js and TypeScript SaaS product using Supabase for data and auth, Stripe for payments, and OpenRouter to route between multiple language models rather than depending on a single provider.
+Decidr turns a messy dilemma into a **weighted option × criteria matrix** with explainable scoring — not another chat wrapper.
+
+- Paste a dilemma or walk a multi-step wizard (problem → options → criteria → weights).
+- AI extracts options and criteria into structured JSON via OpenRouter (model-agnostic).
+- Server-side ranking with risk, confidence, and a maturity score; results show ranked tables, charts, heatmaps, and an expandable reasoning trace.
+- What-if weight simulation recomputes locally without another AI call; side-by-side decision compare; public share links and PDF via print.
+- Email auth, Supabase data, and Stripe Pro billing on a Next.js App Router stack.
+
+Live demo: [decidr-henna.vercel.app](https://decidr-henna.vercel.app/).
+
+## Major Features
+
+- **Decision wizard** — plain-text or step-by-step intake that lands in a scored matrix.
+- **Explainable AI scoring** — ranked options with reasoning you can expand, not a black-box “pick this.”
+- **What-if simulation** — drag weights and see rankings update without re-calling the model.
+- **Compare & share** — side-by-side decisions and public `/d/[token]` links.
+- **Billing-ready** — Stripe Pro wired for the SaaS path.
 
 ## Key Challenges
 
-Using OpenRouter instead of a single model provider means designing the AI-assisted decision workflows to be model-agnostic — prompts and output parsing have to work reasonably well across different underlying models, not tuned to the quirks of one.
+Using OpenRouter instead of a single model provider means prompts and output parsing have to stay model-agnostic — structured JSON extraction has to work across vendors, not tuned to one model’s quirks. Keeping the matrix as the product surface (not a chat log) forced clear UX boundaries between AI assistance and user-owned weights.
 
 ## Results
 
-Decidr is currently in development as a personal SaaS project with Stripe payments already integrated.
+Decidr is in active development as a personal SaaS: core decision flow, charts, share links, and Stripe are in place on a public Vercel demo.
 
 ## Stack Decisions
 
-OpenRouter was chosen over a direct single-provider integration to avoid locking the product's core decision-intelligence feature to one model vendor's pricing and availability. Supabase and Stripe together cover data, auth, and billing without custom backend infrastructure, keeping this personal project's scope manageable.
+OpenRouter avoids locking decision intelligence to one vendor’s pricing and availability. Supabase and Stripe cover auth, data, and billing without a custom backend, so product time stayed on the matrix UX and scoring pipeline rather than infrastructure.

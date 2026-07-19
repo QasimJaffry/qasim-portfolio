@@ -1,26 +1,40 @@
 ---
 title: Dealflow AI
-year: 2024
+year: 2026
 status: In Development
-stack: [Next.js, Expo, Supabase, OpenAI API, TypeScript]
+stack: [Next.js, Expo, Supabase, OpenAI / OpenRouter, TypeScript]
 ---
 
 ## The Problem
 
-Freelancers juggle leads, proposals, and deals across spreadsheets, email threads, and whatever CRM they've half-adopted — none of which are built around how a solo freelancer actually works, or use AI to reduce the manual tracking overhead.
+Freelancers juggle leads, proposals, and deals across spreadsheets, email threads, and half-adopted CRMs — none of which are built around how a solo operator actually works, or use AI to cut the manual tracking overhead.
 
 ## What I Built
 
-Dealflow AI is a personal project: an AI-powered CRM built with a Next.js web app and an Expo mobile app sharing a Supabase backend, with the OpenAI API used to help freelancers manage leads, draft proposals, and track deals through their pipeline.
+Dealflow AI is a personal **AI-native CRM**: a Next.js web app and Expo mobile app sharing one Supabase backend.
+
+- Clients, deals (kanban + list), tasks, activity timeline, and dashboard KPIs.
+- Deal workspace with notes, reminders, and file uploads (Supabase Storage).
+- AI that summarizes a deal, extracts next actions, drafts follow-ups, and can transcribe audio — with an **approve → create tasks** path so suggestions don’t silently mutate the pipeline.
+- Server-only `/api/ai/*` routes; mock adapters when keys are missing.
+- **Offline preview mode** — full UI + demo data with no `.env`, so the product is reviewable without infrastructure.
+
+## Major Features
+
+- **Dual clients, one data model** — web and mobile stay in sync through Supabase + shared packages.
+- **Pipeline that matches freelance work** — clients → deals → tasks → activity, not enterprise CRM bloat.
+- **AI in the workflow** — summarize, extract actions, draft follow-ups; human approval before tasks land.
+- **Offline demo mode** — ship and review the UX without wiring secrets first.
+- **Typed monorepo** — `@dealflow/shared` + `@dealflow/ui` keep web and mobile consistent.
 
 ## Key Challenges
 
-Sharing a data model cleanly between the Next.js and Expo clients through Supabase, while keeping the AI-assisted parts (lead summarization, proposal drafting) fast enough to feel like part of the workflow rather than a separate step, is the main design problem this project is working through.
+Sharing a clean data model between Next.js and Expo without a custom API layer, while keeping AI calls fast enough to feel like part of the deal workspace — not a separate chatbot tab. Mockable AI adapters were required so demos never depend on live keys.
 
 ## Results
 
-Dealflow AI is currently in development as a mobile and web AI-native CRM.
+Dealflow AI is in development as a mobile + web AI CRM: core pipeline screens, AI action flow, and offline preview are in place. Roadmap items (email/calendar sync, push, offline write queue) are still open.
 
 ## Stack Decisions
 
-Supabase was chosen as the shared backend for Next.js and Expo specifically because it gives both clients direct, typed access to the same Postgres data without maintaining a separate API layer — a good fit for a personal project where infrastructure time needs to stay minimal.
+Supabase was chosen so both clients get typed access to the same Postgres data without maintaining a separate API. Server-only AI routes keep keys off the client; OpenRouter / OpenAI / Groq give flexibility for text and transcription without rewriting the product surface.

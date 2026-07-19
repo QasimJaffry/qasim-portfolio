@@ -6,7 +6,7 @@ from __future__ import annotations
 from pathlib import Path
 
 import numpy as np
-from PIL import Image, ImageDraw, ImageFilter
+from PIL import Image, ImageDraw, ImageFilter, ImageEnhance
 
 ROOT = Path(__file__).resolve().parents[1]
 SHOTS = Path.home() / "Desktop" / "Screenshots"
@@ -194,13 +194,28 @@ def compose_dual_phones(
     angle: float = 2.5,
     max_h: int = 820,
     margin: int = 56,
+    clean_notifications: bool = True,
+    status_fill: tuple[int, int, int] | None = None,
+    draw_island: bool = True,
 ) -> Image.Image:
     """Two angled phones — scaled from rotated bounds so nothing clips the plate."""
 
     def build(scale: float):
         h = max(1, int(max_h * scale))
-        a = phone_frame(left, max_h=h)
-        b = phone_frame(right, max_h=h)
+        a = phone_frame(
+            left,
+            max_h=h,
+            clean_notifications=clean_notifications,
+            status_fill=status_fill,
+            draw_island=draw_island,
+        )
+        b = phone_frame(
+            right,
+            max_h=h,
+            clean_notifications=clean_notifications,
+            status_fill=status_fill,
+            draw_island=draw_island,
+        )
         ra = a.rotate(-angle, resample=Image.Resampling.BICUBIC, expand=True)
         rb = b.rotate(angle, resample=Image.Resampling.BICUBIC, expand=True)
         g = max(24, int(gap * scale))
@@ -481,9 +496,21 @@ def compose_phone_leading(
 
 
 def phone_frame(
-    screenshot: Image.Image, max_h: int = 980, max_w: int = 460
+    screenshot: Image.Image,
+    max_h: int = 980,
+    max_w: int = 460,
+    clean_notifications: bool = True,
+    status_fill: tuple[int, int, int] | None = None,
+    draw_island: bool = True,
 ) -> Image.Image:
-    shot = clean_status_bar_notifications(ensure_rgba(screenshot))
+    shot = ensure_rgba(screenshot)
+    if clean_notifications:
+        shot = clean_status_bar_notifications(shot)
+    if status_fill is not None:
+        # Solid status strip so Dynamic Island sits on clean chrome (no gray wipe artifacts)
+        w, h = shot.size
+        bar = max(70, int(h * 0.042))
+        ImageDraw.Draw(shot).rectangle((0, 0, w, bar), fill=(*status_fill, 255))
     scale = max_h / shot.height
     if shot.width * scale > max_w:
         scale = max_w / shot.width
@@ -492,9 +519,10 @@ def phone_frame(
         Image.Resampling.LANCZOS,
     )
 
-    bezel = 16
-    radius = 52
-    screen_r = 38
+    bezel = 14
+    radius = 54
+    # Match inner bezel curve tightly so content fills corners
+    screen_r = max(36, radius - bezel + 2)
     w = shot.width + bezel * 2
     h = shot.height + bezel * 2
     device = Image.new("RGBA", (w, h), (0, 0, 0, 0))
@@ -504,16 +532,19 @@ def phone_frame(
     draw.rounded_rectangle((0, 0, w - 1, h - 1), radius=radius, fill=(32, 34, 36, 255))
     draw.rounded_rectangle((2, 2, w - 3, h - 3), radius=radius - 2, fill=(14, 15, 17, 255))
 
-    # screen
+    # screen — full bleed into rounded inset
     screen = Image.new("RGBA", shot.size, (0, 0, 0, 0))
     screen.paste(shot, (0, 0))
     screen.putalpha(rounded_mask(shot.size, screen_r))
     device.paste(screen, (bezel, bezel), screen)
 
-    # dynamic island
-    island_w, island_h = int(w * 0.28), 18
-    ix = (w - island_w) // 2
-    draw.rounded_rectangle((ix, 18, ix + island_w, 18 + island_h), radius=10, fill=(8, 8, 10, 230))
+    # dynamic island — optional (skip for Android captures that keep their status bar)
+    if draw_island:
+        island_w, island_h = int(w * 0.30), 20
+        ix = (w - island_w) // 2
+        draw.rounded_rectangle(
+            (ix, 16, ix + island_w, 16 + island_h), radius=10, fill=(6, 6, 8, 255)
+        )
 
     # side buttons
     draw.rounded_rectangle((-3, int(h * 0.18), 2, int(h * 0.24)), radius=2, fill=(55, 58, 60, 255))
@@ -702,9 +733,10 @@ def save(im: Image.Image, path: Path) -> None:
 
 def save_set(dest: Path, images: list[Image.Image]) -> None:
     dest.mkdir(parents=True, exist_ok=True)
-    for old in dest.glob("*.png"):
+    # Only clear plate outputs — keep app icons and other assets in the folder
+    for old in dest.glob("hero.*"):
         old.unlink()
-    for old in dest.glob("*.jpg"):
+    for old in dest.glob("detail-*.*"):
         old.unlink()
     if not images:
         return
@@ -964,21 +996,124 @@ def build_bugmapper() -> None:
     )
 
 
+INTERIO_CREAM = (247, 245, 239)
+
+
+def fit_interio_screen(screenshot: Image.Image) -> Image.Image:
+    """Prep Interio Android captures for clean iPhone mockups.
+
+    Strips status + system nav, cover-fits to modern phone aspect, then adds a
+    cream top band so the Dynamic Island sits on brand chrome — not over titles.
+    """
+    im = ensure_rgba(screenshot)
+    w, h = im.size
+    arr = np.asarray(im.convert("RGB")).astype(np.float32)
+    means = arr.mean(axis=(1, 2))
+    stds = arr.std(axis=(1, 2))
+
+    # Top — dark Android status bar
+    top = 0
+    while top < int(h * 0.09) and means[top] < 70:
+        top += 1
+    top = max(top + 2, int(h * 0.032))
+
+    # Bottom — solid white system nav / 3-button bar
+    y = h - 1
+    floor = int(h * 0.86)
+    while y > floor and means[y] > 245 and stds[y] < 18:
+        y -= 1
+    bottom = max(h - 1 - y + 6, int(h * 0.045))
+
+    im = im.crop((0, top, w, h - bottom))
+
+    # COVER into phone aspect so corners fill the bezel
+    target_ar = 9 / 19.5
+    cw, ch = im.size
+    tw = cw
+    th = max(1, int(round(cw / target_ar)))
+    scale = max(tw / max(cw, 1), th / max(ch, 1))
+    nw = max(1, int(round(cw * scale)))
+    nh = max(1, int(round(ch * scale)))
+    im = im.resize((nw, nh), Image.Resampling.LANCZOS)
+    x0 = max(0, (nw - tw) // 2)
+    y0 = 0
+    surplus = nh - th
+    if surplus > 0:
+        y0 = min(int(surplus * 0.1), surplus)
+    im = im.crop((x0, y0, x0 + tw, y0 + th))
+
+    # Cream top pad for island; white bottom pad so tab bar clears the chin cleanly
+    pad_top = max(52, int(th * 0.042))
+    pad_bot = max(40, int(th * 0.03))
+    out = Image.new("RGBA", (tw, th + pad_top + pad_bot), (*INTERIO_CREAM, 255))
+    ImageDraw.Draw(out).rectangle(
+        (0, th + pad_top, tw, th + pad_top + pad_bot), fill=(255, 255, 255, 255)
+    )
+    out.paste(ensure_rgba(im), (0, pad_top))
+
+    rgb = ImageEnhance.Contrast(out.convert("RGB")).enhance(1.03)
+    rgb = ImageEnhance.Sharpness(rgb).enhance(1.12)
+    return rgb.convert("RGBA")
+
+
+def strip_android_nav_only(screenshot: Image.Image) -> Image.Image:
+    """Remove only the solid system gesture/nav band — keep status + app UI as-shot."""
+    im = ensure_rgba(screenshot)
+    w, h = im.size
+    arr = np.asarray(im.convert("RGB")).astype(np.float32)
+    means = arr.mean(axis=(1, 2))
+    stds = arr.std(axis=(1, 2))
+    y = h - 1
+    # Stay in the bottom ~10% so we never eat the app tab bar
+    floor = int(h * 0.90)
+    while y > floor and means[y] > 248 and stds[y] < 8:
+        y -= 1
+    bottom = h - 1 - y
+    if bottom < 24:
+        return im
+    return im.crop((0, 0, w, h - bottom - 2))
+
+
 def build_interio() -> None:
     print("Interio")
     dest = OUT / "interio"
-    home = open_shot("Interio", "01-home.png")
-    scan = open_shot("Interio", "04-camera-detected.png")
-    post = open_shot("Interio", "05-post-scan.png")
-    ar = open_shot("Interio", "06-ar.png")
-    tint = (95, 135, 110)
-    # Real device captures: Home | Detection, Recommendations, AR
+    tint = (95, 135, 110)  # sage
+
+    def load(name: str) -> Image.Image:
+        return fit_interio_screen(open_shot("Interio", name))
+
+    # Hero story: browse spaces → place sofa in AR (best product pair)
+    home = load("01-home.png")
+    ar = load("06-ar-sofa-selected.png")
+    post = load("05-post-scan-fresh.png")
+    scan = load("04-camera-detected.png")
+
     save_set(
         dest,
         [
-            compose_dual_phones(home, scan, tint=tint, gap=110, angle=1.5),
-            compose_plate(phone_frame(post, max_h=980), tint=tint),
-            compose_plate(phone_frame(ar, max_h=980), tint=tint),
+            compose_dual_phones(
+                home,
+                ar,
+                tint=tint,
+                gap=68,
+                angle=0.5,
+                max_h=1100,
+                margin=32,
+                clean_notifications=False,
+                draw_island=True,
+            ),
+            compose_plate(
+                phone_frame(
+                    post, max_h=1140, max_w=530, clean_notifications=False, draw_island=True
+                ),
+                tint=tint,
+            ),
+            compose_plate(
+                phone_frame(
+                    scan, max_h=1140, max_w=530, clean_notifications=False, draw_island=True
+                ),
+                tint=tint,
+            ),
         ],
     )
 
@@ -1077,14 +1212,40 @@ def build_meet_and_greet() -> None:
     )
 
 
+def android_bottom_chrome_height(screenshot: Image.Image) -> int:
+    """Detect Android nav (+ optional light gap above sheets) to crop from bottom."""
+    rgb = screenshot.convert("RGB")
+    arr = np.asarray(rgb).astype(np.float32)
+    h, _w, _c = arr.shape
+    means = arr.mean(axis=(1, 2))
+    stds = arr.std(axis=(1, 2))
+    y = h - 1
+    floor = int(h * 0.72)
+
+    # Phase 1 — bright flat system nav / gesture bar
+    while y > floor and means[y] > 215 and stds[y] < 40:
+        y -= 1
+
+    # Phase 2 — short flat light strip between dark UI sheets and the nav
+    strip_start = y
+    y2 = y
+    while y2 > floor and means[y2] > 140 and stds[y2] < 28:
+        y2 -= 1
+    strip_h = strip_start - y2
+    # Confirm dark sheet/UI sits above the strip (allow mid-tone transition rows)
+    above = float(means[max(0, y2 - 8) : max(1, y2 + 1)].mean()) if y2 > 0 else 255
+    if 12 <= strip_h <= 130 and above < 100:
+        y = max(0, y2 - 4)
+
+    cropped = (h - 1 - y) + 16  # small pad past the seam
+    return int(min(max(cropped, int(h * 0.055)), int(h * 0.16)))
+
+
 def crop_android_chrome(screenshot: Image.Image) -> Image.Image:
     """Strip Android nav chrome; keep status bar for phone_frame island cover."""
     im = ensure_rgba(screenshot)
     w, h = im.size
-    # Only remove the gesture/nav bar — status stays so the island sits over it cleanly
-    bottom = max(110, int(h * 0.065))
-    if h / max(w, 1) > 2.05:
-        bottom = max(bottom, int(h * 0.078))
+    bottom = android_bottom_chrome_height(im)
     cropped = im.crop((0, 0, w, h - bottom))
     # Normalize to a modern phone aspect so the shot fills the bezel (no corner voids)
     target_ar = 9 / 19.5
@@ -1101,21 +1262,174 @@ def crop_android_chrome(screenshot: Image.Image) -> Image.Image:
     return cropped
 
 
+def fit_android_to_iphone_frame(
+    screenshot: Image.Image,
+    fill: tuple[int, int, int] = (10, 10, 15),
+    top_safe: float = 0.055,
+) -> Image.Image:
+    """Cover-fit Android screencaps into iPhone aspect — edge-to-edge, no letterbox.
+
+    Strips Android chrome, scales with COVER into 9:19.5, then gently darkens
+    a top band so the Dynamic Island sits cleanly without eating titles.
+    """
+    im = ensure_rgba(screenshot)
+    w, h = im.size
+    # Trim Android status icons; app header stays — island contrast via soft darken
+    top = max(72, int(h * 0.038))
+    bottom = android_bottom_chrome_height(im)
+    im = im.crop((0, top, w, h - bottom))
+
+    # COVER into phone aspect — no empty bars
+    target_ar = 9 / 19.5
+    cw, ch = im.size
+    tw = cw
+    th = max(1, int(round(cw / target_ar)))
+    scale = max(tw / cw, th / ch)
+    nw = max(1, int(round(cw * scale)))
+    nh = max(1, int(round(ch * scale)))
+    im = im.resize((nw, nh), Image.Resampling.LANCZOS)
+    x0 = max(0, (nw - tw) // 2)
+    # Prefer top of UI (headers); only shift down if we have surplus height
+    y0 = 0
+    surplus = nh - th
+    if surplus > 0:
+        y0 = min(int(surplus * 0.12), surplus)
+    im = im.crop((x0, y0, x0 + tw, y0 + th))
+
+    # Soft darken top band (island sits here) — keep camera texture, no solid bar
+    rgb = im.convert("RGB")
+    if top_safe > 0:
+        arr = np.asarray(rgb).astype(np.float32)
+        band = max(40, int(th * top_safe))
+        for y in range(band):
+            # stronger near top, fade to 0
+            t = 1.0 - (y / max(1, band - 1))
+            fade = 0.48 * (t ** 1.35)
+            arr[y] = arr[y] * (1.0 - fade)
+        rgb = Image.fromarray(np.clip(arr, 0, 255).astype(np.uint8))
+    rgb = ImageEnhance.Contrast(rgb).enhance(1.04)
+    rgb = ImageEnhance.Sharpness(rgb).enhance(1.1)
+    return rgb.convert("RGBA")
+
+
 def build_realtag() -> None:
     """RealTag — live captures: auto-detect, manual SAM mask, tag form, tag list."""
     print("RealTag")
     dest = OUT / "realtag"
     tmp = ROOT / ".tmp-shots" / "realtag"
-    detect = crop_android_chrome(Image.open(tmp / "01-detect.png"))
-    manual = crop_android_chrome(Image.open(tmp / "02-manual.png"))
-    form = crop_android_chrome(Image.open(tmp / "03-tag-form.png"))
-    tags = crop_android_chrome(Image.open(tmp / "04-tag-list.png"))
+    dark = (10, 10, 15)
+
+    def load(name: str, top_safe: float = 0.055) -> Image.Image:
+        return fit_android_to_iphone_frame(
+            Image.open(tmp / name), fill=dark, top_safe=top_safe
+        )
+
+    detect = load("01-detect.png", 0.06)
+    manual = load("02-manual.png", 0.06)
+    form = load("03-tag-form.png", 0.05)
+    tags = load("04-tag-list.png", 0.05)
+    cafe = load("06-detect-cafe.png", 0.055)
     tint = (108, 92, 231)  # RealTag primary purple
-    # Phone-framed plates only (no AppScreen iPhone wrap over Android chrome)
     plates = [
-        compose_quad_phones([detect, manual, form, tags], tint=tint, studio=True),
-        compose_dual_phones(detect, manual, tint=tint, studio=True),
-        compose_dual_phones(form, tags, tint=tint, studio=True),
+        # Hero — detect + manual mask
+        compose_dual_phones(
+            detect,
+            manual,
+            tint=tint,
+            studio=True,
+            gap=80,
+            angle=1.1,
+            max_h=1020,
+            margin=36,
+            clean_notifications=False,
+        ),
+        # Details — tag form/list + cafe detect (no dining/food plate)
+        compose_dual_phones(
+            form,
+            tags,
+            tint=tint,
+            studio=True,
+            gap=80,
+            angle=1.1,
+            max_h=1020,
+            margin=36,
+            clean_notifications=False,
+        ),
+        compose_plate(
+            phone_frame(cafe, max_h=1120, max_w=520, clean_notifications=False),
+            tint=tint,
+            studio=True,
+        ),
+    ]
+    save_set(dest, plates)
+
+
+
+def build_decidr() -> None:
+    """Decidr — web SaaS decision workspace (seeded demo captures)."""
+    print("Decidr")
+    dest = OUT / "decidr"
+    tmp = ROOT / ".tmp-shots" / "decidr"
+    tint = (245, 158, 11)  # Decidr amber
+
+    def web(name: str) -> Image.Image:
+        return Image.open(tmp / name)
+
+    def mob(name: str) -> Image.Image:
+        """Normalize mobile web capture to phone aspect so it fills bezels."""
+        im = ensure_rgba(Image.open(tmp / name))
+        target_ar = 9 / 19.5
+        w, h = im.size
+        cur = w / h
+        fill = (15, 15, 18, 255)
+        if cur > target_ar + 0.02:
+            nw = int(h * target_ar)
+            x0 = (w - nw) // 2
+            im = im.crop((x0, 0, x0 + nw, h))
+        elif cur < target_ar - 0.02:
+            nh = int(w / target_ar)
+            # Prefer top of dashboard (stats + first cards)
+            canvas = Image.new("RGBA", (w, nh), fill)
+            canvas.paste(im, (0, 0), im)
+            im = canvas
+        return im
+
+    landing = web("01-landing-desktop.png")
+    dash = web("02-dashboard-desktop.png")
+    detail = web("03-detail-desktop.png")
+    compare = web("04-compare-desktop.png")
+    wizard = web("05-new-desktop.png")
+    dash_m = mob("06-dashboard-mobile.png")
+    detail_m = mob("07-detail-mobile.png")
+    compare_m = mob("08-compare-mobile.png")
+    wizard_m = mob("09-new-mobile.png")
+
+    plates = [
+        # Hero: marketing website on laptop (web product signal for work-grid thumb)
+        compose_plate(
+            browser_in_laptop(landing, screen_w=1280),
+            tint=tint,
+            studio=True,
+            offset_y=4,
+        ),
+        # Desktop workspace + mobile
+        compose_laptop_phone(dash, dash_m, tint=tint, studio=True),
+        # CRM decision detail with charts
+        compose_laptop_phone(
+            detail, detail_m, tint=tint, studio=True, phone_side="left"
+        ),
+        # Compare + new-decision wizard
+        compose_dual_phones(
+            compare_m,
+            wizard_m,
+            tint=tint,
+            studio=True,
+            gap=100,
+            angle=1.3,
+            max_h=900,
+            margin=52,
+            clean_notifications=False,
+        ),
     ]
     save_set(dest, plates)
 
@@ -1173,6 +1487,261 @@ def build_catchat() -> None:
         ]
     save_set(dest, plates)
 
+
+def build_agenticly() -> None:
+    """Agenticly — populated mobile screens + marketing web (agenticly.app)."""
+    print("Agenticly")
+    dest = OUT / "agenticly"
+    tmp = ROOT / ".tmp-shots" / "agenticly"
+    ss = SHOTS / "Agenticly"
+
+    def load(name: str) -> Image.Image:
+        for base in (tmp, ss):
+            for ext in (".jpg", ".png", ".jpeg"):
+                p = base / f"{name}{ext}"
+                if p.exists():
+                    return fit_android_to_iphone_frame(
+                        Image.open(p), fill=(8, 8, 12), top_safe=0.05
+                    )
+        raise FileNotFoundError(name)
+
+    markets = load("02-chat")  # market overview + charts
+    trending = load("03-charts")
+    movers = load("04-analysis")
+    research = load("06-detail-a")  # AI chat + workflow
+    chart_chat = load("07-detail-b")  # BTC chart in chat
+    tint = (45, 180, 160)
+    plates = [
+        # Hero — live markets + chart answer (no empty chat)
+        compose_dual_phones(
+            markets,
+            chart_chat,
+            tint=tint,
+            studio=True,
+            gap=88,
+            angle=1.2,
+            max_h=980,
+            margin=48,
+            clean_notifications=False,
+        ),
+        compose_dual_phones(
+            trending,
+            movers,
+            tint=tint,
+            studio=True,
+            gap=100,
+            angle=1.3,
+            max_h=920,
+            margin=52,
+            clean_notifications=False,
+        ),
+        # Web product + mobile research
+        compose_laptop_phone(
+            Image.open(tmp / "web-home.png"),
+            research,
+            tint=tint,
+            studio=True,
+            phone_side="right",
+        ),
+    ]
+    save_set(dest, plates)
+
+
+def fit_kitty_nip_screen(screenshot: Image.Image) -> Image.Image:
+    """Prep Kitty Nip App Store shots for modern iPhone frames.
+
+    Store assets are older ~9:16 simulator captures. Strip the status bar, then
+    width-fit into 9:19.5 with top/bottom pads (never crop nav or CTAs). Island
+    chrome uses brand purple / white — not sampled photo colors.
+    """
+    im = ensure_rgba(screenshot)
+    w, h = im.size
+    arr = np.asarray(im.convert("RGB")).astype(np.float32)
+    means = arr.mean(axis=(1, 2))
+    stds = arr.std(axis=(1, 2))
+
+    # Strip classic iOS status bar
+    top = 0
+    while top < int(h * 0.055):
+        if stds[top] < 30 and (
+            means[top] > 220 or means[top] < 55 or 85 < means[top] < 165
+        ):
+            top += 1
+            continue
+        break
+    top = max(int(h * 0.030), min(top + 2, int(h * 0.055)))
+    im = im.crop((0, top, w, h))
+    cw, ch = im.size
+
+    target_ar = 9 / 19.5  # width / height
+    th = max(ch, int(round(cw / target_ar)))
+    pad_total = max(0, th - ch)
+
+    brand = (122, 74, 196)
+    white = (252, 252, 252)
+    band = np.asarray(im.convert("RGB"))[: max(6, ch // 50), :, :]
+    band_mean = band.reshape(-1, 3).mean(axis=0)
+    r, g, b = (float(x) for x in band_mean)
+    if r > 230 and g > 230 and b > 230:
+        top_fill = white
+    elif b > r + 20 and b > g + 10 and 70 < b < 210:
+        top_fill = brand
+    else:
+        top_fill = brand  # photo tops → brand island chrome, never fur tones
+
+    bot_band = np.asarray(im.convert("RGB"))[-max(8, ch // 40) :, :, :]
+    bot_mean = bot_band.reshape(-1, 3).mean(axis=0)
+    bot_fill = brand if bot_mean[2] > bot_mean[0] + 15 and bot_mean[2] > 80 else top_fill
+
+    island = max(58, int(th * 0.052))
+    if pad_total <= island:
+        pad_top, pad_bot = pad_total, 0
+    else:
+        pad_top = max(island, int(pad_total * 0.55))
+        pad_bot = pad_total - pad_top
+
+    out = Image.new("RGBA", (cw, th), (*top_fill, 255))
+    if pad_bot > 0:
+        ImageDraw.Draw(out).rectangle((0, th - pad_bot, cw, th), fill=(*bot_fill, 255))
+    out.paste(ensure_rgba(im), (0, pad_top))
+
+    rgb = ImageEnhance.Contrast(out.convert("RGB")).enhance(1.06)
+    rgb = ImageEnhance.Color(rgb).enhance(1.12)
+    rgb = ImageEnhance.Sharpness(rgb).enhance(1.1)
+    return rgb.convert("RGBA")
+
+
+def _knockout_promo_bg(
+    im: Image.Image,
+    *,
+    white_thresh: int = 245,
+    gray_lo: int = 55,
+    gray_hi: int = 95,
+) -> Image.Image:
+    """Make flat store-creative backdrops transparent so phones float on studio."""
+    rgba = ensure_rgba(im)
+    arr = np.asarray(rgba).copy()
+    rgb = arr[:, :, :3].astype(np.int16)
+    r, g, b = rgb[:, :, 0], rgb[:, :, 1], rgb[:, :, 2]
+    mx = np.maximum(np.maximum(r, g), b)
+    mn = np.minimum(np.minimum(r, g), b)
+    # Near-white paper / page
+    white = (mn > white_thresh) & ((mx - mn) < 18)
+    # Flat mid-gray marketing backdrop (Kitty Nip store hero)
+    gray = (
+        (np.abs(r.astype(np.int16) - g) < 12)
+        & (np.abs(g.astype(np.int16) - b) < 12)
+        & (mn > gray_lo)
+        & (mx < gray_hi + 40)
+        & ((mx - mn) < 14)
+    )
+    # Only knock out from edges inward a bit — protect UI grays via flood from border
+    h, w = white.shape
+    border = np.zeros((h, w), dtype=bool)
+    border[0, :] = border[-1, :] = border[:, 0] = border[:, -1] = True
+    kill = (white | gray) & border
+    # Simple flood fill from border through white/gray
+    mask = white | gray
+    from collections import deque
+
+    q: deque[tuple[int, int]] = deque()
+    visited = np.zeros((h, w), dtype=bool)
+    ys, xs = np.where(border & mask)
+    for y, x in zip(ys.tolist(), xs.tolist()):
+        q.append((y, x))
+        visited[y, x] = True
+    while q:
+        y, x = q.popleft()
+        kill[y, x] = True
+        for ny, nx in ((y - 1, x), (y + 1, x), (y, x - 1), (y, x + 1)):
+            if 0 <= ny < h and 0 <= nx < w and not visited[ny, nx] and mask[ny, nx]:
+                visited[ny, nx] = True
+                q.append((ny, nx))
+    arr[kill, 3] = 0
+    return Image.fromarray(arr, "RGBA")
+
+
+def _kitty_promo_plate(im: Image.Image, tint: tuple[int, int, int], max_w: int = 1080) -> Image.Image:
+    """Drop a store promo graphic onto a richer purple studio plate."""
+    shot = _knockout_promo_bg(ensure_rgba(im))
+    # Trim transparent margins
+    bbox = shot.getbbox()
+    if bbox:
+        shot = shot.crop(bbox)
+    scale = max_w / max(shot.width, 1)
+    if shot.height * scale > 1080:
+        scale = 1080 / shot.height
+    nw = max(1, int(shot.width * scale))
+    nh = max(1, int(shot.height * scale))
+    shot = shot.resize((nw, nh), Image.Resampling.LANCZOS)
+    rgb = ImageEnhance.Contrast(shot.convert("RGBA").convert("RGB")).enhance(1.1)
+    # Re-apply alpha after enhance
+    alpha = shot.split()[-1]
+    rgb = ImageEnhance.Color(rgb).enhance(1.2)
+    shot = rgb.convert("RGBA")
+    shot.putalpha(alpha.resize(shot.size, Image.Resampling.LANCZOS))
+
+    canvas = (1600, 1200)
+    bg = make_bg(canvas, tint, studio=True, strength=0.32, cy_shift=10)
+    dx = (canvas[0] - shot.width) // 2
+    dy = (canvas[1] - shot.height) // 2
+    paste_with_shadow(bg, shot, (dx, dy), radius=36, blur=44, opacity=110, studio=True)
+    return bg.convert("RGB")
+
+
+def build_kitty_nip() -> None:
+    """Kitty Nip — polished store promo hero + punchy dual-phone plates."""
+    print("Kitty Nip")
+    dest = OUT / "kitty-nip"
+    tmp = ROOT / ".tmp-shots" / "kittynip"
+    tint = (155, 70, 220)
+
+    def load_as(*names: str) -> Image.Image:
+        for name in names:
+            p = tmp / name
+            if p.exists():
+                return fit_kitty_nip_screen(Image.open(p))
+        raise FileNotFoundError(names)
+
+    def load_raw(*names: str) -> Image.Image:
+        for name in names:
+            p = tmp / name
+            if p.exists():
+                return Image.open(p).convert("RGBA")
+        raise FileNotFoundError(names)
+
+    promo = load_raw("screen-00.png", "04-store-screen.png")
+    swipe = load_as("as-swipe.png")
+    profile = load_as("as-profile.png")
+    match = load_as("as-match.png")
+
+    # Stronger studio behind dual phones
+    def dual(a: Image.Image, b: Image.Image) -> Image.Image:
+        return compose_dual_phones(
+            a,
+            b,
+            tint=tint,
+            studio=True,
+            gap=72,
+            angle=2.0,
+            max_h=1040,
+            margin=36,
+            clean_notifications=False,
+            draw_island=True,
+            status_fill=(122, 74, 196),
+        )
+
+    plates = [
+        # Hero — marketing promo (floating cat orbs) on purple studio
+        _kitty_promo_plate(promo, tint, max_w=1040),
+        # Swipe + profile detail (best App Store cat photography)
+        dual(swipe, profile),
+        # Match moment + swipe again for energy
+        dual(match, swipe),
+    ]
+    save_set(dest, plates)
+
+
 def main() -> None:
     OUT.mkdir(parents=True, exist_ok=True)
     import sys
@@ -1189,6 +1758,9 @@ def main() -> None:
         "catchat": build_catchat,
         "meet-and-greet": build_meet_and_greet,
         "realtag": build_realtag,
+        "decidr": build_decidr,
+        "agenticly": build_agenticly,
+        "kitty-nip": build_kitty_nip,
     }
     for name, fn in builders.items():
         if targets is None or name in targets:

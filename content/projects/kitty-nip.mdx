@@ -1,26 +1,41 @@
 ---
 title: Kitty Nip
-year: 2023
+year: 2020–present
 status: Live
-stack: [React Native, Node.js, PostgreSQL, Firebase]
+stack: [React Native, Firebase, Redux, IAP, Geolocation]
 ---
 
 ## The Problem
 
-Kitty Nip is a location-based social app that had already found an audience, but needed an engineer to take over full ownership — including a backend that had to keep working reliably as the user base grew past its early stage.
+Kitty Nip already had an audience as a location-based cat social / dating-style app — but needed an engineer to own the full stack and keep it stable as the product grew past early stage.
 
 ## What I Built
 
-I took over full product ownership of Kitty Nip, a React Native app backed by a Node.js and PostgreSQL backend, with Firebase handling auth and real-time features. That ownership included the mobile client, backend services, and the operational work of keeping the app stable and maintained as it scaled.
+I took over **full product ownership**: React Native client plus Firebase (Auth, Firestore, Storage, Functions, Messaging, Analytics, Crashlytics).
+
+- Geo discovery and swipe matching with location/discovery settings.
+- Cat and human profiles; photo galleries (premium unlocks richer media).
+- Private chat with photos/videos after match; push for matches and messages.
+- Premium via IAP; Google Mobile Ads; report flows; Google/Apple sign-in.
+
+Live on [Play Store](https://play.google.com/store/apps/details?id=computer.star.kittynip) and [App Store](https://apps.apple.com/us/app/kitty-nip-cat-dating-app/id1520805359).
+
+## Major Features
+
+- **Swipe + location discovery** — match with nearby cat people / profiles.
+- **Profiles & media** — cat-forward identity with gallery and premium photo rules.
+- **Private chat** — post-match messaging with media and push.
+- **Monetization** — IAP premium and ads without a separate backend rewrite.
+- **Ownership** — client + Firebase backend ops under one engineer.
 
 ## Key Challenges
 
-Taking over an existing codebase mid-flight meant understanding and stabilizing the backend before making changes, since the app already had real users depending on it. Scaling the location-based features as downloads grew required attention to database query patterns and indexing in PostgreSQL to keep response times consistent under load.
+Taking over a live codebase meant stabilizing Firebase data and auth flows before feature work — real users were already depending on chat and matching. Location queries and media-heavy chat needed careful indexing and storage habits as the base grew.
 
 ## Results
 
-Kitty Nip has passed 10,000+ downloads on the Play Store under my ownership, with the backend included in that scope of responsibility.
+Kitty Nip stayed live on iOS and Android under my ownership, past **10,000+** Play Store downloads, with backend responsibility included in that scope.
 
 ## Stack Decisions
 
-The existing React Native and Node.js/PostgreSQL stack was retained rather than rewritten — a location-based social app with a real, growing user base doesn't justify a rewrite risk. Firebase was kept in place for the real-time and auth pieces it was already handling well.
+The existing React Native + Firebase stack was retained rather than rewritten — a live social app doesn’t justify rewrite risk. Redux Toolkit and native IAP/ads plugins stayed aligned with what the stores and users already expected.

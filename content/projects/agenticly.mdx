@@ -1,28 +1,40 @@
 ---
 title: Agenticly
-year: 2024
+year: 2024–present
 status: Live
-stack: [React Native, Next.js, Firebase, RevenueCat, Stripe, OpenAI API]
+stack: [React Native, Expo, React, Firebase, FastAPI, LangGraph, RevenueCat, Stripe]
 ---
 
 ## The Problem
 
-Crypto researchers and traders spend hours a day pulling together fragmented information — on-chain data, news, sentiment — from a dozen tabs and tools. There was room for a single AI-powered assistant that could sit on both mobile and web and do that synthesis on demand, with a subscription model that worked across both platforms.
+Crypto and markets research still means a dozen tabs — CoinGecko, explorers, news, charts — and no single place to ask a question in plain English and get analytics back. Agenticly was built to sit that assistant on both phone and web, with subscriptions that work on either surface.
 
 ## What I Built
 
-Agenticly ships as two clients against one backend: a React Native app for mobile and a Next.js app for web, both backed by Firebase for auth, data, and functions. I built the OpenAI API integration for the core research assistant, and wired up two separate payment systems — RevenueCat for mobile subscriptions (to satisfy App Store / Play Store billing rules) and Stripe for web payments — so the same subscription tier works no matter which surface the user signs up on.
+Agenticly is a Turborepo product: an **Expo / React Native** mobile app and a **React + Vite** web app against Firebase for auth/data, with a **FastAPI + LangGraph** backend for streaming research chat.
 
-I owned the product end to end: architecture, both clients, backend, payments, and the App Store / Play Store submission process.
+- Natural-language queries across crypto (CoinGecko), on-chain (BigQuery), and stocks (Alpha Vantage), with interactive Plotly charts.
+- Stock recommendation / analyst-ranking flows alongside freeform research chat (SSE streaming).
+- Credits plus Pro/Enterprise tiers — **RevenueCat** for mobile store billing, **Stripe** for web — normalized into one entitlement model in Firebase so access doesn’t depend on which surface you paid on.
+
+I owned architecture, both clients, backend, payments, and store submission. Live on [Play Store](https://play.google.com/store/apps/details?id=computer.star.agenticly) and [agenticly.app](https://agenticly.app).
+
+## Major Features
+
+- **NL research assistant** — ask in English; get structured analytics and charts, not a SQL console.
+- **Multi-source data** — crypto, on-chain, and equities behind one chat surface.
+- **Cross-platform billing** — RevenueCat + Stripe into a single entitlement truth.
+- **Streaming answers** — SSE chat so long research replies feel live.
+- **Team / settings / payment history** — product surfaces beyond the demo chat box.
 
 ## Key Challenges
 
-Keeping subscription state in sync across two entirely different billing systems was the hardest part. RevenueCat and Stripe have different webhook shapes, different renewal semantics, and different failure modes — the Firebase backend had to normalize both into a single source of truth for entitlement so a user's access doesn't depend on which platform they paid through.
+Keeping subscription state coherent across RevenueCat and Stripe — different webhooks, renewal semantics, and failure modes — meant the Firebase layer had to normalize both into one entitlement record. Shipping mobile and web as separate clients (not a forced shared UI kit) kept launch speed high for a solo build.
 
 ## Results
 
-Agenticly is live on the Play Store and on the web, generating subscription revenue from both channels. It was built and shipped solo, from architecture through to launch.
+Agenticly is live on Play Store and web with subscription revenue on both channels, built and shipped solo from architecture through launch.
 
 ## Stack Decisions
 
-React Native and Next.js share a lot of product logic conceptually but not code in this project — the priority was getting to market on both platforms fast, not maximizing code reuse. Firebase was chosen over a custom backend to keep infrastructure overhead low for a solo build. RevenueCat handles the mobile billing complexity that would otherwise require hand-rolling App Store and Play Store receipt validation.
+Expo + Vite React were chosen for fast dual-platform shipping rather than maximizing code reuse. Firebase kept auth/data overhead low; FastAPI/LangGraph own the agent loop. RevenueCat absorbs App Store / Play receipt complexity that would otherwise be hand-rolled.

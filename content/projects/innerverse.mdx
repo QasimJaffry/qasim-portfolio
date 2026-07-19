@@ -1,28 +1,41 @@
 ---
 title: Innerverse
-year: 2026
+year: 2025–present
 status: Live
-stack: [React Native, Expo, Skia, Firebase, OpenAI API]
+stack: [React Native, Expo, Skia, Firebase, OpenAI API, RevenueCat]
 ---
 
 ## The Problem
 
-Most mood-tracking apps reduce a day down to an emoji and a streak counter. There's little that makes the act of reflecting feel worth returning to. Innerverse was built as a founder product to explore whether mood tracking could feel more like exploring a personal universe than filling out a form.
+Most mood apps reduce a day to an emoji and a streak. There’s little reason to come back except guilt. Innerverse asks whether reflection can feel like exploring a personal universe instead of filling a form.
 
 ## What I Built
 
-Innerverse is a React Native + Expo app that renders each logged mood as a point in a personal "cosmos" — a Skia-driven visualization that grows and shifts as the user logs more entries over time. An AI guide, Nova, built on the OpenAI API, helps the user reflect on patterns in their mood history through conversation rather than static charts. Firebase handles auth, data storage, and the backend for Nova's context.
+Innerverse is a solo founder product under **Jafrix Systems**: React Native + Expo with a **Skia** cosmos — each logged mood becomes a star in a pinch/pan galaxy that grows over time.
 
-I designed, built, and published the app solo under Jafrix Systems, my own studio, and it's live on the Play Store.
+- Celestial mood logging (intensity, tags, notes) and trends/streaks.
+- **Mira**, an AI companion grounded in the user’s own mood history (not generic wellness copy).
+- Meditation library, Mindscape builder, export (JSON/CSV), offline indicators, and reminder push.
+- RevenueCat for premium themes / subscriptions.
+
+Live on [Play Store](https://play.google.com/store/apps/details?id=innerverse.app) and [innerverse.app](https://innerverse.app). Source: [GitHub](https://github.com/QasimJaffry/Innerverse).
+
+## Major Features
+
+- **Cosmos journal** — moods as stars in a Skia galaxy, not a spreadsheet.
+- **Mira AI** — conversational insights tied to real logged entries.
+- **Trends & rituals** — analytics, streaks, meditation, Mindscape.
+- **Premium path** — RevenueCat subscriptions and themes.
+- **Solo ship** — design, engineering, and store submission end to end.
 
 ## Key Challenges
 
-Skia gave the visual flexibility needed for the cosmos metaphor, but rendering a growing, animated point cloud smoothly on lower-end Android devices took real tuning — batching draw calls and being disciplined about what re-renders on each new mood entry. On the AI side, keeping Nova's responses grounded in the user's actual mood history (rather than generic wellness advice) required careful prompt construction using the user's own logged data as context.
+Skia gave the visual freedom the metaphor needed, but a growing animated point cloud on lower-end Android required disciplined redraws. Keeping Mira grounded in the user’s data — not generic advice — meant prompt construction always carried real mood history as context.
 
 ## Results
 
-Innerverse is live on the Play Store with growing organic downloads, built and published solo end to end — product design, engineering, and App Store submission.
+Innerverse is live on Play Store and web, built and published solo — product, engineering, and store listing.
 
 ## Stack Decisions
 
-Expo was chosen to keep iteration speed high as a solo founder, with Skia used specifically for the custom cosmos rendering that off-the-shelf charting libraries couldn't produce. Firebase kept backend overhead minimal so the majority of time could go into the product experience itself rather than infrastructure.
+Expo kept solo iteration fast; Skia was required for a custom cosmos no chart library could fake. Firebase minimized backend work so time stayed on the experience; RevenueCat handles store billing without hand-rolled receipts.

@@ -2,27 +2,40 @@
 title: RealTag
 year: 2026
 status: Completed
-stack: [React Native, YOLO11, SAM2, DINOv2, Python, FastAPI]
+stack: [React Native, Vision Camera, YOLO11, SAM2, DINOv2, FastAPI]
 ---
 
 ## The Problem
 
-Detecting an object once in a camera frame is a solved problem. Recognizing that same object again — across different frames, angles, and lighting, in a live feed — is a much harder re-identification problem, and one that needed to run in production, not just in a research notebook.
+Detecting an object once in a camera frame is a solved problem. Recognizing that **same physical object** again — across frames, angles, and lighting — and attaching your own name and notes to it is a harder re-identification problem. It needed to feel like a live camera app, not a research notebook.
 
 ## What I Built
 
-RealTag pairs a React Native client with a Python/FastAPI backend running a three-model pipeline: YOLO11 for real-time object detection, SAM2 for precise segmentation of detected objects, and DINOv2 for generating embeddings used to re-identify the same object across frames. The mobile client streams live camera frames to the pipeline and renders detection and re-identification results back in real time.
+RealTag pairs a React Native Vision Camera client with a LAN FastAPI inference server:
 
-Case study visuals are captures from the live hybrid app + inference server — auto YOLO detection with segmentation masks, tap-to-segment manual masking (SAM2), tagging, and saved-tag state.
+1. **Detect** — YOLO11 finds objects in periodic JPEG snapshots from the live feed.
+2. **Segment** — SAM2 produces masks automatically or via tap-to-segment at a point.
+3. **Tag** — name, notes, and color on the selected object; crop embeddings from DINOv2.
+4. **Re-identify** — later frames match embeddings (similarity threshold) so the same object keeps its tag.
+
+The client keeps overlays stable between polls with IoU tracking, draws with Skia, and persists tags locally with MMKV. Case study visuals are captures from the live hybrid app + server — auto detection with masks, manual SAM2, tagging, and saved-tag state.
+
+## Major Features
+
+- **Full-screen live camera** — continuous detect loop against a local ML server.
+- **Auto + tap-to-segment** — YOLO proposals and SAM2 point prompts for precise masks.
+- **Custom tags** — not a product catalog; you name what matters in your scene.
+- **Embedding re-ID** — DINOv2 crop vectors match the same instance later.
+- **Stable overlays** — client-side IoU tracking between server polls so boxes don’t flicker.
 
 ## Key Challenges
 
-Chaining three separate models — detection, segmentation, and embedding — into a single pipeline that still runs fast enough for a live camera feed meant being deliberate about where time was spent at each stage: cropping down to detected regions before running the heavier SAM2 and DINOv2 models, rather than running them on full frames. Keeping the FastAPI backend responsive under a continuous stream of frames from the mobile client was the other core constraint.
+Chaining three models — detection, segmentation, embedding — fast enough for a live feed meant cropping to detected regions before the heavier SAM2 and DINOv2 stages, rather than running them on full frames. Keeping the FastAPI server responsive under a continuous phone stream was the other core constraint. Earlier on-device / Plant Tracker experiments informed the eventual hybrid LAN design.
 
 ## Results
 
-RealTag runs as a production ML pipeline with real-time inference and custom model integration across detection, segmentation, and re-identification.
+RealTag runs as an end-to-end hybrid ML pipeline: real-time detection and segmentation on device-streamed frames, custom tagging, and embedding-based re-identification across sessions.
 
 ## Stack Decisions
 
-YOLO11, SAM2, and DINOv2 were combined rather than relying on a single model because each solves a distinct part of the problem — fast detection, precise boundaries, and stable embeddings for re-identification — and no single off-the-shelf model handles all three well. FastAPI was chosen for the inference server for its low overhead when serving PyTorch-based models under real-time constraints.
+YOLO11, SAM2, and DINOv2 each solve a distinct part of the problem — fast boxes, precise boundaries, stable embeddings — and no single off-the-shelf model handles all three well. FastAPI keeps PyTorch serving overhead low on a LAN; Vision Camera + Skia keep the mobile UX at full-screen camera fidelity.

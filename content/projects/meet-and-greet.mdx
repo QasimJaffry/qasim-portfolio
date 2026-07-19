@@ -7,22 +7,33 @@ stack: [React Native, WebRTC, Socket.io, Node.js]
 
 ## The Problem
 
-Real-time video and voice calling is one of the harder things to get right in mobile — connection setup, signaling, and group call coordination all have to work reliably across varied network conditions, not just on a good Wi-Fi connection in a demo.
+Real-time video and voice on mobile is easy to demo on good Wi-Fi and hard to ship: signaling, ICE, and group join/leave all have to survive flaky networks and backgrounded phones.
 
 ## What I Built
 
-Meet & Greet is a React Native app supporting both 1:1 and group video/voice calls, built on WebRTC for peer media connections, with Socket.io handling real-time signaling between clients through a Node.js backend.
+Meet & Greet is a React Native calling product with:
 
-The screens in this case study are UI recreations of the product flows (online presence, dial-by-ID, 1:1, and group call) — not original 2023 production captures.
+- Online presence and dial-by-ID.
+- **1:1 and group** video/voice over **WebRTC**.
+- **Socket.io** signaling through a **Node.js** backend for offer/answer, ICE candidates, and participant churn.
+
+Case study visuals are UI recreations of the product flows (presence, dial, 1:1, group) — not original 2023 production captures — but they match the shipped architecture.
+
+## Major Features
+
+- **1:1 calling** — peer media path with production signaling.
+- **Group calls** — join/leave coordination and renegotiation as the room changes.
+- **Presence + dial-by-ID** — find who’s online and start a call without a contact book maze.
+- **Mobile-aware signaling** — Socket.io reconnection for cellular networks.
 
 ## Key Challenges
 
-Group calls introduce signaling complexity that 1:1 calls don't have — coordinating join/leave events, renegotiating peer connections as participants change, and keeping Socket.io signaling in sync with WebRTC connection state across every client in the call. Handling that reliably in production, rather than just in a controlled demo, was the core engineering problem.
+Group calls add signaling complexity 1:1 doesn’t have — join/leave, renegotiation, and keeping Socket.io state aligned with WebRTC across every client. That reliability outside a controlled demo was the core engineering problem.
 
 ## Results
 
-Meet & Greet shipped with production-grade 1:1 and group calling, built on a real-time WebRTC signaling architecture designed to hold up outside of ideal network conditions.
+Meet & Greet shipped with production-oriented 1:1 and group calling on a real-time WebRTC + signaling stack.
 
 ## Stack Decisions
 
-WebRTC handled the media path end to end — peer connections, ICE negotiation, and STUN/TURN for clients behind restrictive NATs. Socket.io was chosen for signaling over a custom WebSocket implementation for its reconnection handling, which matters a great deal for calls on mobile networks.
+WebRTC owns the media path (peers, ICE, STUN/TURN for nasty NATs). Socket.io was chosen for signaling for reconnection semantics that matter on mobile networks more than a bare WebSocket.

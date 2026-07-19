@@ -52,13 +52,26 @@ export default function CaseStudyLayout({
           {project.status}
         </p>
 
-        <h1 className="mt-4 font-display text-[2.35rem] font-medium leading-[1.1] tracking-tight text-foreground sm:text-5xl sm:leading-[1.08]">
-          {project.title}
-        </h1>
-
-        <p className="mt-5 text-xl leading-snug text-foreground/80 sm:text-2xl sm:leading-snug">
-          {project.tagline}
-        </p>
+        <div className="mt-4 flex items-start gap-4 sm:gap-5">
+          {project.icon && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={resolveProjectImage(project.icon) ?? project.icon}
+              alt=""
+              width={72}
+              height={72}
+              className="mt-1 size-14 shrink-0 rounded-[18px] shadow-[0_12px_28px_-14px_rgba(21,24,26,0.45)] sm:mt-1.5 sm:size-[72px] sm:rounded-[20px]"
+            />
+          )}
+          <div className="min-w-0">
+            <h1 className="font-display text-[2.35rem] font-medium leading-[1.1] tracking-tight text-foreground sm:text-5xl sm:leading-[1.08]">
+              {project.title}
+            </h1>
+            <p className="mt-5 text-xl leading-snug text-foreground/80 sm:text-2xl sm:leading-snug">
+              {project.tagline}
+            </p>
+          </div>
+        </div>
 
         <p className="mt-6 max-w-2xl text-[15px] leading-relaxed text-muted sm:text-base">
           {project.description}
