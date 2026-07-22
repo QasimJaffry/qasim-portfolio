@@ -622,6 +622,210 @@ def laptop_frame(screenshot: Image.Image, screen_w: int = 1100) -> Image.Image:
     return device
 
 
+def monitor_frame(screenshot: Image.Image, screen_w: int = 900) -> Image.Image:
+    """Desktop monitor (16:10 screen) with slim bezel, neck and base."""
+    shot = ensure_rgba(screenshot)
+    target_h = int(screen_w * 0.625)  # 16:10
+    shot = fit_web_for_laptop(shot, screen_w, target_h, mode="width")
+
+    bezel = 16
+    chin = 34
+    panel_w = shot.width + bezel * 2
+    panel_h = shot.height + bezel + chin
+    panel_r = 20
+
+    neck_w = int(panel_w * 0.10)
+    neck_h = int(panel_h * 0.11)
+    base_w = int(panel_w * 0.40)
+    base_h = 20
+
+    total_w = panel_w
+    total_h = panel_h + neck_h + base_h
+    device = Image.new("RGBA", (total_w, total_h), (0, 0, 0, 0))
+    draw = ImageDraw.Draw(device)
+
+    # Panel shell
+    draw.rounded_rectangle((0, 0, panel_w - 1, panel_h - 1), radius=panel_r, fill=(34, 36, 39, 255))
+    draw.rounded_rectangle((3, 3, panel_w - 4, panel_h - 4), radius=panel_r - 2, fill=(16, 17, 19, 255))
+
+    # Screen
+    screen = Image.new("RGBA", shot.size, (0, 0, 0, 0))
+    screen.paste(shot, (0, 0))
+    screen.putalpha(rounded_mask(shot.size, 6))
+    device.paste(screen, (bezel, bezel), screen)
+
+    # Chin logo dot
+    cx = panel_w // 2
+    cy = panel_h - chin // 2
+    draw.ellipse((cx - 4, cy - 4, cx + 4, cy + 4), fill=(70, 74, 80, 255))
+
+    # Neck
+    nx = (total_w - neck_w) // 2
+    ny = panel_h
+    draw.rectangle((nx, ny, nx + neck_w, ny + neck_h), fill=(48, 50, 54, 255))
+    draw.rectangle((nx + 3, ny, nx + neck_w - 3, ny + neck_h), fill=(58, 61, 66, 255))
+
+    # Base
+    bx = (total_w - base_w) // 2
+    by = panel_h + neck_h
+    draw.rounded_rectangle((bx, by, bx + base_w, by + base_h - 1), radius=8, fill=(56, 59, 63, 255))
+    draw.rounded_rectangle(
+        (bx + 6, by + base_h - 8, bx + base_w - 6, by + base_h - 1), radius=4, fill=(44, 46, 50, 255)
+    )
+    return device
+
+
+def tablet_frame(screenshot: Image.Image, screen_w: int = 460) -> Image.Image:
+    """Tablet (iPad-style) — uniform bezel, rounded corners, front camera dot.
+
+    Keeps the screenshot's own aspect ratio (no distortion); just scales to
+    screen_w and wraps it in a slim modern bezel.
+    """
+    shot = ensure_rgba(screenshot)
+    scale = screen_w / shot.width
+    shot = shot.resize(
+        (screen_w, max(1, int(shot.height * scale))), Image.Resampling.LANCZOS
+    )
+
+    bezel = max(16, int(screen_w * 0.035))
+    radius = max(34, int(screen_w * 0.075))
+    screen_r = max(20, radius - bezel + 2)
+    w = shot.width + bezel * 2
+    h = shot.height + bezel * 2
+    device = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+    draw = ImageDraw.Draw(device)
+
+    draw.rounded_rectangle((0, 0, w - 1, h - 1), radius=radius, fill=(30, 32, 35, 255))
+    draw.rounded_rectangle((2, 2, w - 3, h - 3), radius=radius - 2, fill=(14, 15, 17, 255))
+
+    screen = Image.new("RGBA", shot.size, (0, 0, 0, 0))
+    screen.paste(shot, (0, 0))
+    screen.putalpha(rounded_mask(shot.size, screen_r))
+    device.paste(screen, (bezel, bezel), screen)
+
+    # Front camera — centered on the top bezel (landscape → long edge)
+    cam = 6
+    draw.ellipse((w // 2 - cam, bezel // 2 - cam, w // 2 + cam, bezel // 2 + cam), fill=(8, 8, 10, 255))
+    return device
+
+
+def compose_device_family(
+    monitor_shot: Image.Image,
+    laptop_shot: Image.Image,
+    tablet_shot: Image.Image,
+    phone_shot: Image.Image,
+    canvas: tuple[int, int] = (1600, 1200),
+    tint: tuple[int, int, int] = ACCENT,
+    studio: bool = True,
+    phone_status_fill: tuple[int, int, int] | None = None,
+    clean_notifications: bool = True,
+) -> Image.Image:
+    """Responsive family hero: monitor (back) + laptop + tablet + phone (front).
+
+    Devices form a tight, overlapping cluster sitting on a common baseline so
+    the set reads as one product across every screen. A soft elliptical floor
+    shadow grounds the whole group.
+    """
+    margin = 44
+
+    def build(scale: float):
+        monitor = monitor_frame(monitor_shot, screen_w=int(980 * scale))
+        laptop = browser_in_laptop(laptop_shot, screen_w=int(560 * scale))
+        tablet = tablet_frame(tablet_shot, screen_w=int(452 * scale))
+        phone = phone_frame(
+            phone_shot,
+            max_h=int(590 * scale),
+            clean_notifications=clean_notifications,
+            status_fill=phone_status_fill,
+        )
+        # Self-contained cluster in local coordinates (origin at 0,0).
+        # Front row (laptop | phone | tablet) overlaps the monitor's lower ~38%
+        # and shares one baseline; the phone steps forward as the foreground.
+        overlap = int(monitor.height * 0.38)
+        row_top = monitor.height - overlap
+        baseline = row_top + phone.height  # phone is tallest → defines the floor
+
+        lx = 0
+        ly = baseline - laptop.height
+        # Phone overlaps the laptop's right third and sits lowest (foreground).
+        px = lx + laptop.width - int(phone.width * 0.42)
+        py = baseline - phone.height
+        # Tablet tucks behind the phone's right side, slightly raised.
+        tx = px + phone.width - int(tablet.width * 0.34)
+        ty = baseline - tablet.height - int(tablet.height * 0.05)
+
+        cluster_w = tx + tablet.width
+        mx = (cluster_w - monitor.width) // 2
+        my = 0
+        placements = [
+            (monitor, mx, my),
+            (laptop, lx, ly),
+            (tablet, tx, ty),
+            (phone, px, py),
+        ]
+        return placements, baseline
+
+    scale = 1.0
+    placements, baseline = build(scale)
+    for _ in range(14):
+        xs = [p[1] for p in placements] + [p[1] + p[0].width for p in placements]
+        ys = [p[2] for p in placements] + [p[2] + p[0].height for p in placements]
+        need_w = max(xs) - min(xs)
+        need_h = max(ys) - min(ys)
+        fit = min(
+            (canvas[0] - margin * 2) / max(1, need_w),
+            (canvas[1] - margin * 2) / max(1, need_h),
+            1.0,
+        )
+        if fit >= 0.995:
+            break
+        scale *= fit * 0.98
+        placements, baseline = build(scale)
+
+    # Center the whole cluster
+    xs = [p[1] for p in placements] + [p[1] + p[0].width for p in placements]
+    ys = [p[2] for p in placements] + [p[2] + p[0].height for p in placements]
+    shift_x = (canvas[0] - (max(xs) - min(xs))) // 2 - min(xs)
+    shift_y = (canvas[1] - (max(ys) - min(ys))) // 2 - min(ys)
+
+    bg = make_bg(canvas, tint, studio, strength=0.2 if studio else 0.14, cy_shift=30)
+
+    # Grounding floor shadow — soft wide ellipse under the front row so the
+    # devices feel placed on a surface rather than floating.
+    floor_y = baseline + shift_y - 6
+    cluster_l = min(p[1] for p in placements[1:]) + shift_x
+    cluster_r = max(p[1] + p[0].width for p in placements[1:]) + shift_x
+    cx = (cluster_l + cluster_r) // 2
+    half_w = int((cluster_r - cluster_l) * 0.52)
+    ell_h = int(150 * scale)
+    floor = Image.new("RGBA", canvas, (0, 0, 0, 0))
+    ImageDraw.Draw(floor).ellipse(
+        (cx - half_w, floor_y - ell_h // 2, cx + half_w, floor_y + ell_h // 2),
+        fill=(0, 0, 0, 150 if studio else 110),
+    )
+    floor = floor.filter(ImageFilter.GaussianBlur(int(46 * scale)))
+    bg = Image.alpha_composite(bg, floor)
+
+    # Back-to-front: monitor, laptop, tablet, phone
+    order = [
+        (placements[0], 18, 44, 105),  # monitor
+        (placements[1], 16, 38, 92),   # laptop
+        (placements[2], 40, 34, 96),   # tablet
+        (placements[3], 48, 34, 120),  # phone (front, strongest shadow)
+    ]
+    for (device, dx, dy), radius, blur, opacity in order:
+        paste_with_shadow(
+            bg,
+            device,
+            (dx + shift_x, dy + shift_y),
+            radius=radius,
+            blur=blur,
+            opacity=opacity,
+            studio=studio,
+        )
+    return bg.convert("RGB")
+
+
 def fit_web_for_laptop(
     shot: Image.Image,
     screen_w: int,
@@ -1489,11 +1693,17 @@ def build_catchat() -> None:
 
 
 def build_agenticly() -> None:
-    """Agenticly — populated mobile screens + marketing web (agenticly.app)."""
+    """Agenticly — real product UI: web app (agenticly-prod) + mobile app.
+
+    Web plates use live desktop captures in .tmp-shots/agenticly/web-new/
+    (1440×900 → exact 16:10 laptop fit). Alternates web + mobile so the set
+    reads as cross-platform, not mobile-only.
+    """
     print("Agenticly")
     dest = OUT / "agenticly"
     tmp = ROOT / ".tmp-shots" / "agenticly"
     ss = SHOTS / "Agenticly"
+    web_dir = tmp / "web-new"
 
     def load(name: str) -> Image.Image:
         for base in (tmp, ss):
@@ -1505,43 +1715,62 @@ def build_agenticly() -> None:
                     )
         raise FileNotFoundError(name)
 
-    markets = load("02-chat")  # market overview + charts
+    def web(name: str) -> Image.Image:
+        return Image.open(web_dir / name)
+
+    # Mobile app screens
+    markets = load("02-chat")       # market overview + charts
     trending = load("03-charts")
-    movers = load("04-analysis")
     research = load("06-detail-a")  # AI chat + workflow
     chart_chat = load("07-detail-b")  # BTC chart in chat
+
+    # Web app screens (real product, captured from agenticly-prod)
+    web_home = web("web-hero.png")           # dashboard / research assistant home
+    web_chart = web("web-chart.png")         # AI chat with a rendered line chart (on-chain data)
+    web_report = web("web-market-report.png")  # daily market report: headlines + gainers/losers
+    web_portfolio = web("web-tablet-portfolio.png")  # portfolio review + holdings table
+    web_agent_detail = web("web-agent-detail.png")  # scheduled agent detail + runs
+
     tint = (45, 180, 160)
     plates = [
-        # Hero — live markets + chart answer (no empty chat)
-        compose_dual_phones(
-            markets,
-            chart_chat,
+        # Hero — one product across every screen: monitor + laptop + tablet + phone.
+        # Data-viz forward: daily market report (monitor), chart chat (laptop),
+        # portfolio analysis (tablet), price chart (phone).
+        compose_device_family(
+            web_report,      # desktop monitor — daily market trends: headlines, gainers/losers
+            web_chart,       # laptop — AI chat with a rendered line chart
+            web_portfolio,   # tablet — portfolio review + holdings table
+            chart_chat,      # phone — mobile app BTC price-trend chart
             tint=tint,
             studio=True,
-            gap=88,
-            angle=1.2,
-            max_h=980,
-            margin=48,
             clean_notifications=False,
         ),
-        compose_dual_phones(
-            trending,
-            movers,
-            tint=tint,
-            studio=True,
-            gap=100,
-            angle=1.3,
-            max_h=920,
-            margin=52,
-            clean_notifications=False,
-        ),
-        # Web product + mobile research
+        # AI research cross-platform — web dashboard + mobile companion
         compose_laptop_phone(
-            Image.open(tmp / "web-home.png"),
+            web_home,
             research,
             tint=tint,
             studio=True,
-            phone_side="right",
+            phone_side="left",
+        ),
+        # Web-only Scheduled Agents — real agent detail + upcoming runs
+        compose_plate(
+            browser_in_laptop(web_agent_detail, screen_w=1280),
+            tint=tint,
+            studio=True,
+            offset_y=6,
+        ),
+        # Mobile app presence — live markets + trending
+        compose_dual_phones(
+            markets,
+            trending,
+            tint=tint,
+            studio=True,
+            gap=96,
+            angle=1.3,
+            max_h=940,
+            margin=52,
+            clean_notifications=False,
         ),
     ]
     save_set(dest, plates)
