@@ -63,7 +63,7 @@ export default function Hero() {
             >
               LinkedIn ↗
             </a>
-            <a href="https://github.com/qasimhassan" className="btn-secondary link-underline">
+            <a href="https://github.com/QasimJaffry" className="btn-secondary link-underline">
               GitHub ↗
             </a>
           </div>

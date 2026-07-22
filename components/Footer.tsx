@@ -3,11 +3,10 @@ export default function Footer() {
     <footer className="border-t border-border">
       <div className="mx-auto flex max-w-5xl flex-col gap-3 px-6 py-8 text-sm text-muted sm:flex-row sm:items-center sm:justify-between">
         <p>Qasim Hassan · Lahore, Pakistan</p>
-        <p>Built with Next.js + Vercel</p>
+        <p>Built with Next.js</p>
         <div className="flex gap-4">
-          {/* TODO: placeholder — swap for real GitHub profile */}
           <a
-            href="https://github.com/qasimhassan"
+            href="https://github.com/QasimJaffry"
             className="link-underline transition-colors hover:text-foreground"
           >
             GitHub
@@ -18,9 +17,8 @@ export default function Footer() {
           >
             LinkedIn
           </a>
-          {/* TODO: placeholder — swap for real Upwork profile */}
           <a
-            href="https://www.upwork.com/freelancers/~qasimhassan"
+            href="https://www.upwork.com/freelancers/~011828438344ce4299"
             className="link-underline transition-colors hover:text-foreground"
           >
             Upwork
