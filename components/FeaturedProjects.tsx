@@ -67,12 +67,11 @@ export default function FeaturedProjects() {
                 </div>
               </div>
 
-              <div className="hidden w-48 shrink-0 sm:block">
+              <div className="hidden w-56 shrink-0 sm:block lg:w-64">
                 <FigurePlate
                   src={resolveProjectImage(project.images[0])}
                   alt={`${project.title} preview`}
                   index={i + 1}
-                  label={project.title}
                   category={project.category}
                   tilt={i % 2 === 0 ? "left" : "right"}
                   className="transition-transform duration-300 ease-out group-hover:-translate-y-1"
@@ -81,6 +80,15 @@ export default function FeaturedProjects() {
             </Reveal>
           );
         })}
+      </div>
+
+      <div className="mt-10">
+        <Link
+          href="/work"
+          className="link-underline text-sm font-medium text-foreground transition-colors hover:text-accent"
+        >
+          View all work →
+        </Link>
       </div>
     </section>
   );

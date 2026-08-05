@@ -16,7 +16,6 @@ export type Project = {
     appStore?: string;
     web?: string;
     github?: string;
-    demo?: string;
   };
   images: string[];
   /** Optional app / product icon shown on the case study */
@@ -47,9 +46,6 @@ export const projects: Project[] = [
     },
     images: [
       "/images/projects/agenticly/hero.jpg",
-      "/images/projects/agenticly/detail-1.jpg",
-      "/images/projects/agenticly/detail-2.jpg",
-      "/images/projects/agenticly/detail-3.jpg",
     ],
     year: "2024–present",
   },
@@ -75,7 +71,6 @@ export const projects: Project[] = [
     },
     images: [
       "/images/projects/innerverse/hero.jpg",
-      "/images/projects/innerverse/detail-1.jpg",
     ],
     year: "2025–present",
   },
@@ -98,10 +93,7 @@ export const projects: Project[] = [
       web: "https://pages.qubio.me/",
     },
     images: [
-      "/images/projects/qubio/hero.png",
-      "/images/projects/qubio/detail-1.png",
-      "/images/projects/qubio/detail-2.png",
-      "/images/projects/qubio/detail-3.png",
+      "/images/projects/qubio/hero.jpg",
     ],
     year: "2022",
   },
@@ -119,12 +111,10 @@ export const projects: Project[] = [
       "Embedding re-ID across frames",
     ],
     status: "Completed",
-    featured: false,
+    featured: true,
     links: {},
     images: [
       "/images/projects/realtag/hero.jpg",
-      "/images/projects/realtag/detail-1.jpg",
-      "/images/projects/realtag/detail-2.jpg",
     ],
     icon: "/images/projects/realtag/icon-256.png",
     year: "2026",
@@ -150,17 +140,36 @@ export const projects: Project[] = [
     },
     images: [
       "/images/projects/kitty-nip/hero.jpg",
-      "/images/projects/kitty-nip/detail-1.jpg",
-      "/images/projects/kitty-nip/detail-2.jpg",
     ],
     year: "2020–present",
+  },
+  {
+    slug: "cpas-huddle-up",
+    title: "CPAS Huddle Up",
+    tagline: "Sports coaching rooms with live podcasts over Agora.",
+    description:
+      "React Native frontend for a client coaching community: discover and join sport rooms, post film and drills, and go live for film review podcasts via Agora. Built for a previous company client — shipped live in 2023, product since sunset.",
+    category: "Mobile",
+    stack: ["React Native", "Agora", "Livestream"],
+    metrics: [
+      "Rooms + social feed",
+      "Agora live podcasts",
+      "Shipped client product (2023)",
+    ],
+    status: "Completed",
+    featured: false,
+    links: {},
+    images: [
+      "/images/projects/cpas-huddle-up/hero.jpg",
+    ],
+    year: "2023",
   },
   {
     slug: "meet-and-greet",
     title: "Meet & Greet",
     tagline: "1:1 and group video/voice calling with WebRTC.",
     description:
-      "React Native calling product: online presence, dial-by-ID, 1:1 and group video/voice over WebRTC, with Socket.io signaling on Node.js designed for real mobile networks — not demo Wi-Fi.",
+      "React Native calling product: online presence, dial-by-ID, 1:1 and group video/voice over WebRTC, with Socket.io signaling on Node.js designed for real mobile networks — not studio Wi-Fi.",
     category: "Full-Stack",
     stack: ["React Native", "WebRTC", "Socket.io", "Node.js"],
     metrics: [
@@ -173,8 +182,6 @@ export const projects: Project[] = [
     links: {},
     images: [
       "/images/projects/meet-and-greet/hero.jpg",
-      "/images/projects/meet-and-greet/detail-1.jpg",
-      "/images/projects/meet-and-greet/detail-2.jpg",
     ],
     year: "2023",
   },
@@ -192,14 +199,12 @@ export const projects: Project[] = [
       "Live across Kayseri, Yozgat, Afyon & Mersin",
     ],
     status: "Live",
-    featured: false,
+    featured: true,
     links: {
       web: "https://www.bugmapper.com.tr/",
     },
     images: [
       "/images/projects/bugmapper/hero.jpg",
-      "/images/projects/bugmapper/detail-1.jpg",
-      "/images/projects/bugmapper/detail-2.jpg",
     ],
     year: "2023–present",
   },
@@ -217,7 +222,7 @@ export const projects: Project[] = [
       "4.5★ Play Store rating",
     ],
     status: "Live",
-    featured: false,
+    featured: true,
     links: {
       web: "https://www.joinsafedeal.com/",
       playStore:
@@ -225,8 +230,6 @@ export const projects: Project[] = [
     },
     images: [
       "/images/projects/safedeal/hero.jpg",
-      "/images/projects/safedeal/detail-1.jpg",
-      "/images/projects/safedeal/detail-2.jpg",
     ],
     year: "2023–present",
   },
@@ -249,11 +252,52 @@ export const projects: Project[] = [
       web: "https://bscheduled.co.uk/",
     },
     images: [
-      "/images/projects/bschedule/hero.png",
-      "/images/projects/bschedule/detail-1.png",
-      "/images/projects/bschedule/detail-2.png",
+      "/images/projects/bschedule/hero.jpg",
     ],
     year: "2021–2022",
+  },
+  {
+    slug: "snapwork",
+    title: "Snapwork",
+    tagline: "Creator campaigns, payments, and social-account workflows for brands.",
+    description:
+      "React Native mobile + React web for a two-sided creator marketplace: onboarding with social platform connect, campaign listings, brand dashboards, portfolios, and MangoPay-backed payments. I worked on the frontend plus social API data pulls and payments integrations. Built 2022–2023; product since sunset.",
+    category: "Full-Stack",
+    stack: ["React Native", "React", "MangoPay", "Facebook API", "TikTok API"],
+    metrics: [
+      "Social platform connect + data pulls",
+      "Campaign + applicant workflows",
+      "Payments / receipt surfaces",
+    ],
+    status: "Completed",
+    featured: false,
+    links: {},
+    images: [
+      "/images/projects/snapwork/hero.jpg",
+    ],
+    icon: "/images/projects/snapwork/icon.png",
+    year: "2022–2023",
+  },
+  {
+    slug: "sextherapypro",
+    title: "Sex Therapy Pro",
+    tagline: "AI sexual wellness — personalized plans, Eros chat, guided exercises.",
+    description:
+      "Expo / React Native frontend for an AI sexual-wellness companion: daily personalized plans, chat with Eros (AI therapist on AWS Bedrock), desire/body mapping, and couple exercises like the 3 Minute Game — calm pastel UI for a sensitive product surface.",
+    category: "AI",
+    stack: ["React Native", "Expo", "AWS Bedrock"],
+    metrics: [
+      "AI therapist chat (Eros)",
+      "Daily personalized plans",
+      "Guided exercises + couple games",
+    ],
+    status: "Completed",
+    featured: true,
+    links: {},
+    images: [
+      "/images/projects/sextherapypro/hero.jpg",
+    ],
+    year: "2025",
   },
   {
     slug: "catchat",
@@ -269,14 +313,12 @@ export const projects: Project[] = [
       "Installable PWA on Firebase Hosting",
     ],
     status: "Live",
-    featured: false,
+    featured: true,
     links: {
       web: "https://catchatapp-6f11c.web.app/",
     },
     images: [
       "/images/projects/catchat/hero.jpg",
-      "/images/projects/catchat/detail-1.jpg",
-      "/images/projects/catchat/detail-2.jpg",
     ],
     year: "2023–present",
   },
@@ -285,22 +327,19 @@ export const projects: Project[] = [
     title: "Dealflow AI",
     tagline: "AI-native CRM for freelancers — deals, tasks, and follow-ups in one place.",
     description:
-      "Personal product: Next.js web + Expo mobile sharing a Supabase backend. Pipeline for clients and deals, activity timeline, and AI that summarizes deals, extracts next actions, and drafts follow-ups — with an offline demo mode so the full UI works without env keys.",
+      "Personal product: Next.js web + Expo mobile sharing a Supabase backend. Pipeline for clients and deals, activity timeline, and AI that summarizes deals, extracts next actions, and drafts follow-ups.",
     category: "AI",
     stack: ["Next.js", "Expo", "Supabase", "OpenAI / OpenRouter", "TypeScript"],
     metrics: [
       "Web + mobile, one backend",
       "AI summary → approve → tasks",
-      "Offline preview with demo data",
+      "Shared typed monorepo",
     ],
     status: "In Development",
     featured: false,
     links: {},
     images: [
       "/images/projects/dealflow-ai/hero.jpg",
-      "/images/projects/dealflow-ai/detail-1.jpg",
-      "/images/projects/dealflow-ai/detail-2.jpg",
-      "/images/projects/dealflow-ai/detail-3.jpg",
     ],
     year: "2026",
   },
@@ -315,19 +354,16 @@ export const projects: Project[] = [
     metrics: [
       "Weighted option × criteria matrices",
       "Explainable AI scoring + what-if",
-      "Live demo + Stripe billing",
+      "Public deploy + Stripe billing",
     ],
     status: "In Development",
     featured: false,
     links: {
       github: "https://github.com/QasimJaffry/Decidr",
-      demo: "https://decidr-henna.vercel.app/",
+      web: "https://decidr-henna.vercel.app/",
     },
     images: [
       "/images/projects/decidr/hero.jpg",
-      "/images/projects/decidr/detail-1.jpg",
-      "/images/projects/decidr/detail-2.jpg",
-      "/images/projects/decidr/detail-3.jpg",
     ],
     year: "2026",
   },
@@ -349,8 +385,6 @@ export const projects: Project[] = [
     links: {},
     images: [
       "/images/projects/interio/hero.jpg",
-      "/images/projects/interio/detail-1.jpg",
-      "/images/projects/interio/detail-2.jpg",
     ],
     year: "2019–present",
   },
@@ -360,6 +394,20 @@ export function getProjectBySlug(slug: string): Project | undefined {
   return projects.find((project) => project.slug === slug);
 }
 
+/** Homepage featured set — strongest outcomes first. */
+const FEATURED_ORDER = [
+  "agenticly",
+  "innerverse",
+  "qubio",
+  "realtag",
+  "bugmapper",
+  "safedeal",
+  "sextherapypro",
+  "catchat",
+] as const;
+
 export function getFeaturedProjects(): Project[] {
-  return projects.filter((project) => project.featured);
+  return FEATURED_ORDER.map((slug) => projects.find((p) => p.slug === slug)).filter(
+    (p): p is Project => Boolean(p?.featured),
+  );
 }

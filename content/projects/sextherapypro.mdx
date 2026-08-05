@@ -1,0 +1,38 @@
+---
+title: Sex Therapy Pro
+year: 2025
+status: Completed
+stack: [React Native, Expo, AWS Bedrock]
+---
+
+## The Problem
+
+Sexual wellness apps often feel clinical or gimmicky. People need a private space that can listen without judgment, turn goals into a day-to-day plan, and offer exercises that feel human — not a generic chatbot with a lavender theme.
+
+## What I Built
+
+I owned the **Expo / React Native frontend** for **Sex Therapy Pro**: an AI sexual-wellness companion with a personalized daily plan, chat with **Eros** (AI therapist powered by **AWS Bedrock**), interactive desire/body mapping, and couple-oriented exercises such as **The 3 Minute Game**.
+
+## Major Features
+
+- **Personalized plan** — Daily task progress (e.g. sensate touch, desire mapping, homework) with a calm home dashboard and bottom nav.
+- **Chat with Eros** — Conversational intake (“Improve desire/arousal”), follow-ups, free-form “Ask me anything,” and an Analyze action to turn chat into guidance via Bedrock.
+- **Topic & session hub** — Choose therapy themes (attachment, boundaries, emotional expression) and revisit recent AI sessions.
+- **Onboarding goals** — Bubble selection for how you want to feel after using the app (connected, knowledgeable, less ashamed, etc.).
+- **Guided exercises** — Sensory foreplay body map, desire mapping, and timed couple games introduced with clear start screens.
+
+## Key Challenges
+
+**Sensitive UX without feeling medical or casual.** Soft gradients, illustration, and copy had to invite trust while keeping hierarchy clear for plan → chat → exercise.
+
+**AI chat as product, not a text box.** Intake, Analyze, and recent sessions needed to feel like a therapist workflow, with Bedrock responses wired into a calm mobile conversation UI.
+
+**Interactive tools on mobile.** Body-map selection and multi-select goal bubbles had to stay readable and tappable without cluttering the pastel layout.
+
+## Results
+
+Sex Therapy Pro shipped as a mobile AI wellness frontend: personalized plans, Eros chat, and guided intimacy exercises in one Expo client.
+
+## Stack Decisions
+
+**Expo / React Native** for iOS and Android from one codebase. **AWS Bedrock** powers Eros and Analyze so conversational guidance stays on a managed model path; the plan and exercise screens turn that output into concrete daily actions instead of leaving users in an endless chat thread.

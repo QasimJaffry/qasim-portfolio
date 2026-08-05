@@ -4,14 +4,12 @@ import type { Project } from "@/lib/data/projects";
 import { resolveProjectImage } from "@/lib/projectImage";
 import { getAdjacentCaseStudies } from "@/lib/projects";
 import FigurePlate from "@/components/FigurePlate";
-import Reveal from "@/components/Reveal";
 
 const linkLabels: Record<string, string> = {
   playStore: "Play Store",
   appStore: "App Store",
   web: "Website",
   github: "GitHub",
-  demo: "Live demo",
 };
 
 export default function CaseStudyLayout({
@@ -22,17 +20,12 @@ export default function CaseStudyLayout({
   children: ReactNode;
 }) {
   const linkEntries = Object.entries(project.links).filter(([, href]) => Boolean(href));
-  const gallery = project.images
-    .map((src) => resolveProjectImage(src))
-    .filter((src): src is string => Boolean(src));
-
-  const hero = gallery[0];
-  const secondary = gallery.slice(1);
+  const hero = resolveProjectImage(project.images[0]);
+  const liveLinks = linkEntries.filter(([key]) => key !== "github");
   const { prev, next } = getAdjacentCaseStudies(project.slug);
 
   return (
     <article className="pb-24 sm:pb-32">
-      {/* Intro */}
       <header className="mx-auto max-w-3xl px-6 pt-16 sm:pt-24">
         <Link
           href="/work"
@@ -72,36 +65,59 @@ export default function CaseStudyLayout({
             </p>
           </div>
         </div>
-
-        <p className="mt-6 max-w-2xl text-[15px] leading-relaxed text-muted sm:text-base">
-          {project.description}
-        </p>
-
-        {project.metrics.length > 0 && (
-          <ul className="mt-10 space-y-2 border-l-2 border-accent/40 pl-4">
-            {project.metrics.map((metric) => (
-              <li key={metric} className="text-sm leading-snug text-foreground">
-                {metric}
-              </li>
-            ))}
-          </ul>
-        )}
       </header>
 
-      {/* Hero */}
       {hero && (
-        <div className="mx-auto mt-12 max-w-6xl animate-fade-up px-4 sm:mt-16 sm:px-6">
+        <div className="mx-auto mt-10 max-w-6xl animate-fade-up px-4 sm:mt-12 sm:px-6">
           <FigurePlate
             src={hero}
             alt={`${project.title}`}
             category={project.category}
             tilt="none"
+            priority
             className="shadow-[0_28px_70px_-32px_rgba(21,24,26,0.4)]"
           />
+
+          {liveLinks.length > 0 && (
+            <div className="mt-5 flex flex-wrap items-center gap-x-6 gap-y-2 px-1">
+              <span className="font-mono text-[11px] uppercase tracking-[0.16em] text-muted">
+                See it live
+              </span>
+              {liveLinks.map(([key, href]) => (
+                <a
+                  key={key}
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="link-underline text-sm font-medium text-foreground transition-colors hover:text-accent"
+                >
+                  {linkLabels[key] ?? key} ↗
+                </a>
+              ))}
+            </div>
+          )}
         </div>
       )}
 
-      {/* Story + meta */}
+      {(project.description || project.metrics.length > 0) && (
+        <div className="mx-auto mt-10 max-w-3xl px-6 sm:mt-12">
+          {project.description && (
+            <p className="max-w-2xl text-[15px] leading-relaxed text-muted sm:text-base">
+              {project.description}
+            </p>
+          )}
+          {project.metrics.length > 0 && (
+            <ul className="mt-8 space-y-2 border-l-2 border-accent/40 pl-4">
+              {project.metrics.map((metric) => (
+                <li key={metric} className="text-sm leading-snug text-foreground">
+                  {metric}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      )}
+
       <div className="mx-auto mt-16 grid max-w-5xl gap-14 px-6 sm:mt-24 lg:grid-cols-[minmax(0,1fr)_200px] lg:gap-16">
         <div className="case-study-body">{children}</div>
 
@@ -141,62 +157,70 @@ export default function CaseStudyLayout({
         </aside>
       </div>
 
-      {/* Gallery */}
-      {secondary.length > 0 && (
-        <section className="mx-auto mt-20 max-w-6xl px-4 sm:mt-28 sm:px-6">
-          <div className="mb-8 max-w-3xl px-2">
-            <h2 className="font-display text-2xl font-medium tracking-tight text-foreground sm:text-3xl">
-              Screens
-            </h2>
-          </div>
+      <section className="mx-auto mt-20 max-w-3xl border-t border-border/80 px-6 pt-10 sm:mt-28">
+        <p className="font-display text-xl font-medium tracking-tight text-foreground sm:text-2xl">
+          Building something in this space?
+        </p>
+        <p className="mt-3 max-w-xl text-sm leading-relaxed text-muted sm:text-[15px]">
+          I ship mobile, web, and AI product surfaces end-to-end — from product UI to payments and
+          store releases.
+        </p>
+        <Link
+          href="/#contact"
+          className="mt-6 inline-flex link-underline text-sm font-medium text-foreground transition-colors hover:text-accent"
+        >
+          Get in touch →
+        </Link>
+      </section>
 
-          <div className="grid gap-6 sm:grid-cols-2 sm:gap-5">
-            {secondary.map((src, i) => (
-              <Reveal key={src} delay={i * 80} className={i === 0 && secondary.length > 2 ? "sm:col-span-2" : ""}>
-                <FigurePlate
-                  src={src}
-                  alt={`${project.title} — view ${i + 2}`}
-                  category={project.category}
-                  index={i + 2}
-                  tilt="none"
-                  className="shadow-[0_18px_48px_-28px_rgba(21,24,26,0.32)]"
-                />
-              </Reveal>
-            ))}
-          </div>
-        </section>
-      )}
-
-      {/* Adjacent projects */}
       {(prev || next) && (
         <nav
           aria-label="More work"
-          className="mx-auto mt-24 max-w-5xl border-t border-border/80 px-6 pt-10 sm:mt-32"
+          className="mx-auto mt-16 max-w-5xl border-t border-border/80 px-6 pt-10 sm:mt-20"
         >
-          <div className="grid gap-8 sm:grid-cols-2">
-            {prev ? (
-              <Link href={`/work/${prev.slug}`} className="group block sm:pr-6">
-                <p className="text-xs text-muted">Previous</p>
-                <p className="mt-1 font-display text-lg font-medium tracking-tight text-foreground transition-colors group-hover:text-accent sm:text-xl">
-                  {prev.title}
-                </p>
-                <p className="mt-1 line-clamp-2 text-sm text-muted">{prev.tagline}</p>
-              </Link>
-            ) : (
-              <div />
-            )}
-            {next ? (
-              <Link href={`/work/${next.slug}`} className="group block text-right sm:pl-6">
-                <p className="text-xs text-muted">Next</p>
-                <p className="mt-1 font-display text-lg font-medium tracking-tight text-foreground transition-colors group-hover:text-accent sm:text-xl">
-                  {next.title}
-                </p>
-                <p className="mt-1 line-clamp-2 text-sm text-muted">{next.tagline}</p>
-              </Link>
-            ) : null}
+          <div className="grid gap-10 sm:grid-cols-2 sm:gap-8">
+            {prev ? <AdjacentProject project={prev} direction="prev" /> : <div />}
+            {next ? <AdjacentProject project={next} direction="next" /> : null}
           </div>
         </nav>
       )}
     </article>
+  );
+}
+
+function AdjacentProject({
+  project,
+  direction,
+}: {
+  project: Project;
+  direction: "prev" | "next";
+}) {
+  const thumb = resolveProjectImage(project.images[0]);
+  const isNext = direction === "next";
+
+  return (
+    <Link
+      href={`/work/${project.slug}`}
+      className={`group flex gap-4 ${isNext ? "sm:flex-row-reverse sm:text-right" : ""}`}
+    >
+      {thumb && (
+        <div className="w-28 shrink-0 overflow-hidden rounded-xl sm:w-32">
+          <FigurePlate
+            src={thumb}
+            alt=""
+            category={project.category}
+            tilt="none"
+            className="shadow-none transition-transform duration-300 ease-out group-hover:-translate-y-0.5"
+          />
+        </div>
+      )}
+      <div className="min-w-0 flex-1 self-center">
+        <p className="text-xs text-muted">{isNext ? "Next" : "Previous"}</p>
+        <p className="mt-1 font-display text-lg font-medium tracking-tight text-foreground transition-colors group-hover:text-accent sm:text-xl">
+          {project.title}
+        </p>
+        <p className="mt-1 line-clamp-2 text-sm text-muted">{project.tagline}</p>
+      </div>
+    </Link>
   );
 }

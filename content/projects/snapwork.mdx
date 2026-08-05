@@ -1,0 +1,41 @@
+---
+title: Snapwork
+year: 2022–2023
+status: Completed
+stack: [React Native, React, MangoPay, Facebook API, TikTok API]
+---
+
+## The Problem
+
+Creator marketplaces are two products at once. Brands need campaign creation, applicant review, and payout visibility on the web; creators need onboarding, social-account linking, listings, portfolio, and wallet flows on mobile. The hard part is tying **social-platform data** and **payments** into one experience people can trust.
+
+## What I Built
+
+I worked across the **frontend** for **Snapwork** on both **React Native mobile** and **React web**, with teammates on other backend areas. My focus included product UI plus the **social API integrations** used to pull account data (Facebook, TikTok, and related platforms) and **payments** with **MangoPay**.
+
+The product was built across **2022–2023** and is now down.
+
+## Major Features
+
+- **Connect platforms** — Onboarding step to link TikTok, Instagram, YouTube, Facebook, and Twitter for account data used in matching and applications.
+- **Creator listing** — Browse brand campaigns with platform requirements, follower thresholds, price / discount, and wallet entry in the nav.
+- **Brand campaigns** — Campaign detail with applicants, follower counts, engagement rate (ER), ratings, and receipt value — the surface where social metrics and payout numbers meet.
+- **Brand dashboard** — Sales, discounts, platform fees, users, and campaign overview for the brand side.
+- **Portfolio** — Creator media grid (PNG / JPEG / MP4) for showcasing work.
+- **Publish campaign** — Brief, targeting, interest tags, locations, and cost / margin breakdown before going live.
+
+## Key Challenges
+
+**Two-sided product complexity.** Brand web and creator mobile had to feel like one system with very different workflows.
+
+**Social APIs are product infrastructure.** Connecting platforms is not just OAuth — the UI has to guide permissions, then surface followers, ER, and eligibility in campaign and applicant views.
+
+**Payments require trust.** Price, discount, fees, receipt value, and wallet surfaces had to stay clear so creators and brands understood what money moved and why.
+
+## Results
+
+Snapwork shipped as a creator-marketplace product spanning mobile and web: social connect, campaign discovery, applicant review with social metrics, portfolio, and MangoPay-backed payment surfaces. While the product is no longer online, it remains a strong example of two-sided frontend work with external platform integrations.
+
+## Stack Decisions
+
+**React Native** for the creator app; **React** for brand / admin web. **MangoPay** for wallet and payout infrastructure. Social integrations through **Facebook**, **TikTok**, and related APIs pulled account data into onboarding, listings, and campaign applicant tables.

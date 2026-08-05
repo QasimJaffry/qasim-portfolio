@@ -1,0 +1,40 @@
+---
+title: CPAS Huddle Up
+year: 2023
+status: Completed
+stack: [React Native, Agora, Livestream]
+---
+
+## The Problem
+
+Coaches and athletes needed a place that felt like a team room — not a generic social feed. Film review, drills, and pre-game talk had to live in one mobile app, with a path to go live when the squad needed a huddle in real time.
+
+## What I Built
+
+I owned the **React Native frontend** for **CPAS Huddle Up**, a sports coaching community for a previous company client. Rooms are the core unit: discover clubs by sport, join featured and upcoming sessions, post film and drills, and start **live podcast / film-review sessions over Agora**.
+
+The product shipped live in **2023** and has since been sunset.
+
+## Major Features
+
+- **Explore & join rooms** — Search and browse Featured / Upcoming / Suggested rooms (football, soccer, basketball, and more) with member counts and join CTAs.
+- **Room feed** — Coach and athlete posts with images, titles, and comments inside a room — film breakdowns, drills, and live announcements.
+- **Agora livestream podcasts** — Start a titled live session, stream audio into the room, and keep a live comment thread while the review runs.
+- **Auth & coach onboarding** — Login, multi-step registration (account, profile, address, coaching record), OTP, and plan/subscription surfaces.
+- **Account & moderation** — Coach profiles by plan, notifications, invites, and report flows.
+
+## Key Challenges
+
+**Rooms had to feel like clubs, not chats.** Explore, join, and the in-room feed needed the same mental model so coaches could run a community without teaching a new product language.
+
+**Livestream on the same surface as posts.** Agora live sessions sat next to async film posts — start/stop, titles, and comments had to stay clear on flaky mobile networks, not just studio Wi-Fi.
+
+**Client product constraints.** Frontend work had to match the coaching brand (Huddle Up / CPAS) and ship subscription-aware profiles without owning the whole backend.
+
+## Results
+
+Huddle Up shipped as a live React Native client app with room discovery, social feed, and Agora-powered live podcasts for coaching communities. The product is no longer online.
+
+## Stack Decisions
+
+React Native for iOS/Android from one codebase. **Agora** for live podcast / film-review audio — lower lift than a custom WebRTC stack when the product need was room livestream + comments, not peer calling.

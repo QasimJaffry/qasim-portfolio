@@ -16,10 +16,11 @@ export default function WorkFilter({
 }) {
   const [filter, setFilter] = useState<(typeof filters)[number]>("All");
 
-  const filtered = useMemo(
-    () => (filter === "All" ? projects : projects.filter((p) => p.category === filter)),
-    [filter, projects],
-  );
+  const filtered = useMemo(() => {
+    const list = filter === "All" ? projects : projects.filter((p) => p.category === filter);
+    // Featured first, then keep portfolio order within each group
+    return [...list].sort((a, b) => Number(b.featured) - Number(a.featured));
+  }, [filter, projects]);
 
   return (
     <>

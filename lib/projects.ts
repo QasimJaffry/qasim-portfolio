@@ -57,7 +57,9 @@ export function getAdjacentCaseStudies(slug: string): {
   next: Project | null;
 } {
   const withCaseStudy = new Set(getAllCaseStudySlugs());
-  const ordered = projects.filter((p) => withCaseStudy.has(p.slug));
+  const ordered = projects
+    .filter((p) => withCaseStudy.has(p.slug))
+    .sort((a, b) => Number(b.featured) - Number(a.featured));
   const index = ordered.findIndex((p) => p.slug === slug);
   if (index === -1) return { prev: null, next: null };
   return {

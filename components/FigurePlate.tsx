@@ -20,6 +20,7 @@ type FigurePlateProps = {
   category?: ProjectCategory;
   aspect?: "portrait" | "landscape";
   tilt?: "left" | "right" | "none";
+  priority?: boolean;
   className?: string;
 };
 
@@ -31,6 +32,7 @@ export default function FigurePlate({
   category = "AI",
   aspect = "landscape",
   tilt = "none",
+  priority = false,
   className = "",
 }: FigurePlateProps) {
   const frameRef = useRef<HTMLDivElement>(null);
@@ -59,7 +61,7 @@ export default function FigurePlate({
         onMouseMove={handleMove}
         onMouseLeave={handleLeave}
         className={`relative overflow-hidden rounded-2xl transition-transform duration-300 ease-out will-change-transform ${
-          aspect === "portrait" ? "aspect-[3/4]" : "aspect-[4/3]"
+          aspect === "portrait" ? "aspect-[3/4]" : "aspect-[16/10]"
         }`}
         style={{ transform: `rotate(${baseTilt}deg)` }}
       >
@@ -68,6 +70,8 @@ export default function FigurePlate({
             src={src}
             alt={alt}
             fill
+            priority={priority}
+            sizes="(max-width: 768px) 100vw, 1152px"
             className="object-cover transition-transform duration-500 group-hover:scale-105"
           />
         ) : (

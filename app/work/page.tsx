@@ -18,7 +18,10 @@ export default function WorkPage() {
       <h1 className="font-display text-3xl font-medium tracking-tight text-foreground sm:text-4xl">
         Work
       </h1>
-      <p className="mt-2 text-muted">Twelve products, shipped across mobile, web, and AI.</p>
+      <p className="mt-2 text-muted">
+        {projects.length} selected case studies from 60+ products shipped across mobile, web, and
+        AI.
+      </p>
 
       <WorkFilter projects={projects} images={images} />
     </div>

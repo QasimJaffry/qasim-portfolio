@@ -24,6 +24,16 @@
 .DS_Store
 *.pem
 .tmp-shots/
+.tmp-safedeal/
+.tmp-monkr/
+.tmp-monkr-shots/
+.tmp-monkr-projects/
+.venv-mockups/
+.tmp-mockup-backup-*/
+.tmp-*
+.tmp-bg-preview/
+tools/frames/
+tools/portfolio-frames/node_modules/
 
 # local / editor
 .idea/
@@ -46,4 +56,3 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
-.tmp-safedeal/

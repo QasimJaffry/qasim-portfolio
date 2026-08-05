@@ -1,0 +1,12 @@
+{
+  "name": "portfolio-frames",
+  "private": true,
+  "type": "module",
+  "description": "Agent-friendly batch mockups using Frames device assets (https://github.com/bunlongheng/frames)",
+  "scripts": {
+    "frame": "node frame.mjs"
+  },
+  "dependencies": {
+    "sharp": "^0.34.5"
+  }
+}

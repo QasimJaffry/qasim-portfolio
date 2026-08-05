@@ -33,9 +33,11 @@ export default function AboutPage() {
             I&apos;ve worked across both freelance and long-term engagements: 100% Job Success on
             Upwork as a Top Rated Plus freelancer, an 18-month international client engagement on the
             Qubio ecosystem, and full-time work at StarComputer Labs where I lead architecture across
-            mobile, web, payments, and AI. Alongside client work, I run Jafrix System, my own studio,
-            where I&apos;ve built and published Innerverse and am currently developing Dealflow AI and
-            Decidr.
+            mobile, web, payments, and AI. Across freelance and studio work I&apos;ve shipped{" "}
+            <span className="font-medium text-foreground">60+ products</span>
+            — this site focuses on a selected set of case studies. Alongside client work, I run
+            Jafrix System, my own studio, where I&apos;ve built and published Innerverse and am
+            currently developing Dealflow AI and Decidr.
           </p>
           <p>
             I hold a B.Sc. in Computer Science from COMSATS University, Lahore. Right now I&apos;m

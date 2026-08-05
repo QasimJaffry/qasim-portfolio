@@ -6,7 +6,7 @@ from __future__ import annotations
 from pathlib import Path
 
 import numpy as np
-from PIL import Image, ImageDraw, ImageFilter, ImageEnhance
+from PIL import Image, ImageDraw, ImageFilter, ImageEnhance, ImageFont
 
 ROOT = Path(__file__).resolve().parents[1]
 SHOTS = Path.home() / "Desktop" / "Screenshots"
@@ -16,26 +16,192 @@ BG = (247, 245, 239)
 SURFACE = (236, 230, 216)
 ACCENT = (15, 138, 124)
 
+FONT_REG = Path("/System/Library/Fonts/Supplemental/Arial.ttf")
+FONT_BOLD = Path("/System/Library/Fonts/Supplemental/Arial Bold.ttf")
+
+
+def load_font(size: int, bold: bool = False) -> ImageFont.FreeTypeFont:
+    return ImageFont.truetype(str(FONT_BOLD if bold else FONT_REG), size)
+
+
+def cover_box(
+    im: Image.Image,
+    box: tuple[int, int, int, int],
+    fill: tuple[int, ...] | None = None,
+) -> Image.Image:
+    """Paint over a rectangle (sample nearby pixels when fill is omitted)."""
+    im = ensure_rgba(im).copy()
+    x0, y0, x1, y1 = box
+    if fill is None:
+        sx0, sx1 = max(0, x0), min(im.width, x1)
+        sy0 = max(0, y0 - 4)
+        sy1 = max(sy0 + 1, min(im.height, y0))
+        sample = np.asarray(im.crop((sx0, sy0, sx1, sy1)).convert("RGB"))
+        fill = tuple(int(v) for v in np.median(sample.reshape(-1, 3), axis=0)) + (255,)
+    elif len(fill) == 3:
+        fill = (*fill, 255)
+    ImageDraw.Draw(im).rectangle((x0, y0, x1 - 1, y1 - 1), fill=fill)
+    return im
+
+
+def write_text(
+    im: Image.Image,
+    xy: tuple[int, int],
+    text: str,
+    size: int,
+    *,
+    bold: bool = False,
+    fill: tuple[int, int, int] = (22, 22, 22),
+    line_gap: int = 3,
+    center_in: tuple[int, int, int, int] | None = None,
+) -> Image.Image:
+    """Draw single- or multi-line text; optional center_in box for alignment."""
+    im = ensure_rgba(im).copy()
+    font = load_font(size, bold=bold)
+    draw = ImageDraw.Draw(im)
+    lines = text.split("\n")
+    heights = []
+    widths = []
+    for line in lines:
+        bbox = draw.textbbox((0, 0), line, font=font)
+        widths.append(bbox[2] - bbox[0])
+        heights.append(bbox[3] - bbox[1])
+    block_h = sum(heights) + line_gap * (len(lines) - 1)
+    if center_in is not None:
+        cx0, cy0, cx1, cy1 = center_in
+        x = cx0 + (cx1 - cx0 - max(widths, default=0)) // 2
+        y = cy0 + (cy1 - cy0 - block_h) // 2
+    else:
+        x, y = xy
+    for line, lh, lw in zip(lines, heights, widths):
+        lx = x
+        if center_in is not None:
+            lx = center_in[0] + (center_in[2] - center_in[0] - lw) // 2
+        draw.text((lx, y), line, font=font, fill=fill)
+        y += lh + line_gap
+    return im
+
+
+def patch_stp_topics(im: Image.Image) -> Image.Image:
+    """Wipe misspelled 'Choose Tppic' by cloning neighboring mist pixels row-by-row."""
+    im = ensure_rgba(im).copy()
+    arr = np.asarray(im).copy()
+    x0, y0, x1, y1 = 65, 278, 315, 324
+    # Sample from just left of the typo (outside text) and flood each row
+    for y in range(y0, y1):
+        sample = arr[y, max(0, x0 - 12) : x0]
+        if sample.size == 0:
+            continue
+        fill = np.median(sample.reshape(-1, sample.shape[-1]), axis=0)
+        arr[y, x0:x1] = fill
+    return Image.fromarray(arr)
+
+
+def patch_stp_game(im: Image.Image) -> Image.Image:
+    # Full button face (~y710–765) so original "Lets Start" cannot peek through
+    btn = (88, 712, 288, 762)
+    im = cover_box(im, btn, fill=(158, 172, 228))
+    return write_text(
+        im,
+        (0, 0),
+        "Let's Start",
+        17,
+        bold=True,
+        fill=(255, 255, 255),
+        center_in=btn,
+    )
+
+
+def patch_cpas_home(im: Image.Image) -> Image.Image:
+    # Truncated featured / liked room titles → short names that fit the cards
+    west = (198, 282, 358, 308)
+    im = cover_box(im, west, fill=(255, 255, 255))
+    im = write_text(im, (0, 0), "Westside FC", 13, bold=True, center_in=west)
+    # Original title extends to ~x191 ("…Clu")
+    coast = (16, 688, 205, 710)
+    im = cover_box(im, coast, fill=(255, 255, 255))
+    return write_text(
+        im, (0, 0), "Coastal Rugby", 12, bold=True, center_in=coast
+    )
+
+
 # Dark studio plate — used for AI projects
 STUDIO_BG = (18, 20, 23)
 STUDIO_MID = (28, 32, 36)
 STUDIO_RIM = (48, 56, 62)
+STUDIO_BLACK = (5, 5, 7)
+STUDIO_MID_BLACK = (10, 10, 12)
+# Elevated screen-card chassis — slightly lifted from studio black / app UI
+SCREEN_CARD_FRAME = (24, 26, 32)
+SCREEN_CARD_RIM = (88, 96, 112, 72)
+
+# Real Pixel 7 Pro bezel (from Monkr) — screenshot sits in the transparent hole
+PIXEL_FRAME = ROOT / "scripts" / "assets" / "devices" / "pixel-7-pro-obsidian.png"
+# Measured hole in pixel-7-pro-obsidian.png (600×1301)
+PIXEL_SCREEN = (60, 169, 540, 1170)  # left, top, right, bottom → 480×1001
 
 
 def ensure_rgba(im: Image.Image) -> Image.Image:
     return im.convert("RGBA") if im.mode != "RGBA" else im
 
 
+def fill_baked_round_corners(im: Image.Image) -> Image.Image:
+    """Fill transparent / near-black baked corner rounding so the dark phone shell
+    cannot tint through as black triangles at the screen corners.
+    """
+    im = ensure_rgba(im).copy()
+    arr = np.asarray(im).copy()
+    h, w = arr.shape[:2]
+    # Interior sample — avoid edges that may already be black
+    y0, y1 = int(h * 0.18), int(h * 0.42)
+    x0, x1 = int(w * 0.18), int(w * 0.82)
+    sample = arr[y0:y1, x0:x1].reshape(-1, 4)
+    if sample.size == 0:
+        fill = np.array([255, 255, 255, 255], dtype=arr.dtype)
+    else:
+        fill = np.median(sample, axis=0).astype(arr.dtype)
+    # Also prefer top-edge mid (status bar) when light
+    top_mid = arr[2 : max(3, int(h * 0.04)), int(w * 0.3) : int(w * 0.7)]
+    if top_mid.size and float(np.median(top_mid[:, :, :3])) > 200:
+        fill = np.median(top_mid.reshape(-1, 4), axis=0).astype(arr.dtype)
+
+    corner = max(28, int(min(w, h) * 0.09))
+    boxes = (
+        (0, corner, 0, corner),
+        (0, corner, w - corner, w),
+        (h - corner, h, 0, corner),
+        (h - corner, h, w - corner, w),
+    )
+    for ys, ye, xs, xe in boxes:
+        region = arr[ys:ye, xs:xe]
+        lum = region[:, :, :3].astype(np.float32).max(axis=2)
+        alpha = region[:, :, 3]
+        # Any near-black / see-through pixel in the corner pad (baked round leftovers)
+        mask = (lum < 70) | (alpha < 230)
+        if mask.any():
+            region[mask] = fill
+            arr[ys:ye, xs:xe] = region
+    out = Image.fromarray(arr)
+    # Preserve metadata
+    out.info.update(im.info)
+    return out
+
+
 def clean_status_bar_notifications(
     screenshot: Image.Image, bar_h: int | None = None
 ) -> Image.Image:
-    """Wipe Android status-bar app notification icons; keep time + system cluster."""
+    """Wipe Android status-bar app notification icons; keep time + system cluster.
+
+    bar_h must stay proportional — a hard 88px floor on ~812px iOS shots painted a
+    giant white band over the header (the portfolio "weird white bar").
+    """
     im = ensure_rgba(screenshot).copy()
     w, h = im.size
     if bar_h is None:
-        bar_h = max(88, int(h * 0.048))
+        # ~3.5–4.5% of height; clamp for tiny/huge captures only
+        bar_h = max(26, min(72, int(h * 0.042)))
     # Sample clean bar fill from under the clock / left padding
-    sample = im.crop((4, 4, min(60, w // 10), min(bar_h - 6, 36)))
+    sample = im.crop((4, 4, min(60, w // 10), min(bar_h - 6, max(12, bar_h - 4))))
     pixels = list(sample.getdata())
     if not pixels:
         return im
@@ -46,8 +212,231 @@ def clean_status_bar_notifications(
     # Wipe from just after clock through almost the system icon cluster
     left = int(w * 0.12)
     right = int(w * 0.78)
+
+    # Only wipe a real status bar. Web/app captures that start with their own
+    # header have content crossing the band, and blanking it slices the title in
+    # half (the "Cat Chat" / "RealTag" struck-through headers). Status-bar icons
+    # sit entirely inside the band, so nothing crosses its lower edge.
+    if bar_h + 3 < h:
+        rgb = im.convert("RGB")
+        above_y, below_y = max(0, bar_h - 3), min(h - 1, bar_h + 3)
+        crossing = 0
+        for x in range(left, right, max(1, (right - left) // 120)):
+            above = rgb.getpixel((x, above_y))
+            below = rgb.getpixel((x, below_y))
+            if (
+                max(abs(above[i] - (r, g, b)[i]) for i in range(3)) > 28
+                and max(abs(below[i] - (r, g, b)[i]) for i in range(3)) > 28
+            ):
+                crossing += 1
+        if crossing > 3:
+            return im
+
     ImageDraw.Draw(im).rectangle((left, 0, right, bar_h), fill=(r, g, b, a))
     return im
+
+
+def trim_web_top_padding(screenshot: Image.Image, max_frac: float = 0.12) -> Image.Image:
+    """Crop empty white padding above the first real UI row on web captures.
+
+    Samples the center band so rounded-card edge antialias doesn't block detection.
+    """
+    im = ensure_rgba(screenshot)
+    arr = np.asarray(im.convert("RGB")).astype(np.float32)
+    h, w = arr.shape[:2]
+    x0, x1 = int(w * 0.2), int(w * 0.8)
+    center = arr[:, x0:x1]
+    stds = center.std(axis=(1, 2))
+    means = center.mean(axis=(1, 2))
+    crop = 0
+    limit = min(h - 8, int(h * max_frac))
+    for y in range(0, limit):
+        if means[y] > 248 and stds[y] < 10:
+            crop = y + 1
+            continue
+        if stds[y] > 18 or means[y] < 245:
+            break
+    crop = max(0, crop - 2)
+    if crop < 8:
+        return im
+    return im.crop((0, crop, w, h))
+
+
+def detect_ios_chrome_height(screenshot: Image.Image) -> int:
+    """Bottom of status bar + empty safe-area, so UI sits under the Dynamic Island."""
+    arr = np.asarray(screenshot.convert("RGB")).astype(np.float32)
+    h, w = arr.shape[:2]
+    stds = arr.std(axis=(1, 2))
+    means = arr.mean(axis=(1, 2))
+    left = arr[:, : max(1, w // 5)].std(axis=(1, 2))
+    right = arr[:, -max(1, w // 5) :].std(axis=(1, 2))
+    edge_std = np.maximum(left, right)
+    y0 = max(16, int(h * 0.02))
+    y1 = min(h - 8, int(h * 0.14))
+    crop = max(24, int(h * 0.04))
+    quiet = 0
+    for y in range(y0, y1):
+        soft = means[y] > 205 and stds[y] < 34 and edge_std[y] < 38
+        flat = stds[y] < 14 and edge_std[y] < 18
+        if flat or soft:
+            quiet += 1
+            crop = y + 1
+        elif quiet >= 4 and (stds[y] > 22 or edge_std[y] > 28):
+            break
+        elif (stds[y] > 40 or edge_std[y] > 45) and y < int(h * 0.06):
+            crop = y + 1
+            quiet = 0
+            continue
+    # Cap crop — never eat logos/headers; pad handles island clearance
+    return int(np.clip(crop, int(h * 0.035), int(h * 0.08)))
+
+
+def draw_ios_status_bar(
+    im: Image.Image,
+    pad: int,
+    fill_rgb: tuple[int, int, int],
+) -> Image.Image:
+    """Paint time + signal/wifi/battery into the island clearance pad.
+
+    prep_ios strips the real chrome; without this the Dynamic Island sits on empty
+    color and the phone reads unfinished.
+    """
+    im = ensure_rgba(im).copy()
+    w, _h = im.size
+    if pad < 36:
+        return im
+    draw = ImageDraw.Draw(im)
+    lum = 0.2126 * fill_rgb[0] + 0.7152 * fill_rgb[1] + 0.0722 * fill_rgb[2]
+    ink = (25, 25, 28, 255) if lum > 160 else (255, 255, 255, 255)
+
+    # Vertically center in the pad, slightly below the island midline
+    cy = max(20, min(pad - 16, int(pad * 0.48)))
+
+    # Time — SF Pro when available
+    time_size = max(14, int(w * 0.038))
+    try:
+        font = ImageFont.truetype("/System/Library/Fonts/SFNS.ttf", time_size)
+    except OSError:
+        font = load_font(time_size, bold=True)
+    time_txt = "9:41"
+    bbox = draw.textbbox((0, 0), time_txt, font=font)
+    tw, th = bbox[2] - bbox[0], bbox[3] - bbox[1]
+    tx = int(w * 0.085)
+    draw.text((tx, cy - th // 2 - 1), time_txt, font=font, fill=ink)
+
+    # ---- right cluster: cellular · wifi · battery (tight iOS spacing) ----
+    s = w / 390.0  # scale relative to classic iPhone width
+    right = int(w * 0.90)
+
+    # Battery
+    bw, bh = max(20, int(22 * s)), max(9, int(10 * s))
+    bx = right - bw
+    by = cy - bh // 2
+    tip = max(2, int(2 * s))
+    draw.rounded_rectangle((bx, by, bx + bw - 1, by + bh - 1), radius=2, outline=ink, width=max(1, int(1.5 * s)))
+    draw.rectangle(
+        (bx + bw - 1, by + max(2, bh // 4), bx + bw - 1 + tip, by + bh - max(2, bh // 4)),
+        fill=ink,
+    )
+    inner = max(2, int(2 * s))
+    fill_w = int((bw - inner * 2 - 1) * 0.78)
+    draw.rounded_rectangle(
+        (bx + inner, by + inner, bx + inner + fill_w, by + bh - inner - 1),
+        radius=1,
+        fill=ink,
+    )
+
+    # Wi‑Fi — three clean arcs + center dot
+    wx = bx - int(18 * s)
+    for r, width in ((int(10 * s), max(2, int(2 * s))), (int(6.5 * s), max(2, int(2 * s))), (int(3 * s), 0)):
+        box = (wx - r, cy - r - int(1 * s), wx + r, cy + r - int(1 * s))
+        if width:
+            draw.arc(box, 210, 330, fill=ink, width=width)
+        else:
+            draw.ellipse((wx - 1, cy - int(2 * s) - 1, wx + 2, cy - int(2 * s) + 2), fill=ink)
+
+    # Cellular bars
+    bar_w = max(2, int(3 * s))
+    gap = max(2, int(2.2 * s))
+    heights = [0.40, 0.58, 0.78, 1.0]
+    max_bh = max(9, int(11 * s))
+    cluster_w = 4 * bar_w + 3 * gap
+    sx = wx - int(16 * s) - cluster_w
+    base_y = cy + max_bh // 2
+    for i, frac in enumerate(heights):
+        hh = max(3, int(max_bh * frac))
+        x0 = sx + i * (bar_w + gap)
+        draw.rounded_rectangle((x0, base_y - hh, x0 + bar_w, base_y), radius=1, fill=ink)
+    return im
+
+
+def prep_ios_for_frame(screenshot: Image.Image, bar_frac: float | None = None) -> Image.Image:
+    """Keep the screenshot's real status bar; only pad if content would hit the island.
+
+    Earlier we stripped chrome and redrew icons — that looked worse than the source.
+    Sources already have 9:41 / signal / wifi / battery; the frame just adds the island.
+    """
+    del bar_frac  # retained for call-site compat; detection no longer crops the bar
+    im = ensure_rgba(screenshot).copy()
+    w, h = im.size
+    # If the top already looks like iOS chrome (time left + icons right), keep it —
+    # add a few px of matching inset so icons aren't crushed into the bezel curve.
+    if _has_ios_status_bar(im):
+        sample = np.asarray(im.convert("RGB").crop((0, 0, w, min(12, h))))
+        fill = tuple(int(x) for x in np.median(sample.reshape(-1, 3), axis=0))
+        inset = max(10, int(h * 0.016))
+        out = Image.new("RGBA", (w, h + inset), (*fill, 255))
+        out.paste(im, (0, inset))
+        out.info["ios_pad"] = max(44, int((h + inset) * 0.055))
+        out.info["ios_pad_fill"] = fill
+        out.info["keep_status_bar"] = True
+        return out
+
+    # Fallback for bare UI exports with no system chrome
+    bar = detect_ios_chrome_height(im)
+    body = im.crop((0, bar, w, h))
+    sample = np.asarray(body.convert("RGB").crop((0, 0, w, min(10, body.height))))
+    fill = tuple(int(x) for x in np.median(sample.reshape(-1, 3), axis=0))
+    pad = max(62, int(h * 0.082))
+    out = Image.new("RGBA", (w, body.height + pad), (*fill, 255))
+    out.paste(body, (0, pad))
+    out.info["ios_pad"] = pad
+    out.info["ios_pad_fill"] = fill
+    out.info["keep_status_bar"] = False
+    return out
+
+
+def _has_ios_status_bar(im: Image.Image) -> bool:
+    """Heuristic: ink on left (time) and right (icons) in the top ~5%."""
+    arr = np.asarray(im.convert("RGB"))
+    h, w = arr.shape[:2]
+    y1 = max(18, int(h * 0.055))
+    top = arr[:y1]
+    left = top[:, int(w * 0.04) : int(w * 0.24)]
+    right = top[:, int(w * 0.70) : int(w * 0.96)]
+    mid = top[:, int(w * 0.35) : int(w * 0.65)]
+    # Grey system chrome, not pure black
+    left_dark = np.mean(np.all(left < 140, axis=2))
+    right_dark = np.mean(np.all(right < 140, axis=2))
+    mid_dark = np.mean(np.all(mid < 140, axis=2))
+    return left_dark > 0.012 and right_dark > 0.03 and mid_dark < max(0.008, left_dark * 0.5)
+
+
+def assert_island_clearance(framed: Image.Image, min_gap: int = 40) -> tuple[bool, int]:
+    """Check UI starts clearly below the Dynamic Island (island ends ~y 36 on device)."""
+    arr = np.asarray(framed.convert("RGB")).astype(np.float32)
+    bezel = 14
+    h, w = arr.shape[:2]
+    # Measure outside the island horizontally
+    left = arr[:, int(w * 0.06) : int(w * 0.28)].std(axis=(1, 2))
+    right = arr[:, int(w * 0.72) : int(w * 0.94)].std(axis=(1, 2))
+    edge = np.maximum(left, right)
+    island_bottom = 38  # device coords
+    for y in range(island_bottom, min(h, bezel + 180)):
+        if edge[y] > 18:
+            gap = y - island_bottom
+            return gap >= min_gap, gap
+    return False, -1
 
 
 def rounded_mask(size: tuple[int, int], radius: int) -> Image.Image:
@@ -61,22 +450,24 @@ def gradient_bg(
     tint: tuple[int, int, int] = ACCENT,
     strength: float = 0.14,
     studio: bool = False,
+    studio_black: bool = False,
 ) -> Image.Image:
     w, h = size
     yy, xx = np.mgrid[0:h, 0:w]
 
     if studio:
-        # Charcoal base with cool rim light + tinted key light
-        arr = np.full((h, w, 3), STUDIO_BG, dtype=np.float32)
-        # vertical floor wash
+        base = STUDIO_BLACK if studio_black else STUDIO_BG
+        mid = STUDIO_MID_BLACK if studio_black else STUDIO_MID
+        arr = np.full((h, w, 3), base, dtype=np.float32)
+        eff_strength = strength * (0.55 if studio_black else 1.0)
         floor = np.clip((yy / h - 0.35) / 0.65, 0, 1) ** 1.4
-        for i, c in enumerate(STUDIO_MID):
+        for i, c in enumerate(mid):
             arr[:, :, i] = arr[:, :, i] * (1 - floor * 0.55) + c * (floor * 0.55)
         # key light from upper right
         cx, cy = w * 0.68, h * 0.18
         dist = np.sqrt((xx - cx) ** 2 + (yy - cy) ** 2)
         key = np.clip(1 - dist / (max(w, h) * 0.75), 0, 1) ** 1.8
-        key_mix = key * (strength + 0.1)
+        key_mix = key * (eff_strength + 0.1)
         for i, c in enumerate(tint):
             arr[:, :, i] = arr[:, :, i] * (1 - key_mix * 0.55) + c * (key_mix * 0.55)
         # soft rim toward edges (studio cyclorama feel)
@@ -165,8 +556,9 @@ def make_bg(
     studio: bool,
     strength: float = 0.14,
     cy_shift: int = 40,
+    studio_black: bool = False,
 ) -> Image.Image:
-    bg = gradient_bg(canvas, tint=tint, strength=strength, studio=studio)
+    bg = gradient_bg(canvas, tint=tint, strength=strength, studio=studio, studio_black=studio_black)
     return Image.alpha_composite(bg, ambient_blob(canvas, tint, cy_shift=cy_shift, studio=studio))
 
 
@@ -197,6 +589,8 @@ def compose_dual_phones(
     clean_notifications: bool = True,
     status_fill: tuple[int, int, int] | None = None,
     draw_island: bool = True,
+    phone_style: str = "ios",
+    studio_black: bool = False,
 ) -> Image.Image:
     """Two angled phones — scaled from rotated bounds so nothing clips the plate."""
 
@@ -208,6 +602,7 @@ def compose_dual_phones(
             clean_notifications=clean_notifications,
             status_fill=status_fill,
             draw_island=draw_island,
+            style=phone_style,
         )
         b = phone_frame(
             right,
@@ -215,6 +610,7 @@ def compose_dual_phones(
             clean_notifications=clean_notifications,
             status_fill=status_fill,
             draw_island=draw_island,
+            style=phone_style,
         )
         ra = a.rotate(-angle, resample=Image.Resampling.BICUBIC, expand=True)
         rb = b.rotate(angle, resample=Image.Resampling.BICUBIC, expand=True)
@@ -252,7 +648,13 @@ def compose_dual_phones(
     shift_x = (canvas[0] - (max(xs) - min(xs))) // 2 - min(xs)
     shift_y = (canvas[1] - (max(ys) - min(ys))) // 2 - min(ys)
 
-    bg = make_bg(canvas, tint, studio, strength=0.18 if studio else 0.14)
+    bg = make_bg(
+        canvas,
+        tint,
+        studio,
+        strength=0.18 if studio else 0.14,
+        studio_black=studio_black,
+    )
     for device, dx, dy in placements:
         paste_with_shadow(
             bg,
@@ -271,8 +673,12 @@ def compose_triple_phones(
     canvas: tuple[int, int] = (1600, 1200),
     tint: tuple[int, int, int] = ACCENT,
     studio: bool = False,
+    phone_style: str = "ios",
 ) -> Image.Image:
-    phones = [phone_frame(s, max_h=880 if i == 1 else 780) for i, s in enumerate(shots[:3])]
+    phones = [
+        phone_frame(s, max_h=880 if i == 1 else 780, style=phone_style)
+        for i, s in enumerate(shots[:3])
+    ]
     bg = make_bg(canvas, tint, studio, strength=0.2 if studio else 0.16, cy_shift=50)
 
     side_gap = -36
@@ -311,13 +717,16 @@ def compose_quad_phones(
     canvas: tuple[int, int] = (1600, 1200),
     tint: tuple[int, int, int] = ACCENT,
     studio: bool = False,
+    phone_style: str = "ios",
 ) -> Image.Image:
     """BSchedule-style fan, four phones — fully in-frame (no edge clip)."""
     margin = 52
     heights = [620, 700, 780, 620]
     max_ws = [330, 350, 380, 330]
     angles = [-6.5, -2.2, 2.2, 6.5]
-    side_gap = -6  # light tuck — fan look without hiding half the UI
+    # Positive gap: rotation already overlaps the frames' bounding boxes, and a
+    # tuck on top of that buries the screen titles on the outer phones.
+    side_gap = 16
     y_nudge = [28, 12, 2, 28]
 
     def build(scale: float):
@@ -326,6 +735,7 @@ def compose_quad_phones(
                 s,
                 max_h=max(1, int(heights[i] * scale)),
                 max_w=max(1, int(max_ws[i] * scale)),
+                style=phone_style,
             )
             for i, s in enumerate(shots[:4])
         ]
@@ -398,12 +808,15 @@ def compose_laptop_phone(
     phone_side: str = "right",
     studio: bool = False,
     web_fit: str = "width",
+    phone_style: str = "ios",
+    phone_max_h: int = 760,
+    studio_black: bool = False,
 ) -> Image.Image:
     """Laptop + phone — both fully visible with safe margins."""
     margin = 48
     # Keep laptop a bit smaller so the overlapping phone never clips the plate.
     laptop = browser_in_laptop(web, screen_w=1040, fit=web_fit)
-    phone = phone_frame(mobile, max_h=760)
+    phone = phone_frame(mobile, max_h=phone_max_h, style=phone_style)
     angle = 4 if phone_side == "right" else -4
     angled = phone.rotate(angle, resample=Image.Resampling.BICUBIC, expand=True)
 
@@ -420,10 +833,12 @@ def compose_laptop_phone(
             (max(1, int(laptop.width * scale)), max(1, int(laptop.height * scale))),
             Image.Resampling.LANCZOS,
         )
-        phone = phone_frame(mobile, max_h=int(760 * scale))
+        phone = phone_frame(mobile, max_h=int(phone_max_h * scale), style=phone_style)
         angled = phone.rotate(angle, resample=Image.Resampling.BICUBIC, expand=True)
 
-    bg = make_bg(canvas, tint, studio, strength=0.2 if studio else 0.15, cy_shift=60)
+    bg = make_bg(
+        canvas, tint, studio, strength=0.2 if studio else 0.15, cy_shift=60, studio_black=studio_black
+    )
 
     # Laptop left-biased; phone sits beside it with light overlap, fully in-frame.
     if phone_side == "right":
@@ -453,10 +868,11 @@ def compose_phone_leading(
     canvas: tuple[int, int] = (1600, 1200),
     tint: tuple[int, int, int] = ACCENT,
     studio: bool = False,
+    phone_style: str = "ios",
 ) -> Image.Image:
     """Phone-first product story: large phone left, laptop tucked right (different from laptop-led heroes)."""
     margin = 44
-    phone = phone_frame(mobile, max_h=980)
+    phone = phone_frame(mobile, max_h=980, style=phone_style)
     laptop = browser_in_laptop(web, screen_w=920)
     angled = phone.rotate(-5.5, resample=Image.Resampling.BICUBIC, expand=True)
 
@@ -469,7 +885,7 @@ def compose_phone_leading(
     if angled.width + int(laptop.width * 0.55) > canvas[0] - margin * 2:
         scale = min(scale, (canvas[0] - margin * 2) / (angled.width + laptop.width * 0.55))
     if scale < 0.999:
-        phone = phone_frame(mobile, max_h=int(980 * scale))
+        phone = phone_frame(mobile, max_h=int(980 * scale), style=phone_style)
         angled = phone.rotate(-5.5, resample=Image.Resampling.BICUBIC, expand=True)
         laptop = laptop.resize(
             (max(1, int(laptop.width * scale)), max(1, int(laptop.height * scale))),
@@ -495,6 +911,61 @@ def compose_phone_leading(
     return bg.convert("RGB")
 
 
+def extract_appscreen_device(
+    im: Image.Image,
+    bg_rgb: tuple[int, int, int] = (5, 5, 7),
+    thresh: int = 22,
+) -> Image.Image:
+    """Knock out AppScreen solid studio bg so the device can float on portfolio plates."""
+    rgba = ensure_rgba(im)
+    arr = np.asarray(rgba).copy()
+    rgb = arr[:, :, :3].astype(np.int16)
+    bg = np.array(bg_rgb, dtype=np.int16)
+    near = np.abs(rgb - bg).sum(axis=2) <= thresh
+    h, w = near.shape
+    border = np.zeros((h, w), dtype=bool)
+    border[0, :] = border[-1, :] = border[:, 0] = border[:, -1] = True
+    from collections import deque
+
+    kill = np.zeros((h, w), dtype=bool)
+    visited = np.zeros((h, w), dtype=bool)
+    q: deque[tuple[int, int]] = deque()
+    ys, xs = np.where(border & near)
+    for y, x in zip(ys.tolist(), xs.tolist()):
+        q.append((y, x))
+        visited[y, x] = True
+    while q:
+        y, x = q.popleft()
+        kill[y, x] = True
+        for ny, nx in ((y - 1, x), (y + 1, x), (y, x - 1), (y, x + 1)):
+            if 0 <= ny < h and 0 <= nx < w and not visited[ny, nx] and near[ny, nx]:
+                visited[ny, nx] = True
+                q.append((ny, nx))
+    arr[kill, 3] = 0
+    out = Image.fromarray(arr, "RGBA")
+    bbox = out.getbbox()
+    return out.crop(bbox) if bbox else out
+
+
+def scale_preframed_device(
+    device: Image.Image,
+    max_h: int = 980,
+    max_w: int = 460,
+) -> Image.Image:
+    """Scale an already-framed AppScreen/device PNG into layout bounds."""
+    shot = ensure_rgba(device)
+    bbox = shot.getbbox()
+    if bbox:
+        shot = shot.crop(bbox)
+    scale = max_h / shot.height
+    if shot.width * scale > max_w:
+        scale = max_w / shot.width
+    return shot.resize(
+        (max(1, int(shot.width * scale)), max(1, int(shot.height * scale))),
+        Image.Resampling.LANCZOS,
+    )
+
+
 def phone_frame(
     screenshot: Image.Image,
     max_h: int = 980,
@@ -502,8 +973,20 @@ def phone_frame(
     clean_notifications: bool = True,
     status_fill: tuple[int, int, int] | None = None,
     draw_island: bool = True,
+    style: str = "ios",
 ) -> Image.Image:
-    shot = ensure_rgba(screenshot)
+    if style == "appscreen":
+        return scale_preframed_device(screenshot, max_h=max_h, max_w=max_w)
+    if style == "screen":
+        return screen_card(screenshot, max_h=max_h, max_w=max_w)
+    if style == "android":
+        return android_frame(screenshot, max_h=max_h, max_w=max_w)
+
+    shot = fill_baked_round_corners(ensure_rgba(screenshot))
+    # Preserve pad metadata across resize (PIL drops .info on some ops)
+    ios_pad = shot.info.get("ios_pad")
+    ios_pad_fill = shot.info.get("ios_pad_fill")
+    keep_status_bar = bool(shot.info.get("keep_status_bar"))
     if clean_notifications:
         shot = clean_status_bar_notifications(shot)
     if status_fill is not None:
@@ -511,6 +994,7 @@ def phone_frame(
         w, h = shot.size
         bar = max(70, int(h * 0.042))
         ImageDraw.Draw(shot).rectangle((0, 0, w, bar), fill=(*status_fill, 255))
+    src_h = shot.height
     scale = max_h / shot.height
     if shot.width * scale > max_w:
         scale = max_w / shot.width
@@ -518,11 +1002,18 @@ def phone_frame(
         (max(1, int(shot.width * scale)), max(1, int(shot.height * scale))),
         Image.Resampling.LANCZOS,
     )
+    # Draw fake status bar only when the source had none (we padded empty chrome)
+    if draw_island and not keep_status_bar and ios_pad is not None:
+        pad_scaled = max(36, int(ios_pad * (shot.height / max(1, src_h))))
+        fill = ios_pad_fill if ios_pad_fill is not None else (255, 255, 255)
+        if status_fill is not None:
+            fill = status_fill
+        shot = draw_ios_status_bar(shot, pad_scaled, fill)
 
-    bezel = 14
-    radius = 54
+    bezel = 8
+    radius = 52
     # Match inner bezel curve tightly so content fills corners
-    screen_r = max(36, radius - bezel + 2)
+    screen_r = max(40, radius - bezel + 1)
     w = shot.width + bezel * 2
     h = shot.height + bezel * 2
     device = Image.new("RGBA", (w, h), (0, 0, 0, 0))
@@ -532,18 +1023,24 @@ def phone_frame(
     draw.rounded_rectangle((0, 0, w - 1, h - 1), radius=radius, fill=(32, 34, 36, 255))
     draw.rounded_rectangle((2, 2, w - 3, h - 3), radius=radius - 2, fill=(14, 15, 17, 255))
 
-    # screen — full bleed into rounded inset
-    screen = Image.new("RGBA", shot.size, (0, 0, 0, 0))
-    screen.paste(shot, (0, 0))
+    # Underlay matches UI edge color so shell never peeks as black tint in corners
+    edge = np.asarray(shot.convert("RGB").crop((0, 0, shot.width, min(8, shot.height))))
+    under = tuple(int(x) for x in np.median(edge.reshape(-1, 3), axis=0))
+    screen = Image.new("RGBA", shot.size, (*under, 255))
+    screen.paste(shot, (0, 0), shot if shot.mode == "RGBA" else None)
+    if shot.mode != "RGBA":
+        screen.paste(shot, (0, 0))
     screen.putalpha(rounded_mask(shot.size, screen_r))
     device.paste(screen, (bezel, bezel), screen)
 
     # dynamic island — optional (skip for Android captures that keep their status bar)
     if draw_island:
-        island_w, island_h = int(w * 0.30), 20
+        island_w, island_h = int(w * 0.26), 20
         ix = (w - island_w) // 2
+        # Sit in the status-bar band, not on app chrome
+        iy = bezel + max(6, int(shot.height * 0.012))
         draw.rounded_rectangle(
-            (ix, 16, ix + island_w, 16 + island_h), radius=10, fill=(6, 6, 8, 255)
+            (ix, iy, ix + island_w, iy + island_h), radius=10, fill=(6, 6, 8, 255)
         )
 
     # side buttons
@@ -551,6 +1048,176 @@ def phone_frame(
     draw.rounded_rectangle((-3, int(h * 0.28), 2, int(h * 0.40)), radius=2, fill=(55, 58, 60, 255))
     draw.rounded_rectangle((w - 3, int(h * 0.30), w + 2, int(h * 0.42)), radius=2, fill=(55, 58, 60, 255))
     return device
+
+
+def screen_card(
+    screenshot: Image.Image,
+    max_h: int = 980,
+    max_w: int = 460,
+    *,
+    frame_rgb: tuple[int, int, int] | None = None,
+) -> Image.Image:
+    """Frameless app screen — rounded corners, subtle rim, no device chrome."""
+    shot = ensure_rgba(screenshot)
+    # Reserve space for internal safe-area padding before scaling to max bounds.
+    pad_top_ratio, pad_side_ratio, pad_bottom_ratio = 0.072, 0.034, 0.028
+    content_max_h = int(max_h / (1 + pad_top_ratio + pad_bottom_ratio))
+    content_max_w = int(max_w / (1 + 2 * pad_side_ratio))
+    scale = content_max_h / shot.height
+    if shot.width * scale > content_max_w:
+        scale = content_max_w / shot.width
+    shot = shot.resize(
+        (max(1, int(shot.width * scale)), max(1, int(shot.height * scale))),
+        Image.Resampling.LANCZOS,
+    )
+
+    pad_top = max(28, int(shot.height * pad_top_ratio))
+    pad_x = max(12, int(shot.width * pad_side_ratio))
+    pad_bottom = max(14, int(shot.height * pad_bottom_ratio))
+    canvas_w = shot.width + pad_x * 2
+    canvas_h = shot.height + pad_top + pad_bottom
+
+    frame = frame_rgb or SCREEN_CARD_FRAME
+    card = Image.new("RGBA", (canvas_w, canvas_h), (*frame, 255))
+    card.paste(shot, (pad_x, pad_top), shot)
+
+    # Soft top sheen on the chassis so the pad reads intentional, not a black band.
+    sheen = Image.new("RGBA", (canvas_w, canvas_h), (0, 0, 0, 0))
+    sheen_draw = ImageDraw.Draw(sheen)
+    sheen_top = tuple(min(255, c + 10) for c in frame)
+    sheen_bot = frame
+    for y in range(pad_top + 6):
+        t = y / max(1, pad_top + 5)
+        color = tuple(
+            int(sheen_top[i] + (sheen_bot[i] - sheen_top[i]) * t) for i in range(3)
+        )
+        sheen_draw.line([(0, y), (canvas_w, y)], fill=(*color, 255))
+    card = Image.alpha_composite(card, sheen)
+
+    radius = max(32, int(min(card.size) * 0.075))
+    mask = rounded_mask(card.size, radius)
+    framed = Image.new("RGBA", card.size, (0, 0, 0, 0))
+    content = card.copy()
+    content.putalpha(mask)
+    framed.paste(content, (0, 0), content)
+    # Muted slate rim — reads on near-black studio plates without a harsh white edge.
+    rim = Image.new("RGBA", card.size, (0, 0, 0, 0))
+    ImageDraw.Draw(rim).rounded_rectangle(
+        (1, 1, card.width - 2, card.height - 2),
+        radius=radius,
+        outline=SCREEN_CARD_RIM,
+        width=2,
+    )
+    card = Image.alpha_composite(framed, rim)
+    return card
+
+
+def android_frame(
+    screenshot: Image.Image,
+    max_h: int = 980,
+    max_w: int = 460,
+) -> Image.Image:
+    """Composite screenshot into a real Pixel 7 Pro bezel PNG."""
+    if not PIXEL_FRAME.is_file():
+        raise FileNotFoundError(f"Missing Pixel frame asset: {PIXEL_FRAME}")
+
+    frame = ensure_rgba(Image.open(PIXEL_FRAME))
+    sx0, sy0, sx1, sy1 = PIXEL_SCREEN
+    sw, sh = sx1 - sx0, sy1 - sy0
+
+    shot = ensure_rgba(screenshot)
+    # Cover-fit into Pixel screen aspect
+    scale = max(sw / shot.width, sh / shot.height)
+    nw = max(1, int(round(shot.width * scale)))
+    nh = max(1, int(round(shot.height * scale)))
+    shot = shot.resize((nw, nh), Image.Resampling.LANCZOS)
+    x0 = max(0, (nw - sw) // 2)
+    y0 = max(0, min((nh - sh) // 8, nh - sh))  # slight top bias for app headers
+    shot = shot.crop((x0, y0, x0 + sw, y0 + sh))
+
+    # Soft round screen corners to match Pixel glass
+    screen = Image.new("RGBA", (sw, sh), (0, 0, 0, 0))
+    screen.paste(shot, (0, 0))
+    screen.putalpha(rounded_mask((sw, sh), 28))
+
+    device = Image.new("RGBA", frame.size, (0, 0, 0, 0))
+    device.paste(screen, (sx0, sy0), screen)
+    device.alpha_composite(frame)
+
+    # Trim transparent outer padding so rotate/layout uses real device bounds
+    bbox = device.getbbox()
+    if bbox:
+        device = device.crop(bbox)
+
+    # Scale to requested max
+    scale_out = max_h / device.height
+    if device.width * scale_out > max_w:
+        scale_out = max_w / device.width
+    if scale_out != 1.0:
+        device = device.resize(
+            (
+                max(1, int(device.width * scale_out)),
+                max(1, int(device.height * scale_out)),
+            ),
+            Image.Resampling.LANCZOS,
+        )
+    return device
+
+
+def prep_android_for_pixel(
+    screenshot: Image.Image,
+    *,
+    strip_chrome: bool = True,
+) -> Image.Image:
+    """Prep Android screencaps for Pixel bezel — keep status bar, drop nav chrome."""
+    im = ensure_rgba(screenshot)
+    w, h = im.size
+    top = android_top_letterbox_height(im)
+    bottom = android_bottom_chrome_height(im) if strip_chrome else 0
+    im = im.crop((0, top, w, h - bottom))
+    im = collapse_android_status_gap(im)
+    # Light polish only — android_frame cover-fits into Pixel aspect
+    rgb = ImageEnhance.Contrast(im.convert("RGB")).enhance(1.03)
+    rgb = ImageEnhance.Sharpness(rgb).enhance(1.08)
+    return rgb.convert("RGBA")
+
+
+def android_app_content_top(screenshot: Image.Image) -> int:
+    """Row where app chrome begins — skip status bar and any dead band above it."""
+    w, h = screenshot.size
+    arr = np.asarray(screenshot.convert("RGB"))
+    means = arr.mean(axis=(1, 2)).astype(np.float32)
+    stds = arr.std(axis=(1, 2)).astype(np.float32)
+
+    y = 20
+    search_to = min(h, 280)
+    while y < search_to:
+        if means[y] < 14 and stds[y] < 6:
+            run = 0
+            while y + run < search_to and means[y + run] < 14 and stds[y + run] < 6:
+                run += 1
+            if run >= 12:
+                return y + run
+        y += 1
+    return 0
+
+
+def prep_android_for_screen(
+    screenshot: Image.Image,
+    *,
+    strip_chrome: bool = True,
+) -> Image.Image:
+    """Crop Android capture to app UI only — no status bar, no nav, no dead bands."""
+    im = ensure_rgba(screenshot)
+    w, h = im.size
+    top = android_top_letterbox_height(im)
+    bottom = android_bottom_chrome_height(im) if strip_chrome else 0
+    trimmed = im.crop((0, top, w, h - bottom))
+    app_y = android_app_content_top(trimmed)
+    im = trimmed.crop((0, app_y, trimmed.width, trimmed.height))
+    rgb = ImageEnhance.Contrast(im.convert("RGB")).enhance(1.03)
+    rgb = ImageEnhance.Sharpness(rgb).enhance(1.06)
+    return rgb.convert("RGBA")
 
 
 def laptop_frame(screenshot: Image.Image, screen_w: int = 1100) -> Image.Image:
@@ -719,6 +1386,7 @@ def compose_device_family(
     studio: bool = True,
     phone_status_fill: tuple[int, int, int] | None = None,
     clean_notifications: bool = True,
+    phone_style: str = "ios",
 ) -> Image.Image:
     """Responsive family hero: monitor (back) + laptop + tablet + phone (front).
 
@@ -737,21 +1405,23 @@ def compose_device_family(
             max_h=int(590 * scale),
             clean_notifications=clean_notifications,
             status_fill=phone_status_fill,
+            style=phone_style,
         )
         # Self-contained cluster in local coordinates (origin at 0,0).
         # Front row (laptop | phone | tablet) overlaps the monitor's lower ~38%
         # and shares one baseline; the phone steps forward as the foreground.
-        overlap = int(monitor.height * 0.38)
+        overlap = int(monitor.height * 0.28)
         row_top = monitor.height - overlap
         baseline = row_top + phone.height  # phone is tallest → defines the floor
 
         lx = 0
         ly = baseline - laptop.height
-        # Phone overlaps the laptop's right third and sits lowest (foreground).
-        px = lx + laptop.width - int(phone.width * 0.42)
+        # Phone laps the laptop's right edge and sits lowest (foreground). Keep
+        # the bite shallow — a deeper tuck hides the laptop's content column.
+        px = lx + laptop.width - int(phone.width * 0.22)
         py = baseline - phone.height
         # Tablet tucks behind the phone's right side, slightly raised.
-        tx = px + phone.width - int(tablet.width * 0.34)
+        tx = px + phone.width - int(tablet.width * 0.16)
         ty = baseline - tablet.height - int(tablet.height * 0.05)
 
         cluster_w = tx + tablet.width
@@ -826,6 +1496,49 @@ def compose_device_family(
     return bg.convert("RGB")
 
 
+def crop_at_section_boundary(
+    shot: Image.Image,
+    lo: float = 0.62,
+    hi: float = 0.96,
+) -> Image.Image:
+    """Trim a page capture at the last section colour change in [lo, hi].
+
+    A viewport screenshot usually ends part-way into the following section,
+    slicing its headline in half. Cutting at the band where the page background
+    changes leaves a clean edge that `mode="hero"` can then pad out.
+    """
+    im = ensure_rgba(shot)
+    rgb = im.convert("RGB")
+    w, h = rgb.size
+    # One averaged column of the page: row colour without per-pixel noise.
+    strip = rgb.resize((1, h), Image.Resampling.LANCZOS)
+    y0, y1 = int(h * lo), int(h * hi)
+
+    # A new section reads as a long run of near-constant background colour.
+    # Isolated changes inside the hero (cards, pills, buttons) are short runs,
+    # so take the longest run and cut at where it begins.
+    runs: list[tuple[int, int]] = []  # (start, length)
+    start = y0
+    base = strip.getpixel((0, y0))
+    for y in range(y0 + 1, y1):
+        cur = strip.getpixel((0, y))
+        if max(abs(cur[i] - base[i]) for i in range(3)) > 6:
+            runs.append((start, y - start))
+            start, base = y, cur
+    runs.append((start, y1 - start))
+
+    # The hero's own background is a long run too, so take the *last* run that
+    # is substantial enough to be a section — that is the one intruding at the
+    # bottom of the viewport — and cut where it starts.
+    solid = [r for r in runs if r[1] >= int(h * 0.05)]
+    if len(solid) < 2:
+        return im
+    cut = solid[-1][0]
+    if cut <= y0:
+        return im
+    return im.crop((0, 0, w, cut))
+
+
 def fit_web_for_laptop(
     shot: Image.Image,
     screen_w: int,
@@ -853,6 +1566,24 @@ def fit_web_for_laptop(
         canvas.paste(shot, ((screen_w - nw) // 2, 0), shot)
         return canvas
 
+    if mode == "hero":
+        # Scale to full width; if the shot is shorter than the screen, extend it
+        # with its own bottom-edge colour instead of white so the fill is
+        # invisible. Pair with crop_at_section_boundary() to cut a page above
+        # the next section rather than through its headline.
+        scale = screen_w / sw
+        new_h = max(1, int(sh * scale))
+        shot = shot.resize((screen_w, new_h), Image.Resampling.LANCZOS)
+        if new_h >= target_h:
+            return shot.crop((0, 0, screen_w, target_h))
+        edge = shot.convert("RGB").resize((1, new_h), Image.Resampling.LANCZOS)
+        # Sample above the final rows: a crop made at a section boundary leaves
+        # a few transition pixels there, and matching those tints the fill.
+        fill = edge.getpixel((0, max(0, new_h - 1 - int(new_h * 0.02)))) + (255,)
+        canvas = Image.new("RGBA", (screen_w, target_h), fill)
+        canvas.paste(shot, (0, 0), shot)
+        return canvas
+
     if mode == "fullpage":
         # Entire long page → fill laptop screen (non-uniform scale).
         # Prefer this over contain for very tall full-page captures, which
@@ -861,14 +1592,19 @@ def fit_web_for_laptop(
 
     scale = screen_w / sw
     new_h = max(1, int(sh * scale))
-    shot = shot.resize((screen_w, new_h), Image.Resampling.LANCZOS)
     if new_h >= target_h:
-        # Prefer top of page (logo + hero / section start)
+        # Tall enough: scale to width, keep the top of the page (logo + hero).
+        shot = shot.resize((screen_w, new_h), Image.Resampling.LANCZOS)
         shot = shot.crop((0, 0, screen_w, target_h))
     else:
-        canvas = Image.new("RGBA", (screen_w, target_h), (255, 255, 255, 255))
-        canvas.paste(shot, (0, 0), shot)
-        shot = canvas
+        # Ultra-wide capture (e.g. 2:1 desktop grabs) is shorter than the
+        # 16:10 screen. Padding leaves a dead white band across the laptop, so
+        # cover instead: scale to height and trim the width off the right, so
+        # the left edge — app sidebar, logo, primary column — stays intact.
+        cover = target_h / sh
+        cw = max(screen_w, int(sw * cover))
+        shot = shot.resize((cw, target_h), Image.Resampling.LANCZOS)
+        shot = shot.crop((0, 0, screen_w, target_h))
     return shot
 
 
@@ -1003,8 +1739,33 @@ def extract_store_device(im: Image.Image) -> Image.Image:
 def crop_innerverse_screen(im: Image.Image) -> Image.Image:
     """App UI only — strip Play Store marketing copy and store-mockup bezel."""
     w, h = im.size
+    # The store graphic centres a phone mockup on a starfield, but not at the
+    # same x across screenshots — a fixed fraction slices the first letter off
+    # headings ("Good evening" → "ood evening"). Find the device edges instead.
+    rgb = im.convert("RGB")
+    lefts, rights = [], []
+    for frac in (0.35, 0.45, 0.55, 0.65):
+        y = int(h * frac)
+        row = [rgb.getpixel((x, y)) for x in range(w)]
+        bg = row[2]
+        xs = [
+            x
+            for x, c in enumerate(row)
+            if max(abs(c[i] - bg[i]) for i in range(3)) > 18
+        ]
+        if xs:
+            lefts.append(xs[0])
+            rights.append(xs[-1])
+    if lefts and rights:
+        lefts.sort()
+        rights.sort()
+        x0, x1 = lefts[len(lefts) // 2], rights[len(rights) // 2]
+        inset = int((x1 - x0) * 0.015)  # step just inside the bezel
+        x0, x1 = x0 + inset, x1 - inset
+    else:
+        x0, x1 = int(w * 0.195), int(w * 0.805)
     # Keep header + bottom nav; pad so content clears island + chin in phone_frame
-    screen = im.crop((int(w * 0.195), int(h * 0.215), int(w * 0.805), int(h * 0.985)))
+    screen = im.crop((x0, int(h * 0.215), x1, int(h * 0.985)))
     # Pad is pre-scale; keep generous so it still clears island + chin after resize
     pad_top = max(64, int(screen.height * 0.065))
     pad_bot = max(88, int(screen.height * 0.06))
@@ -1416,6 +2177,55 @@ def build_meet_and_greet() -> None:
     )
 
 
+def android_top_letterbox_height(screenshot: Image.Image) -> int:
+    """Detect flat black/dead rows above the status bar (common in Android screencaps)."""
+    arr = np.asarray(screenshot.convert("RGB")).astype(np.float32)
+    h, _w, _c = arr.shape
+    means = arr.mean(axis=(1, 2))
+    stds = arr.std(axis=(1, 2))
+    y = 0
+    ceiling = int(h * 0.07)
+    while y < ceiling and means[y] < 20 and stds[y] < 12:
+        y += 1
+    return max(0, y)
+
+
+def collapse_android_status_gap(screenshot: Image.Image) -> Image.Image:
+    """Remove the dead black band between the status bar and app header."""
+    im = ensure_rgba(screenshot)
+    w, h = im.size
+    arr = np.asarray(im.convert("RGB"))
+    means = arr.mean(axis=(1, 2)).astype(np.float32)
+    stds = arr.std(axis=(1, 2)).astype(np.float32)
+
+    gap_start = None
+    gap_end = None
+    search_to = min(h, 280)
+    y = 24  # skip the status-bar icon band
+    while y < search_to:
+        if means[y] < 14 and stds[y] < 6:
+            run = 0
+            while y + run < search_to and means[y + run] < 14 and stds[y + run] < 6:
+                run += 1
+            if run >= 16:
+                gap_start = y
+                gap_end = y + run
+                break
+        y += 1
+
+    if gap_start is None or gap_end is None:
+        return im
+    if gap_end >= h or stds[gap_end] < 8:
+        return im
+
+    top_part = im.crop((0, 0, w, gap_start))
+    bottom_part = im.crop((0, gap_end, w, h))
+    out = Image.new("RGBA", (w, gap_start + bottom_part.height), (0, 0, 0, 0))
+    out.paste(top_part, (0, 0))
+    out.paste(bottom_part, (0, gap_start))
+    return out
+
+
 def android_bottom_chrome_height(screenshot: Image.Image) -> int:
     """Detect Android nav (+ optional light gap above sheets) to crop from bottom."""
     rgb = screenshot.convert("RGB")
@@ -1546,6 +2356,9 @@ def build_realtag() -> None:
             max_h=1020,
             margin=36,
             clean_notifications=False,
+            # RealTag is an Android app whose own header sits at the very top of
+            # the screen; a drawn island lands straight on the title.
+            draw_island=False,
         ),
         # Details — tag form/list + cafe detect (no dining/food plate)
         compose_dual_phones(
@@ -1558,6 +2371,9 @@ def build_realtag() -> None:
             max_h=1020,
             margin=36,
             clean_notifications=False,
+            # RealTag is an Android app whose own header sits at the very top of
+            # the screen; a drawn island lands straight on the title.
+            draw_island=False,
         ),
         compose_plate(
             phone_frame(cafe, max_h=1120, max_w=520, clean_notifications=False),
@@ -1570,7 +2386,7 @@ def build_realtag() -> None:
 
 
 def build_decidr() -> None:
-    """Decidr — web SaaS decision workspace (seeded demo captures)."""
+    """Decidr — web SaaS decision workspace (seeded UI captures)."""
     print("Decidr")
     dest = OUT / "decidr"
     tmp = ROOT / ".tmp-shots" / "decidr"
@@ -1611,7 +2427,9 @@ def build_decidr() -> None:
     plates = [
         # Hero: marketing website on laptop (web product signal for work-grid thumb)
         compose_plate(
-            browser_in_laptop(landing, screen_w=1280),
+            browser_in_laptop(
+                crop_at_section_boundary(landing), screen_w=1280, fit="hero"
+            ),
             tint=tint,
             studio=True,
             offset_y=4,
@@ -1693,87 +2511,26 @@ def build_catchat() -> None:
 
 
 def build_agenticly() -> None:
-    """Agenticly — real product UI: web app (agenticly-prod) + mobile app.
+    """Agenticly — AppScreen-only plates (no Pillow composition).
 
-    Web plates use live desktop captures in .tmp-shots/agenticly/web-new/
-    (1440×900 → exact 16:10 laptop fit). Alternates web + mobile so the set
-    reads as cross-platform, not mobile-only.
+    Source of truth: `.tmp-shots/agenticly/appscreen/plates/{hero,detail-1,detail-2}.png`
+    exported from AppScreen MCP at 1600×1200. This builder only converts/copies.
     """
-    print("Agenticly")
+    print("Agenticly (AppScreen plates)")
     dest = OUT / "agenticly"
-    tmp = ROOT / ".tmp-shots" / "agenticly"
-    ss = SHOTS / "Agenticly"
-    web_dir = tmp / "web-new"
-
-    def load(name: str) -> Image.Image:
-        for base in (tmp, ss):
-            for ext in (".jpg", ".png", ".jpeg"):
-                p = base / f"{name}{ext}"
-                if p.exists():
-                    return fit_android_to_iphone_frame(
-                        Image.open(p), fill=(8, 8, 12), top_safe=0.05
-                    )
-        raise FileNotFoundError(name)
-
-    def web(name: str) -> Image.Image:
-        return Image.open(web_dir / name)
-
-    # Mobile app screens
-    markets = load("02-chat")       # market overview + charts
-    trending = load("03-charts")
-    research = load("06-detail-a")  # AI chat + workflow
-    chart_chat = load("07-detail-b")  # BTC chart in chat
-
-    # Web app screens (real product, captured from agenticly-prod)
-    web_home = web("web-hero.png")           # dashboard / research assistant home
-    web_chart = web("web-chart.png")         # AI chat with a rendered line chart (on-chain data)
-    web_report = web("web-market-report.png")  # daily market report: headlines + gainers/losers
-    web_portfolio = web("web-tablet-portfolio.png")  # portfolio review + holdings table
-    web_agent_detail = web("web-agent-detail.png")  # scheduled agent detail + runs
-
-    tint = (45, 180, 160)
-    plates = [
-        # Hero — one product across every screen: monitor + laptop + tablet + phone.
-        # Data-viz forward: daily market report (monitor), chart chat (laptop),
-        # portfolio analysis (tablet), price chart (phone).
-        compose_device_family(
-            web_report,      # desktop monitor — daily market trends: headlines, gainers/losers
-            web_chart,       # laptop — AI chat with a rendered line chart
-            web_portfolio,   # tablet — portfolio review + holdings table
-            chart_chat,      # phone — mobile app BTC price-trend chart
-            tint=tint,
-            studio=True,
-            clean_notifications=False,
-        ),
-        # AI research cross-platform — web dashboard + mobile companion
-        compose_laptop_phone(
-            web_home,
-            research,
-            tint=tint,
-            studio=True,
-            phone_side="left",
-        ),
-        # Web-only Scheduled Agents — real agent detail + upcoming runs
-        compose_plate(
-            browser_in_laptop(web_agent_detail, screen_w=1280),
-            tint=tint,
-            studio=True,
-            offset_y=6,
-        ),
-        # Mobile app presence — live markets + trending
-        compose_dual_phones(
-            markets,
-            trending,
-            tint=tint,
-            studio=True,
-            gap=96,
-            angle=1.3,
-            max_h=940,
-            margin=52,
-            clean_notifications=False,
-        ),
-    ]
-    save_set(dest, plates)
+    plates = ROOT / ".tmp-shots" / "agenticly" / "appscreen" / "plates"
+    dest.mkdir(parents=True, exist_ok=True)
+    for name in ("hero", "detail-1", "detail-2"):
+        src = plates / f"{name}.png"
+        if not src.exists():
+            raise FileNotFoundError(
+                f"Missing AppScreen plate {src} — export from AppScreen MCP first"
+            )
+        im = Image.open(src).convert("RGB")
+        for out_name in (f"{name}.jpg", f"plate-{name}.jpg"):
+            out = dest / out_name
+            im.save(out, "JPEG", quality=90, optimize=True)
+            print(f"  → {out.relative_to(ROOT)} ({im.width}×{im.height})")
 
 
 def fit_kitty_nip_screen(screenshot: Image.Image) -> Image.Image:
@@ -1918,6 +2675,799 @@ def _kitty_promo_plate(im: Image.Image, tint: tuple[int, int, int], max_w: int =
     return bg.convert("RGB")
 
 
+def build_sextherapypro() -> None:
+    """Sex Therapy Pro — soft mist editorial plates (wellness, not charcoal studio)."""
+    print("Sex Therapy Pro")
+    dest = OUT / "sextherapypro"
+    tmp = ROOT / ".tmp-shots" / "sextherapypro"
+    tint = (130, 155, 235)
+
+    def load(name: str) -> Image.Image:
+        return Image.open(tmp / name).convert("RGBA")
+
+    plan = load("01-plan.png")
+    goals = load("03-goals.png")
+    topics = patch_stp_topics(load("06-topics.png"))
+    game = load("04-game.png")
+    chat = load("02-chat.png")
+
+    plates = [
+        compose_wellness_hero([plan, goals, topics], tint=tint),
+        compose_wellness_cascade([game, chat, goals], tint=tint),
+    ]
+    save_set(dest, plates)
+
+
+def mist_editorial_bg(
+    canvas: tuple[int, int] = (1600, 1200),
+    tint: tuple[int, int, int] = (130, 155, 235),
+) -> Image.Image:
+    """Soft lavender mist — calm wellness plate for Sex Therapy Pro."""
+    w, h = canvas
+    yy, xx = np.mgrid[0:h, 0:w]
+    base = np.array([236, 240, 250], dtype=np.float32)
+    arr = np.broadcast_to(base, (h, w, 3)).copy()
+    cx, cy = w * 0.5, h * 0.35
+    dist = np.sqrt((xx - cx) ** 2 + (yy - cy) ** 2)
+    wash = np.clip(1 - dist / (max(w, h) * 0.85), 0, 1) ** 1.5
+    for i, c in enumerate(tint):
+        arr[:, :, i] = arr[:, :, i] * (1 - wash * 0.28) + c * (wash * 0.28)
+    # soft second wash bottom
+    floor = np.clip((yy / h - 0.45) / 0.55, 0, 1) ** 1.2
+    soft = (220, 225, 240)
+    for i, c in enumerate(soft):
+        arr[:, :, i] = arr[:, :, i] * (1 - floor * 0.2) + c * (floor * 0.2)
+    rng = np.random.default_rng(11)
+    arr = np.clip(arr + rng.normal(0, 0.8, (h, w, 1)), 0, 255)
+    bg = Image.fromarray(arr.astype(np.uint8)).convert("RGBA")
+    blob = Image.new("RGBA", canvas, (0, 0, 0, 0))
+    ImageDraw.Draw(blob).ellipse(
+        (int(w * 0.15), int(h * -0.1), int(w * 0.85), int(h * 0.55)),
+        fill=(*tint, 32),
+    )
+    return Image.alpha_composite(bg, blob.filter(ImageFilter.GaussianBlur(120)))
+
+
+def forest_editorial_bg(
+    canvas: tuple[int, int] = (1600, 1200),
+    tint: tuple[int, int, int] = (34, 110, 72),
+) -> Image.Image:
+    """Deep forest field plate for CPAS Huddle Up — stadium night energy."""
+    w, h = canvas
+    yy, xx = np.mgrid[0:h, 0:w]
+    base = np.array([14, 28, 22], dtype=np.float32)
+    arr = np.broadcast_to(base, (h, w, 3)).copy()
+    # vertical field wash
+    floor = np.clip((yy / h - 0.25) / 0.75, 0, 1) ** 1.3
+    mid = (22, 48, 36)
+    for i, c in enumerate(mid):
+        arr[:, :, i] = arr[:, :, i] * (1 - floor * 0.55) + c * (floor * 0.55)
+    # key light upper center (floodlight)
+    cx, cy = w * 0.5, h * 0.12
+    dist = np.sqrt((xx - cx) ** 2 + (yy - cy) ** 2)
+    key = np.clip(1 - dist / (max(w, h) * 0.7), 0, 1) ** 2.0
+    for i, c in enumerate(tint):
+        arr[:, :, i] = arr[:, :, i] * (1 - key * 0.45) + c * (key * 0.45)
+    rng = np.random.default_rng(3)
+    arr = np.clip(arr + rng.normal(0, 1.0, (h, w, 1)), 0, 255)
+    bg = Image.fromarray(arr.astype(np.uint8)).convert("RGBA")
+    blob = Image.new("RGBA", canvas, (0, 0, 0, 0))
+    ImageDraw.Draw(blob).ellipse(
+        (int(w * 0.2), int(h * 0.55), int(w * 0.8), int(h * 1.15)),
+        fill=(20, 80, 50, 40),
+    )
+    return Image.alpha_composite(bg, blob.filter(ImageFilter.GaussianBlur(90)))
+
+
+def _framed_ios(shot: Image.Image, max_h: int, max_w: int = 480) -> Image.Image:
+    """iOS shot → clean header chrome → phone frame (no notification wipe)."""
+    return phone_frame(
+        prep_ios_for_frame(shot),
+        max_h=max_h,
+        max_w=max_w,
+        clean_notifications=False,
+    )
+
+
+def compose_wellness_hero(
+    shots: list[Image.Image],
+    canvas: tuple[int, int] = (1600, 1200),
+    tint: tuple[int, int, int] = (130, 155, 235),
+) -> Image.Image:
+    """Centered 3-phone cascade — fills 4:3 portfolio cards (no empty half)."""
+    return compose_wellness_cascade(shots[:3], canvas=canvas, tint=tint)
+
+
+def compose_wellness_cascade(
+    shots: list[Image.Image],
+    canvas: tuple[int, int] = (1600, 1200),
+    tint: tuple[int, int, int] = (130, 155, 235),
+) -> Image.Image:
+    """Dense overlapping cascade on mist — sized to fill portfolio 4:3 cards."""
+    bg = mist_editorial_bg(canvas, tint)
+    heights = [920, 1100, 960]
+    angles = [-5.5, 0.0, 5.0]
+    phones = [_framed_ios(s, max_h=heights[i], max_w=500) for i, s in enumerate(shots[:3])]
+    rotated = [
+        p.rotate(angles[i], resample=Image.Resampling.BICUBIC, expand=True)
+        for i, p in enumerate(phones)
+    ]
+    gap = -80
+    margin = 40
+    total = sum(p.width for p in phones) + gap * 2
+    scale = min(1.0, (canvas[0] - margin * 2) / max(1, total))
+    # Prefer filling height too
+    max_rot_h = max(r.height for r in rotated)
+    scale = min(scale, (canvas[1] - 50) / max(1, max_rot_h))
+    if scale < 0.999:
+        phones = [
+            _framed_ios(s, max_h=int(heights[i] * scale), max_w=int(500 * scale))
+            for i, s in enumerate(shots[:3])
+        ]
+        rotated = [
+            p.rotate(angles[i], resample=Image.Resampling.BICUBIC, expand=True)
+            for i, p in enumerate(phones)
+        ]
+        gap = int(-80 * scale)
+
+    x = margin
+    xs = []
+    for p in phones:
+        xs.append(x)
+        x += p.width + gap
+    span = (xs[-1] + phones[-1].width) - xs[0]
+    shift = (canvas[0] - span) // 2 - xs[0]
+    xs = [v + shift for v in xs]
+    ys = [
+        (canvas[1] - phones[i].height) // 2 + [24, -10, 28][i] for i in range(3)
+    ]
+    for i, opacity in ((0, 78), (2, 82), (1, 120)):
+        rx = xs[i] + (phones[i].width - rotated[i].width) // 2
+        ry = ys[i] + (phones[i].height - rotated[i].height) // 2
+        paste_with_shadow(bg, rotated[i], (rx, ry), radius=48, blur=34, opacity=opacity)
+    return bg.convert("RGB")
+
+
+def compose_wellness_tools(
+    left: Image.Image,
+    right: Image.Image,
+    canvas: tuple[int, int] = (1600, 1200),
+    tint: tuple[int, int, int] = (130, 155, 235),
+) -> Image.Image:
+    """Bare UI tool cards — body map + game, product-first."""
+    bg = mist_editorial_bg(canvas, tint)
+    a = rounded_ui_card(prep_ios_for_frame(left), max_w=520, max_h=980, radius=36)
+    b = rounded_ui_card(prep_ios_for_frame(right), max_w=520, max_h=980, radius=36)
+    gap = 48
+    total = a.width + b.width + gap
+    scale = min(1.0, (canvas[0] - 100) / total, (canvas[1] - 80) / max(a.height, b.height))
+    if scale < 0.999:
+        a = a.resize((int(a.width * scale), int(a.height * scale)), Image.Resampling.LANCZOS)
+        b = b.resize((int(b.width * scale), int(b.height * scale)), Image.Resampling.LANCZOS)
+        gap = max(24, int(48 * scale))
+    x0 = (canvas[0] - (a.width + b.width + gap)) // 2
+    y0 = (canvas[1] - max(a.height, b.height)) // 2
+    paste_with_shadow(bg, a, (x0, y0 + (max(a.height, b.height) - a.height) // 2), radius=36, blur=32, opacity=88)
+    paste_with_shadow(
+        bg,
+        b,
+        (x0 + a.width + gap, y0 + (max(a.height, b.height) - b.height) // 2),
+        radius=36,
+        blur=32,
+        opacity=88,
+    )
+    return bg.convert("RGB")
+
+
+def compose_cpas_hero(
+    home: Image.Image,
+    room: Image.Image,
+    podcast: Image.Image,
+    splash: Image.Image,
+    canvas: tuple[int, int] = (1600, 1200),
+    tint: tuple[int, int, int] = (34, 110, 72),
+) -> Image.Image:
+    """Four-phone forest fan — fills the plate (no empty half)."""
+    bg = forest_editorial_bg(canvas, tint)
+    heights = [760, 980, 900, 740]
+    angles = [-8.0, -1.5, 3.5, 8.5]
+    max_ws = [360, 460, 420, 350]
+    shots = [room, home, podcast, splash]
+    phones = [
+        _framed_ios(s, max_h=heights[i], max_w=max_ws[i]) for i, s in enumerate(shots)
+    ]
+    rotated = [
+        p.rotate(angles[i], resample=Image.Resampling.BICUBIC, expand=True)
+        for i, p in enumerate(phones)
+    ]
+    gap = -70
+    margin = 36
+    total = sum(p.width for p in phones) + gap * 3
+    scale = min(1.0, (canvas[0] - margin * 2) / max(1, total))
+    max_rot_h = max(r.height for r in rotated)
+    scale = min(scale, (canvas[1] - 60) / max(1, max_rot_h))
+    if scale < 0.999:
+        phones = [
+            _framed_ios(s, max_h=int(heights[i] * scale), max_w=int(max_ws[i] * scale))
+            for i, s in enumerate(shots)
+        ]
+        rotated = [
+            p.rotate(angles[i], resample=Image.Resampling.BICUBIC, expand=True)
+            for i, p in enumerate(phones)
+        ]
+        gap = int(-70 * scale)
+
+    x = margin
+    xs: list[int] = []
+    for p in phones:
+        xs.append(x)
+        x += p.width + gap
+    span = (xs[-1] + phones[-1].width) - xs[0]
+    shift = (canvas[0] - span) // 2 - xs[0]
+    xs = [v + shift for v in xs]
+    y_offs = [48, -12, 18, 56]
+    ys = [(canvas[1] - phones[i].height) // 2 + y_offs[i] for i in range(4)]
+    for i, opacity in ((0, 70), (3, 72), (2, 95), (1, 120)):
+        rx = xs[i] + (phones[i].width - rotated[i].width) // 2
+        ry = ys[i] + (phones[i].height - rotated[i].height) // 2
+        paste_with_shadow(
+            bg, rotated[i], (rx, ry), radius=48, blur=34, opacity=opacity, studio=True
+        )
+    return bg.convert("RGB")
+
+
+def compose_cpas_web_hero(
+    web: Image.Image,
+    phone_shot: Image.Image,
+    float_shot: Image.Image,
+    canvas: tuple[int, int] = (1600, 1200),
+    tint: tuple[int, int, int] = (34, 110, 72),
+) -> Image.Image:
+    """Coach web dashboard + phone — denser product plate."""
+    bg = forest_editorial_bg(canvas, tint)
+    margin = 40
+    phone = _framed_ios(phone_shot, max_h=1080, max_w=500)
+    angled = phone.rotate(-5.5, resample=Image.Resampling.BICUBIC, expand=True)
+    browser = thin_browser_frame(trim_web_top_padding(web), screen_w=1000, fit="width")
+    floater = rounded_ui_card(prep_ios_for_frame(float_shot), max_w=340, max_h=420, radius=24)
+
+    scale = 1.0
+    for _ in range(8):
+        span_w = angled.width + int(browser.width * 0.62)
+        span_h = max(angled.height, browser.height + 40)
+        fit = min(
+            (canvas[0] - margin * 2) / max(1, span_w),
+            (canvas[1] - margin * 2) / max(1, span_h),
+            1.0,
+        )
+        if fit >= 0.995:
+            break
+        scale *= fit * 0.97
+        phone = _framed_ios(phone_shot, max_h=int(1080 * scale), max_w=int(500 * scale))
+        angled = phone.rotate(-5.5, resample=Image.Resampling.BICUBIC, expand=True)
+        browser = thin_browser_frame(
+            trim_web_top_padding(web), screen_w=int(1000 * scale), fit="width"
+        )
+        floater = rounded_ui_card(
+            prep_ios_for_frame(float_shot),
+            max_w=int(340 * scale),
+            max_h=int(420 * scale),
+            radius=max(16, int(24 * scale)),
+        )
+
+    bx = canvas[0] - browser.width - margin - 10
+    by = (canvas[1] - browser.height) // 2 - 20
+    ax = margin + 10
+    ay = (canvas[1] - angled.height) // 2 + 10
+    fx = ax + angled.width - int(floater.width * 0.35)
+    fy = ay + angled.height - floater.height - int(70 * scale)
+
+    paste_with_shadow(bg, browser, (bx, by), radius=18, blur=36, opacity=80, studio=True)
+    paste_with_shadow(bg, angled, (ax, ay), radius=48, blur=40, opacity=120, studio=True)
+    paste_with_shadow(bg, floater, (fx, fy), radius=24, blur=28, opacity=100, studio=True)
+    return bg.convert("RGB")
+
+
+def compose_cpas_livestream(
+    podcast: Image.Image,
+    canvas: tuple[int, int] = (1600, 1200),
+    tint: tuple[int, int, int] = (34, 110, 72),
+) -> Image.Image:
+    """Single oversized livestream phone — Agora moment as spotlight."""
+    bg = forest_editorial_bg(canvas, tint)
+    phone = _framed_ios(podcast, max_h=1120, max_w=520)
+    angled = phone.rotate(-2.5, resample=Image.Resampling.BICUBIC, expand=True)
+    scale = min((canvas[0] - 120) / angled.width, (canvas[1] - 80) / angled.height, 1.0)
+    if scale < 0.999:
+        phone = _framed_ios(podcast, max_h=int(1120 * scale), max_w=int(520 * scale))
+        angled = phone.rotate(-2.5, resample=Image.Resampling.BICUBIC, expand=True)
+    dx = (canvas[0] - angled.width) // 2
+    dy = (canvas[1] - angled.height) // 2
+    paste_with_shadow(bg, angled, (dx, dy), radius=52, blur=46, opacity=130, studio=True)
+    return bg.convert("RGB")
+
+
+def compose_cpas_dual_field(
+    left: Image.Image,
+    right: Image.Image,
+    canvas: tuple[int, int] = (1600, 1200),
+    tint: tuple[int, int, int] = (34, 110, 72),
+) -> Image.Image:
+    """Two phones on forest plate — wider gap, low angles (locker-room pair)."""
+    bg = forest_editorial_bg(canvas, tint)
+    a = _framed_ios(left, max_h=1000)
+    b = _framed_ios(right, max_h=1000)
+    ra = a.rotate(-3.0, resample=Image.Resampling.BICUBIC, expand=True)
+    rb = b.rotate(3.0, resample=Image.Resampling.BICUBIC, expand=True)
+    gap = 100
+    total = ra.width + rb.width + gap
+    scale = min(1.0, (canvas[0] - 90) / total, (canvas[1] - 70) / max(ra.height, rb.height))
+    if scale < 0.999:
+        a = _framed_ios(left, max_h=int(1000 * scale))
+        b = _framed_ios(right, max_h=int(1000 * scale))
+        ra = a.rotate(-3.0, resample=Image.Resampling.BICUBIC, expand=True)
+        rb = b.rotate(3.0, resample=Image.Resampling.BICUBIC, expand=True)
+        gap = max(48, int(100 * scale))
+    x0 = (canvas[0] - (ra.width + rb.width + gap)) // 2
+    y0 = (canvas[1] - max(ra.height, rb.height)) // 2
+    paste_with_shadow(bg, ra, (x0, y0), radius=48, blur=36, opacity=100, studio=True)
+    paste_with_shadow(
+        bg, rb, (x0 + ra.width + gap, y0 + 8), radius=48, blur=36, opacity=100, studio=True
+    )
+    return bg.convert("RGB")
+
+
+def compose_cpas_brand_splash(
+    splash: Image.Image,
+    home: Image.Image,
+    podcast: Image.Image,
+    canvas: tuple[int, int] = (1600, 1200),
+    tint: tuple[int, int, int] = (34, 110, 72),
+) -> Image.Image:
+    """Splash + home + live float — wide center-weighted cluster fills the 4:3 plate."""
+    bg = forest_editorial_bg(canvas, tint)
+    splash_card = rounded_ui_card(prep_ios_for_frame(splash), max_w=400, max_h=900, radius=36)
+    phone = _framed_ios(home, max_h=1180, max_w=540)
+    angled = phone.rotate(3.5, resample=Image.Resampling.BICUBIC, expand=True)
+    floater = rounded_ui_card(prep_ios_for_frame(podcast), max_w=400, max_h=520, radius=24)
+    # Span nearly full width: splash peek + phone body + floater peek
+    span = splash_card.width * 0.55 + angled.width * 0.78 + floater.width * 0.55
+    scale = min(
+        1.0,
+        (canvas[0] - 56) / span,
+        (canvas[1] - 36) / max(splash_card.height, angled.height),
+    )
+    if scale < 0.999:
+        splash_card = rounded_ui_card(
+            prep_ios_for_frame(splash), max_w=int(400 * scale), max_h=int(900 * scale), radius=28
+        )
+        phone = _framed_ios(home, max_h=int(1180 * scale), max_w=int(540 * scale))
+        angled = phone.rotate(3.5, resample=Image.Resampling.BICUBIC, expand=True)
+        floater = rounded_ui_card(
+            prep_ios_for_frame(podcast),
+            max_w=int(400 * scale),
+            max_h=int(520 * scale),
+            radius=20,
+        )
+        span = splash_card.width * 0.55 + angled.width * 0.78 + floater.width * 0.55
+    sx = max(20, (canvas[0] - int(span)) // 2)
+    sy = (canvas[1] - splash_card.height) // 2
+    ax = sx + int(splash_card.width * 0.55)
+    ay = (canvas[1] - angled.height) // 2
+    fx = ax + int(angled.width * 0.78) - int(floater.width * 0.35)
+    fy = ay + int(angled.height * 0.42)
+    # Keep floater inside canvas
+    fx = min(fx, canvas[0] - floater.width - 20)
+    paste_with_shadow(bg, splash_card, (sx, sy), radius=36, blur=34, opacity=95, studio=True)
+    paste_with_shadow(bg, angled, (ax, ay), radius=48, blur=40, opacity=125, studio=True)
+    paste_with_shadow(bg, floater, (fx, fy), radius=24, blur=28, opacity=110, studio=True)
+    return bg.convert("RGB")
+
+
+def compose_cpas_stadium(
+    live: Image.Image,
+    left: Image.Image,
+    right: Image.Image,
+    canvas: tuple[int, int] = (1600, 1200),
+    tint: tuple[int, int, int] = (34, 110, 72),
+) -> Image.Image:
+    """Stadium spotlight — oversized live phone center, support phones tucked behind.
+
+    Silhouette: one dominant vertical device (NOT phone+browser like Snapwork).
+    """
+    bg = forest_editorial_bg(canvas, tint)
+    lead = _framed_ios(live, max_h=1120, max_w=520)
+    lead_r = lead.rotate(-1.5, resample=Image.Resampling.BICUBIC, expand=True)
+    a = _framed_ios(left, max_h=820, max_w=390)
+    b = _framed_ios(right, max_h=820, max_w=390)
+    ar = a.rotate(-11.0, resample=Image.Resampling.BICUBIC, expand=True)
+    br = b.rotate(11.0, resample=Image.Resampling.BICUBIC, expand=True)
+
+    scale = min(
+        1.0,
+        (canvas[0] - 80) / (ar.width * 0.45 + lead_r.width + br.width * 0.45),
+        (canvas[1] - 60) / lead_r.height,
+    )
+    if scale < 0.999:
+        lead = _framed_ios(live, max_h=int(1120 * scale), max_w=int(520 * scale))
+        lead_r = lead.rotate(-1.5, resample=Image.Resampling.BICUBIC, expand=True)
+        a = _framed_ios(left, max_h=int(820 * scale), max_w=int(390 * scale))
+        b = _framed_ios(right, max_h=int(820 * scale), max_w=int(390 * scale))
+        ar = a.rotate(-11.0, resample=Image.Resampling.BICUBIC, expand=True)
+        br = b.rotate(11.0, resample=Image.Resampling.BICUBIC, expand=True)
+
+    # Peek more of support phones — less overlap so room/explore read clearly
+    lx = (canvas[0] - lead_r.width) // 2
+    ly = (canvas[1] - lead_r.height) // 2
+    ax = max(24, lx - int(ar.width * 0.72))
+    ay = ly + int(lead_r.height * 0.08)
+    bx = min(canvas[0] - br.width - 24, lx + lead_r.width - int(br.width * 0.28))
+    by = ly + int(lead_r.height * 0.06)
+
+    paste_with_shadow(bg, ar, (ax, ay), radius=44, blur=32, opacity=70, studio=True)
+    paste_with_shadow(bg, br, (bx, by), radius=44, blur=32, opacity=70, studio=True)
+    paste_with_shadow(bg, lead_r, (lx, ly), radius=52, blur=46, opacity=135, studio=True)
+    return bg.convert("RGB")
+
+
+def compose_cpas_web_only(
+    web: Image.Image,
+    canvas: tuple[int, int] = (1600, 1200),
+    tint: tuple[int, int, int] = (34, 110, 72),
+) -> Image.Image:
+    """Full-bleed coach dashboard on forest — landscape silhouette, no phone."""
+    bg = forest_editorial_bg(canvas, tint)
+    browser = thin_browser_frame(trim_web_top_padding(web), screen_w=1380, fit="width")
+    tilted = browser.rotate(0.8, resample=Image.Resampling.BICUBIC, expand=True)
+    sc = min((canvas[0] - 80) / tilted.width, (canvas[1] - 80) / tilted.height, 1.0)
+    if sc < 0.999:
+        browser = thin_browser_frame(
+            trim_web_top_padding(web), screen_w=int(1380 * sc), fit="width"
+        )
+        tilted = browser.rotate(0.8, resample=Image.Resampling.BICUBIC, expand=True)
+    dx = (canvas[0] - tilted.width) // 2
+    dy = (canvas[1] - tilted.height) // 2
+    paste_with_shadow(bg, tilted, (dx, dy), radius=20, blur=42, opacity=100, studio=True)
+    return bg.convert("RGB")
+
+
+def build_cpas_huddle_up() -> None:
+    """CPAS Huddle Up — forest stadium plates (not Snapwork's phone+browser)."""
+    print("CPAS Huddle Up")
+    dest = OUT / "cpas-huddle-up"
+    tmp = ROOT / ".tmp-shots" / "cpas-huddle-up"
+    tint = (34, 110, 72)
+
+    def load(name: str) -> Image.Image:
+        return Image.open(tmp / name).convert("RGBA")
+
+    home = patch_cpas_home(load("01-home.jpg"))
+    room = load("02-room.jpg")
+    podcast = load("03-podcast.jpg")
+    splash = load("04-splash.jpg")
+    web = load("05-my-rooms-web.png")
+
+    plates = [
+        # Hero — stadium live + room/explore peeks (dark, phone-only ≠ Snapwork)
+        compose_cpas_stadium(podcast, room, home, tint=tint),
+        # Coach web full-bleed
+        compose_cpas_web_only(web, tint=tint),
+        # Dual field — explore + room feed
+        compose_cpas_dual_field(home, room, tint=tint),
+        # Splash + home + live — stadium fill (avoids empty right forest)
+        compose_cpas_stadium(home, splash, podcast, tint=tint),
+    ]
+    save_set(dest, plates)
+
+
+def warm_editorial_bg(
+    canvas: tuple[int, int] = (1600, 1200),
+    tint: tuple[int, int, int] = (230, 165, 35),
+) -> Image.Image:
+    """2026 warm paper plate — soft cream + brand wash (not charcoal studio)."""
+    w, h = canvas
+    yy, xx = np.mgrid[0:h, 0:w]
+    # warm paper base
+    base = np.array([248, 244, 236], dtype=np.float32)
+    arr = np.broadcast_to(base, (h, w, 3)).copy()
+    # soft radial gold key from upper-left
+    cx, cy = w * 0.22, h * 0.18
+    dist = np.sqrt((xx - cx) ** 2 + (yy - cy) ** 2)
+    key = np.clip(1 - dist / (max(w, h) * 0.95), 0, 1) ** 1.6
+    for i, c in enumerate(tint):
+        arr[:, :, i] = arr[:, :, i] * (1 - key * 0.22) + c * (key * 0.22)
+    # cooler shadow falloff bottom-right
+    cx2, cy2 = w * 0.85, h * 0.9
+    dist2 = np.sqrt((xx - cx2) ** 2 + (yy - cy2) ** 2)
+    cool = np.clip(1 - dist2 / (max(w, h) * 0.7), 0, 1) ** 1.4
+    cool_c = (210, 205, 198)
+    for i, c in enumerate(cool_c):
+        arr[:, :, i] = arr[:, :, i] * (1 - cool * 0.18) + c * (cool * 0.18)
+    # fine grain
+    rng = np.random.default_rng(42)
+    grain = rng.normal(0, 1.2, (h, w, 1)).astype(np.float32)
+    arr = np.clip(arr + grain, 0, 255)
+    bg = Image.fromarray(arr.astype(np.uint8)).convert("RGBA")
+    # soft gold ambient blob
+    blob = Image.new("RGBA", canvas, (0, 0, 0, 0))
+    ImageDraw.Draw(blob).ellipse(
+        (-120, -80, int(w * 0.55), int(h * 0.55)), fill=(*tint, 28)
+    )
+    blob = blob.filter(ImageFilter.GaussianBlur(110))
+    return Image.alpha_composite(bg, blob)
+
+
+def thin_browser_frame(screenshot: Image.Image, screen_w: int = 1180, fit: str = "contain") -> Image.Image:
+    """Minimal browser chrome only — no laptop deck (2026 product-as-hero)."""
+    target_h = int(screen_w * 0.62)
+    shot = fit_web_for_laptop(screenshot, screen_w, target_h, mode=fit)
+    chrome_h = 28
+    r = 18
+    framed = Image.new("RGBA", (screen_w, target_h + chrome_h), (0, 0, 0, 0))
+    shell = Image.new("RGBA", framed.size, (0, 0, 0, 0))
+    sd = ImageDraw.Draw(shell)
+    sd.rounded_rectangle((0, 0, framed.width - 1, framed.height - 1), radius=r, fill=(255, 255, 255, 255))
+    # hairline border
+    sd.rounded_rectangle(
+        (0, 0, framed.width - 1, framed.height - 1),
+        radius=r,
+        outline=(220, 214, 204, 255),
+        width=1,
+    )
+    # chrome bar
+    sd.rectangle((0, 0, framed.width, chrome_h), fill=(250, 248, 244, 255))
+    for i, color in enumerate([(255, 95, 86), (255, 189, 46), (39, 201, 63)]):
+        x = 16 + i * 16
+        sd.ellipse((x, 10, x + 9, 19), fill=color)
+    # address pill
+    sd.rounded_rectangle((78, 8, min(340, screen_w - 20), 22), radius=7, fill=(240, 236, 228, 255))
+    shell.paste(shot, (0, chrome_h), shot)
+    # clip screen corners at bottom
+    mask = rounded_mask(shell.size, r)
+    shell.putalpha(mask)
+    return shell
+
+
+def rounded_ui_card(screenshot: Image.Image, max_w: int, max_h: int, radius: int = 28) -> Image.Image:
+    """Bare UI panel — no device bezel. Product screenshot as a soft card."""
+    shot = fill_baked_round_corners(ensure_rgba(screenshot))
+    scale = min(max_w / shot.width, max_h / shot.height)
+    nw = max(1, int(shot.width * scale))
+    nh = max(1, int(shot.height * scale))
+    shot = shot.resize((nw, nh), Image.Resampling.LANCZOS)
+    # Opaque underlay so baked transparent corners don't go black
+    edge = np.asarray(shot.convert("RGB").crop((0, 0, shot.width, min(8, shot.height))))
+    under = tuple(int(x) for x in np.median(edge.reshape(-1, 3), axis=0))
+    card = Image.new("RGBA", shot.size, (*under, 255))
+    card.paste(shot, (0, 0), shot)
+    card.putalpha(rounded_mask(shot.size, radius))
+    return card
+
+
+def compose_snapwork_hero_asymmetric(
+    web: Image.Image,
+    phone_shot: Image.Image,
+    float_shot: Image.Image,
+    canvas: tuple[int, int] = (1600, 1200),
+    tint: tuple[int, int, int] = (230, 165, 35),
+) -> Image.Image:
+    """Phone-leading editorial: oversized phone left, thin browser rear-right, floating card."""
+    bg = warm_editorial_bg(canvas, tint)
+    margin = 40
+
+    phone = _framed_ios(phone_shot, max_h=1080, max_w=500)
+    angled = phone.rotate(-6.5, resample=Image.Resampling.BICUBIC, expand=True)
+    browser = thin_browser_frame(web, screen_w=980, fit="width")
+    floater = rounded_ui_card(prep_ios_for_frame(float_shot), max_w=340, max_h=420, radius=24)
+
+    # Scale cluster to fit
+    scale = 1.0
+    for _ in range(8):
+        span_w = angled.width + int(browser.width * 0.62)
+        span_h = max(angled.height, browser.height + 40)
+        fit = min(
+            (canvas[0] - margin * 2) / max(1, span_w),
+            (canvas[1] - margin * 2) / max(1, span_h),
+            1.0,
+        )
+        if fit >= 0.995:
+            break
+        scale *= fit * 0.97
+        phone = _framed_ios(phone_shot, max_h=int(1080 * scale), max_w=int(500 * scale))
+        angled = phone.rotate(-6.5, resample=Image.Resampling.BICUBIC, expand=True)
+        browser = thin_browser_frame(web, screen_w=int(980 * scale), fit="width")
+        floater = rounded_ui_card(
+            prep_ios_for_frame(float_shot),
+            max_w=int(340 * scale),
+            max_h=int(420 * scale),
+            radius=max(16, int(24 * scale)),
+        )
+
+    # Place: browser rear-right, phone front-left, floater overlapping mid
+    bx = canvas[0] - browser.width - margin - 20
+    by = (canvas[1] - browser.height) // 2 - 30
+    ax = margin + 10
+    ay = (canvas[1] - angled.height) // 2 + 10
+    fx = ax + angled.width - int(floater.width * 0.35)
+    fy = ay + angled.height - floater.height - int(80 * scale)
+
+    paste_with_shadow(bg, browser, (bx, by), radius=18, blur=36, opacity=70, studio=False)
+    paste_with_shadow(bg, angled, (ax, ay), radius=48, blur=40, opacity=100, studio=False)
+    paste_with_shadow(bg, floater, (fx, fy), radius=24, blur=28, opacity=95, studio=False)
+    return bg.convert("RGB")
+
+
+def compose_snapwork_bento(
+    shots: list[Image.Image],
+    canvas: tuple[int, int] = (1600, 1200),
+    tint: tuple[int, int, int] = (230, 165, 35),
+) -> Image.Image:
+    """Bento mosaic of rounded UI cards — anti-grid, product-first (2026)."""
+    bg = warm_editorial_bg(canvas, tint)
+    # Layout: large left, tall mid, stack right
+    a, b, c, d = shots[:4]
+    left = rounded_ui_card(prep_ios_for_frame(a), max_w=520, max_h=980, radius=32)
+    mid = rounded_ui_card(prep_ios_for_frame(b), max_w=420, max_h=720, radius=28)
+    top_r = rounded_ui_card(prep_ios_for_frame(c), max_w=380, max_h=400, radius=26)
+    bot_r = rounded_ui_card(prep_ios_for_frame(d), max_w=380, max_h=400, radius=26)
+
+    gap = 28
+    margin = 56
+    # Center cluster
+    cluster_w = left.width + gap + mid.width + gap + top_r.width
+    scale = min(1.0, (canvas[0] - margin * 2) / cluster_w)
+    if scale < 0.999:
+        def rs(im: Image.Image) -> Image.Image:
+            return im.resize(
+                (max(1, int(im.width * scale)), max(1, int(im.height * scale))),
+                Image.Resampling.LANCZOS,
+            )
+
+        left, mid, top_r, bot_r = rs(left), rs(mid), rs(top_r), rs(bot_r)
+        gap = max(16, int(28 * scale))
+
+    cluster_w = left.width + gap + mid.width + gap + top_r.width
+    cluster_h = max(left.height, mid.height, top_r.height + gap + bot_r.height)
+    x0 = (canvas[0] - cluster_w) // 2
+    y0 = (canvas[1] - cluster_h) // 2
+
+    lx, ly = x0, y0 + (cluster_h - left.height) // 2
+    mx = lx + left.width + gap
+    my = y0 + (cluster_h - mid.height) // 2
+    rx = mx + mid.width + gap
+    ry1 = y0
+    ry2 = y0 + top_r.height + gap
+
+    paste_with_shadow(bg, left, (lx, ly), radius=32, blur=30, opacity=85)
+    paste_with_shadow(bg, mid, (mx, my), radius=28, blur=28, opacity=80)
+    paste_with_shadow(bg, top_r, (rx, ry1), radius=26, blur=26, opacity=75)
+    paste_with_shadow(bg, bot_r, (rx, ry2), radius=26, blur=26, opacity=75)
+    return bg.convert("RGB")
+
+
+def compose_snapwork_web_spotlight(
+    web: Image.Image,
+    canvas: tuple[int, int] = (1600, 1200),
+    tint: tuple[int, int, int] = (230, 165, 35),
+) -> Image.Image:
+    """Single oversized thin-browser plate — dashboard as the hero."""
+    bg = warm_editorial_bg(canvas, tint)
+    browser = thin_browser_frame(web, screen_w=1320, fit="contain")
+    # slight perspective tilt
+    tilted = browser.rotate(1.2, resample=Image.Resampling.BICUBIC, expand=True)
+    margin = 48
+    scale = min(
+        (canvas[0] - margin * 2) / tilted.width,
+        (canvas[1] - margin * 2) / tilted.height,
+        1.0,
+    )
+    if scale < 0.999:
+        browser = thin_browser_frame(web, screen_w=int(1320 * scale), fit="contain")
+        tilted = browser.rotate(1.2, resample=Image.Resampling.BICUBIC, expand=True)
+    dx = (canvas[0] - tilted.width) // 2
+    dy = (canvas[1] - tilted.height) // 2
+    paste_with_shadow(bg, tilted, (dx, dy), radius=20, blur=42, opacity=90)
+    return bg.convert("RGB")
+
+
+def compose_snapwork_triple_cascade(
+    shots: list[Image.Image],
+    canvas: tuple[int, int] = (1600, 1200),
+    tint: tuple[int, int, int] = (230, 165, 35),
+) -> Image.Image:
+    """Staggered cascade of three phones — depth, not a flat dual."""
+    bg = warm_editorial_bg(canvas, tint)
+    heights = [780, 980, 820]
+    angles = [-9.0, 0.0, 7.5]
+    phones = [
+        _framed_ios(s, max_h=heights[i], max_w=440 if i != 1 else 480)
+        for i, s in enumerate(shots[:3])
+    ]
+    rotated = [
+        p.rotate(angles[i], resample=Image.Resampling.BICUBIC, expand=True)
+        for i, p in enumerate(phones)
+    ]
+
+    # Overlap cascade left → center → right
+    margin = 50
+    gap = -70  # intentional overlap
+    total = sum(p.width for p in phones) + gap * 2
+    scale = min(1.0, (canvas[0] - margin * 2) / max(1, total + 80))
+    if scale < 0.999:
+        phones = [
+            _framed_ios(
+                s,
+                max_h=int(heights[i] * scale),
+                max_w=int((440 if i != 1 else 480) * scale),
+            )
+            for i, s in enumerate(shots[:3])
+        ]
+        rotated = [
+            p.rotate(angles[i], resample=Image.Resampling.BICUBIC, expand=True)
+            for i, p in enumerate(phones)
+        ]
+        gap = int(-70 * scale)
+
+    xs_base = []
+    x = margin + 40
+    for i, p in enumerate(phones):
+        xs_base.append(x)
+        x += p.width + gap
+    # Center
+    span = (xs_base[-1] + phones[-1].width) - xs_base[0]
+    shift = (canvas[0] - span) // 2 - xs_base[0]
+    xs_base = [x + shift for x in xs_base]
+
+    ys = []
+    for i, p in enumerate(phones):
+        nudge = [40, -10, 55][i]
+        ys.append((canvas[1] - p.height) // 2 + nudge)
+
+    # Draw back to front: 0, 2, then center 1
+    order = [(0, 70), (2, 80), (1, 110)]
+    for i, opacity in order:
+        rx = xs_base[i] + (phones[i].width - rotated[i].width) // 2
+        ry = ys[i] + (phones[i].height - rotated[i].height) // 2
+        paste_with_shadow(
+            bg,
+            rotated[i],
+            (rx, ry),
+            radius=48,
+            blur=32 if i != 1 else 40,
+            opacity=opacity,
+        )
+    return bg.convert("RGB")
+
+
+def build_snapwork() -> None:
+    """Snapwork — phone-only editorial plates (no campaigns web browser)."""
+    print("Snapwork")
+    dest = OUT / "snapwork"
+    tmp = ROOT / ".tmp-shots" / "snapwork"
+    tint = (230, 165, 35)
+
+    def load(name: str) -> Image.Image:
+        return Image.open(tmp / name).convert("RGBA")
+
+    listing = load("01-listing.png")
+    connect = load("02-connect.png")
+    portfolio = load("05-portfolio.png")
+    publish = load("07-publish.png")
+    interests = load("06-interests.png")
+
+    plates = [
+        # Hero — listing · connect · portfolio (phones only)
+        compose_snapwork_triple_cascade([listing, connect, portfolio], tint=tint),
+        # Publish flow cascade
+        compose_snapwork_triple_cascade([publish, listing, connect], tint=tint),
+        # Interests + portfolio + listing
+        compose_snapwork_triple_cascade([interests, portfolio, listing], tint=tint),
+        # Bento mosaic
+        compose_snapwork_bento([publish, listing, connect, portfolio], tint=tint),
+    ]
+    save_set(dest, plates)
+
+
 def build_kitty_nip() -> None:
     """Kitty Nip — polished store promo hero + punchy dual-phone plates."""
     print("Kitty Nip")
@@ -1990,6 +3540,9 @@ def main() -> None:
         "decidr": build_decidr,
         "agenticly": build_agenticly,
         "kitty-nip": build_kitty_nip,
+        "sextherapypro": build_sextherapypro,
+        "cpas-huddle-up": build_cpas_huddle_up,
+        "snapwork": build_snapwork,
     }
     for name, fn in builders.items():
         if targets is None or name in targets:

@@ -7,7 +7,7 @@ stack: [React Native, WebRTC, Socket.io, Node.js]
 
 ## The Problem
 
-Real-time video and voice on mobile is easy to demo on good Wi-Fi and hard to ship: signaling, ICE, and group join/leave all have to survive flaky networks and backgrounded phones.
+Real-time video and voice on mobile is easy to show on good Wi-Fi and hard to ship: signaling, ICE, and group join/leave all have to survive flaky networks and backgrounded phones.
 
 ## What I Built
 
@@ -16,8 +16,6 @@ Meet & Greet is a React Native calling product with:
 - Online presence and dial-by-ID.
 - **1:1 and group** video/voice over **WebRTC**.
 - **Socket.io** signaling through a **Node.js** backend for offer/answer, ICE candidates, and participant churn.
-
-Case study visuals are UI recreations of the product flows (presence, dial, 1:1, group) — not original 2023 production captures — but they match the shipped architecture.
 
 ## Major Features
 
@@ -28,7 +26,7 @@ Case study visuals are UI recreations of the product flows (presence, dial, 1:1,
 
 ## Key Challenges
 
-Group calls add signaling complexity 1:1 doesn’t have — join/leave, renegotiation, and keeping Socket.io state aligned with WebRTC across every client. That reliability outside a controlled demo was the core engineering problem.
+Group calls add signaling complexity 1:1 doesn’t have — join/leave, renegotiation, and keeping Socket.io state aligned with WebRTC across every client. That reliability on real mobile networks was the core engineering problem.
 
 ## Results
 
