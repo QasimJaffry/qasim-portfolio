@@ -1,15 +1,14 @@
 "use client";
 
 import { useRef } from "react";
-import Link from "next/link";
 import Magnetic from "@/components/Magnetic";
-import FigurePlate from "@/components/FigurePlate";
 
-const LEAD = {
-  slug: "agenticly",
-  title: "Agenticly",
-  image: "/images/projects/agenticly/hero.jpg",
-};
+const proof = [
+  { value: "6+", label: "Years shipping" },
+  { value: "60+", label: "Products shipped" },
+  { value: "10K+", label: "Play installs (Agenticly)" },
+  { value: "100%", label: "Upwork Job Success" },
+];
 
 export default function Hero() {
   const blobA = useRef<HTMLDivElement>(null);
@@ -40,7 +39,7 @@ export default function Hero() {
         className="pointer-events-none absolute -bottom-32 -left-16 h-[320px] w-[320px] rounded-full bg-accent/[0.06] blur-3xl transition-transform duration-500 ease-out"
       />
 
-      <div className="mx-auto grid max-w-5xl items-center gap-10 px-6 pb-12 pt-16 sm:pb-16 sm:pt-24 md:grid-cols-[minmax(0,1fr)_minmax(260px,40%)] md:gap-10 lg:gap-12">
+      <div className="mx-auto grid max-w-5xl items-center gap-12 px-6 pb-12 pt-16 sm:pb-16 sm:pt-24 md:grid-cols-[minmax(0,1.15fr)_minmax(240px,0.85fr)] md:gap-14">
         <div className="animate-fade-up min-w-0">
           <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted">
             AI Products · Mobile · Scale
@@ -87,24 +86,26 @@ export default function Hero() {
           </p>
         </div>
 
-        <Link
-          href={`/work/${LEAD.slug}`}
-          className="animate-fade-up group block min-w-0"
+        <aside
+          className="animate-fade-up border-t border-border/80 pt-8 md:border-l md:border-t-0 md:pl-10 md:pt-0"
           style={{ animationDelay: "120ms" }}
-          aria-label={`${LEAD.title} case study`}
+          aria-label="Highlights"
         >
-          <FigurePlate
-            src={LEAD.image}
-            alt={`${LEAD.title} product preview`}
-            category="AI"
-            tilt="none"
-            priority
-            className="shadow-[0_28px_70px_-36px_rgba(21,24,26,0.45)] transition-transform duration-300 ease-out group-hover:-translate-y-1"
-          />
-          <p className="mt-3 font-mono text-[11px] uppercase tracking-[0.16em] text-muted transition-colors group-hover:text-foreground">
-            Featured — {LEAD.title} →
+          <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted">At a glance</p>
+          <dl className="mt-6 space-y-6">
+            {proof.map((item) => (
+              <div key={item.label} className="flex items-baseline justify-between gap-4 md:block">
+                <dt className="order-2 text-sm text-muted md:order-none md:mt-1">{item.label}</dt>
+                <dd className="order-1 font-display text-3xl font-medium tracking-tight text-foreground sm:text-4xl md:order-none">
+                  {item.value}
+                </dd>
+              </div>
+            ))}
+          </dl>
+          <p className="mt-8 text-xs leading-relaxed text-muted">
+            Top Rated Plus on Upwork · Live apps on Play Store &amp; App Store
           </p>
-        </Link>
+        </aside>
       </div>
     </section>
   );

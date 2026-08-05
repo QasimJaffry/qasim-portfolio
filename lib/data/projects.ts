@@ -34,7 +34,7 @@ export const projects: Project[] = [
     stack: ["React Native", "Expo", "React", "Firebase", "FastAPI", "LangGraph", "RevenueCat", "Stripe"],
     metrics: [
       "10K+ Play Store downloads",
-      "4.8★ on Google Play",
+      "4.9★ on Google Play",
       "iOS + Android + web live",
     ],
     status: "Live",
@@ -128,7 +128,7 @@ export const projects: Project[] = [
     category: "Mobile",
     stack: ["React Native", "Firebase", "Redux", "IAP", "Geolocation"],
     metrics: [
-      "10,000+ Play Store downloads",
+      "10K+ Play Store downloads",
       "Full product ownership",
       "iOS + Android live",
     ],
@@ -218,8 +218,8 @@ export const projects: Project[] = [
     stack: ["React Native", "Expo", "WebView", "React Query"],
     metrics: [
       "5K+ downloads on Google Play",
-      "6M+ products checked on the platform",
-      "4.5★ Play Store rating",
+      "Amazon, eBay & AliExpress coverage",
+      "Open-source shopping assistant",
     ],
     status: "Live",
     featured: true,

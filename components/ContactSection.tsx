@@ -17,10 +17,10 @@ export default function ContactSection() {
         </div>
 
         <a
-          href="mailto:hello@qasimhassan.dev"
+          href="mailto:qhassan1214@gmail.com"
           className="link-underline mt-8 inline-block font-medium"
         >
-          hello@qasimhassan.dev
+          qhassan1214@gmail.com
         </a>
 
         <Magnetic strength={0.3} className="mt-8">
