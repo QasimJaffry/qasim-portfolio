@@ -9,49 +9,15 @@
           "layout": "combo-stage",
           "bg": "slate",
           "devices": [
-            { "device": "macbook", "shot": "agenticly/web.png" },
-            { "device": "iphone", "shot": "agenticly/charts.jpg" }
-          ]
-        },
-        {
-          "out": "detail-1.jpg",
-          "device": "iphone",
-          "layout": "duo",
-          "bg": "ink",
-          "shots": ["agenticly/chat.jpg", "agenticly/charts.jpg"]
-        },
-        {
-          "out": "detail-2.jpg",
-          "layout": "combo-overlap-right",
-          "bg": "slate",
-          "devices": [
-            { "device": "macbook", "shot": "agenticly/web.png" },
-            { "device": "iphone", "shot": "agenticly/analysis.jpg" }
-          ]
-        },
-        {
-          "out": "plate-hero.jpg",
-          "layout": "combo-stage",
-          "bg": "slate",
-          "devices": [
-            { "device": "macbook", "shot": "agenticly/web.png" },
-            { "device": "iphone", "shot": "agenticly/charts.jpg" }
-          ]
-        },
-        {
-          "out": "plate-detail-1.jpg",
-          "device": "iphone",
-          "layout": "duo",
-          "bg": "ink",
-          "shots": ["agenticly/chat.jpg", "agenticly/charts.jpg"]
-        },
-        {
-          "out": "plate-detail-2.jpg",
-          "layout": "combo-overlap-right",
-          "bg": "slate",
-          "devices": [
-            { "device": "macbook", "shot": "agenticly/web.png" },
-            { "device": "iphone", "shot": "agenticly/analysis.jpg" }
+            {
+              "device": "macbook",
+              "shot": "agenticly/web.png"
+            },
+            {
+              "device": "iphone",
+              "shot": "agenticly/analysis.jpg",
+              "cropBottom": 0.045
+            }
           ]
         }
       ]
@@ -63,14 +29,13 @@
         {
           "out": "hero.jpg",
           "device": "iphone",
-          "layout": "duo",
-          "shots": ["innerverse/s1.png", "innerverse/s2.png"]
-        },
-        {
-          "out": "detail-1.jpg",
-          "device": "iphone",
-          "layout": "duo",
-          "shots": ["innerverse/s3.png", "innerverse/s4.png"]
+          "layout": "trio",
+          "bg": "ink",
+          "shots": [
+            "innerverse/s3.png",
+            "innerverse/s5.png",
+            "innerverse/s4.png"
+          ]
         }
       ]
     },
@@ -83,23 +48,14 @@
           "layout": "combo-overlap-left",
           "bg": "sky",
           "devices": [
-            { "device": "macbook", "shot": "qubio/web.png" },
-            { "device": "iphone", "shot": "qubio/qr.png" }
-          ]
-        },
-        {
-          "out": "detail-1.jpg",
-          "device": "iphone",
-          "layout": "duo",
-          "shots": ["qubio/home.png", "qubio/editor.png"]
-        },
-        {
-          "out": "detail-2.jpg",
-          "layout": "combo-split",
-          "bg": "mist",
-          "devices": [
-            { "device": "macbook", "shot": "qubio/web.png" },
-            { "device": "iphone", "shot": "qubio/share.png" }
+            {
+              "device": "macbook",
+              "shot": "qubio/web.png"
+            },
+            {
+              "device": "iphone",
+              "shot": "qubio/qr.png"
+            }
           ]
         }
       ]
@@ -112,19 +68,11 @@
           "out": "hero.jpg",
           "device": "iphone",
           "layout": "trio",
-          "shots": ["realtag/detect.png", "realtag/list.png", "realtag/form.png"]
-        },
-        {
-          "out": "detail-1.jpg",
-          "device": "iphone",
-          "layout": "duo",
-          "shots": ["realtag/manual.png", "realtag/tagged.png"]
-        },
-        {
-          "out": "detail-2.jpg",
-          "device": "iphone",
-          "layout": "duo",
-          "shots": ["realtag/list.png", "realtag/form.png"]
+          "shots": [
+            "realtag/detect.png",
+            "realtag/list.png",
+            "realtag/form.png"
+          ]
         }
       ]
     },
@@ -136,19 +84,11 @@
           "out": "hero.jpg",
           "device": "iphone",
           "layout": "trio",
-          "shots": ["kitty-nip/swipe.png", "kitty-nip/match.png", "kitty-nip/chat.png"]
-        },
-        {
-          "out": "detail-1.jpg",
-          "device": "iphone",
-          "layout": "duo",
-          "shots": ["kitty-nip/profile.png", "kitty-nip/welcome.png"]
-        },
-        {
-          "out": "detail-2.jpg",
-          "device": "iphone",
-          "layout": "duo",
-          "shots": ["kitty-nip/match.png", "kitty-nip/chat.png"]
+          "shots": [
+            "kitty-nip/swipe.png",
+            "kitty-nip/match.png",
+            "kitty-nip/chat.png"
+          ]
         }
       ]
     },
@@ -161,22 +101,15 @@
           "layout": "combo-overlap-right",
           "bg": "dusk",
           "devices": [
-            { "device": "macbook", "shot": "cpas-huddle-up/web.png" },
-            { "device": "iphone", "shot": "cpas-huddle-up/room.png" }
+            {
+              "device": "macbook",
+              "shot": "cpas-huddle-up/web.png"
+            },
+            {
+              "device": "iphone",
+              "shot": "cpas-huddle-up/room.png"
+            }
           ]
-        },
-        {
-          "out": "detail-1.jpg",
-          "device": "iphone",
-          "layout": "duo",
-          "shots": ["cpas-huddle-up/home.png", "cpas-huddle-up/podcast.png"]
-        },
-        {
-          "out": "detail-2.jpg",
-          "device": "iphone",
-          "layout": "duo",
-          "bg": "ink",
-          "shots": ["cpas-huddle-up/splash.png", "cpas-huddle-up/room.png"]
         }
       ]
     },
@@ -188,19 +121,11 @@
           "out": "hero.jpg",
           "device": "iphone",
           "layout": "trio",
-          "shots": ["meet-and-greet/online.png", "meet-and-greet/call.png", "meet-and-greet/group.png"]
-        },
-        {
-          "out": "detail-1.jpg",
-          "device": "iphone",
-          "layout": "duo",
-          "shots": ["meet-and-greet/dial.png", "meet-and-greet/call.png"]
-        },
-        {
-          "out": "detail-2.jpg",
-          "device": "iphone",
-          "layout": "duo",
-          "shots": ["meet-and-greet/group.png", "meet-and-greet/online.png"]
+          "shots": [
+            "meet-and-greet/online.png",
+            "meet-and-greet/call.png",
+            "meet-and-greet/group.png"
+          ]
         }
       ]
     },
@@ -213,23 +138,14 @@
           "layout": "combo-split",
           "bg": "sand",
           "devices": [
-            { "device": "macbook", "shot": "bugmapper/web.png" },
-            { "device": "iphone", "shot": "bugmapper/trap.png" }
-          ]
-        },
-        {
-          "out": "detail-1.jpg",
-          "device": "iphone",
-          "layout": "duo",
-          "shots": ["bugmapper/home.png", "bugmapper/scan.png"]
-        },
-        {
-          "out": "detail-2.jpg",
-          "layout": "combo-overlap-left",
-          "bg": "porcelain",
-          "devices": [
-            { "device": "macbook", "shot": "bugmapper/web.png" },
-            { "device": "iphone", "shot": "bugmapper/pim.png" }
+            {
+              "device": "macbook",
+              "shot": "bugmapper/web.png"
+            },
+            {
+              "device": "iphone",
+              "shot": "bugmapper/trap.png"
+            }
           ]
         }
       ]
@@ -243,21 +159,15 @@
           "layout": "combo-stage",
           "bg": "porcelain",
           "devices": [
-            { "device": "macbook", "shot": "safedeal/web.png" },
-            { "device": "iphone", "shot": "safedeal/insights.png" }
+            {
+              "device": "macbook",
+              "shot": "safedeal/web.png"
+            },
+            {
+              "device": "iphone",
+              "shot": "safedeal/insights.png"
+            }
           ]
-        },
-        {
-          "out": "detail-1.jpg",
-          "device": "iphone",
-          "layout": "duo",
-          "shots": ["safedeal/home.png", "safedeal/ai.png"]
-        },
-        {
-          "out": "detail-2.jpg",
-          "device": "iphone",
-          "layout": "duo",
-          "shots": ["safedeal/product.png", "safedeal/browse.png"]
         }
       ]
     },
@@ -269,19 +179,12 @@
           "out": "hero.jpg",
           "device": "iphone",
           "layout": "trio",
-          "shots": ["bschedule/m1.png", "bschedule/m2.png", "bschedule/m3.png"]
-        },
-        {
-          "out": "detail-1.jpg",
-          "device": "iphone",
-          "layout": "duo",
-          "shots": ["bschedule/m4.png", "bschedule/m5.png"]
-        },
-        {
-          "out": "detail-2.jpg",
-          "device": "iphone",
-          "layout": "duo",
-          "shots": ["bschedule/m2.png", "bschedule/m6.png"]
+          "bg": "sand",
+          "shots": [
+            "bschedule/m6.png",
+            "bschedule/m4.png",
+            "bschedule/m2.png"
+          ]
         }
       ]
     },
@@ -294,29 +197,14 @@
           "layout": "combo-overlap-right",
           "bg": "porcelain",
           "devices": [
-            { "device": "macbook", "shot": "snapwork/campaigns-web.png" },
-            { "device": "iphone", "shot": "snapwork/connect.png" }
-          ]
-        },
-        {
-          "out": "detail-1.jpg",
-          "device": "iphone",
-          "layout": "duo",
-          "shots": ["snapwork/listing.png", "snapwork/portfolio.png"]
-        },
-        {
-          "out": "detail-2.jpg",
-          "device": "iphone",
-          "layout": "duo",
-          "shots": ["snapwork/publish.png", "snapwork/interests.png"]
-        },
-        {
-          "out": "detail-3.jpg",
-          "layout": "combo-split",
-          "bg": "mist",
-          "devices": [
-            { "device": "macbook", "shot": "snapwork/campaigns-web.png" },
-            { "device": "iphone", "shot": "snapwork/listing.png" }
+            {
+              "device": "macbook",
+              "shot": "snapwork/campaigns-web.png"
+            },
+            {
+              "device": "iphone",
+              "shot": "snapwork/connect.png"
+            }
           ]
         }
       ]
@@ -329,19 +217,11 @@
           "out": "hero.jpg",
           "device": "iphone",
           "layout": "trio",
-          "shots": ["sextherapypro/plan.png", "sextherapypro/chat.png", "sextherapypro/map.png"]
-        },
-        {
-          "out": "detail-1.jpg",
-          "device": "iphone",
-          "layout": "duo",
-          "shots": ["sextherapypro/goals.png", "sextherapypro/game.png"]
-        },
-        {
-          "out": "detail-2.jpg",
-          "device": "iphone",
-          "layout": "duo",
-          "shots": ["sextherapypro/chats.png", "sextherapypro/topics.png"]
+          "shots": [
+            "sextherapypro/plan.png",
+            "sextherapypro/chat.png",
+            "sextherapypro/map.png"
+          ]
         }
       ]
     },
@@ -354,24 +234,14 @@
           "layout": "combo-overlap-left",
           "bg": "porcelain",
           "devices": [
-            { "device": "macbook", "shot": "catchat/web.png" },
-            { "device": "iphone", "shot": "catchat/chat.png" }
-          ]
-        },
-        {
-          "out": "detail-1.jpg",
-          "device": "iphone",
-          "layout": "duo",
-          "bg": "mist",
-          "shots": ["catchat/home.png", "catchat/list.png"]
-        },
-        {
-          "out": "detail-2.jpg",
-          "layout": "combo-stage",
-          "bg": "sky",
-          "devices": [
-            { "device": "macbook", "shot": "catchat/web-loggedin.png" },
-            { "device": "iphone", "shot": "catchat/modal.png" }
+            {
+              "device": "macbook",
+              "shot": "catchat/web.png"
+            },
+            {
+              "device": "iphone",
+              "shot": "catchat/chat.png"
+            }
           ]
         }
       ]
@@ -385,24 +255,14 @@
           "layout": "combo-split",
           "bg": "dusk",
           "devices": [
-            { "device": "macbook", "shot": "dealflow-ai/web.png" },
-            { "device": "iphone", "shot": "dealflow-ai/pipeline.png" }
-          ]
-        },
-        {
-          "out": "detail-1.jpg",
-          "device": "iphone",
-          "layout": "duo",
-          "bg": "fog",
-          "shots": ["dealflow-ai/home.png", "dealflow-ai/deal.png"]
-        },
-        {
-          "out": "detail-2.jpg",
-          "layout": "combo-overlap-right",
-          "bg": "slate",
-          "devices": [
-            { "device": "macbook", "shot": "dealflow-ai/web-2.png" },
-            { "device": "iphone", "shot": "dealflow-ai/pipeline.png" }
+            {
+              "device": "macbook",
+              "shot": "dealflow-ai/web.png"
+            },
+            {
+              "device": "iphone",
+              "shot": "dealflow-ai/pipeline.png"
+            }
           ]
         }
       ]
@@ -416,25 +276,15 @@
           "layout": "combo-overlap-right",
           "bg": "ink",
           "devices": [
-            { "device": "macbook", "shot": "decidr/landing.png" },
-            { "device": "iphone", "shot": "decidr/dashboard-mobile.png" }
+            {
+              "device": "macbook",
+              "shot": "decidr/landing.png"
+            },
+            {
+              "device": "iphone",
+              "shot": "decidr/dashboard-mobile.png"
+            }
           ]
-        },
-        {
-          "out": "detail-1.jpg",
-          "layout": "combo-stage",
-          "bg": "slate",
-          "devices": [
-            { "device": "macbook", "shot": "decidr/dashboard.png" },
-            { "device": "iphone", "shot": "decidr/detail-mobile.png" }
-          ]
-        },
-        {
-          "out": "detail-2.jpg",
-          "device": "iphone",
-          "layout": "duo",
-          "bg": "ink",
-          "shots": ["decidr/detail-mobile.png", "decidr/compare-mobile.png"]
         }
       ]
     },
@@ -446,19 +296,11 @@
           "out": "hero.jpg",
           "device": "iphone",
           "layout": "trio",
-          "shots": ["interio/home.png", "interio/camera.png", "interio/ar.png"]
-        },
-        {
-          "out": "detail-1.jpg",
-          "device": "iphone",
-          "layout": "duo",
-          "shots": ["interio/post-scan.png", "interio/ar.png"]
-        },
-        {
-          "out": "detail-2.jpg",
-          "device": "iphone",
-          "layout": "duo",
-          "shots": ["interio/camera.png", "interio/home.png"]
+          "shots": [
+            "interio/home.png",
+            "interio/camera.png",
+            "interio/ar.png"
+          ]
         }
       ]
     }

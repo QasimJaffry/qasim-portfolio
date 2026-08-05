@@ -15,7 +15,7 @@ export default function AboutPage() {
         About
       </h1>
 
-      <div className="mt-10 grid gap-10 lg:grid-cols-[1fr_280px] lg:gap-16">
+      <div className="mt-10 grid gap-10 md:grid-cols-[1fr_280px] md:gap-12 lg:gap-16">
         <div className="max-w-2xl space-y-5 leading-relaxed text-muted">
           <p>
             I&apos;m a Senior Full-Stack Engineer based in Lahore, Pakistan, with 6+ years building
@@ -46,7 +46,7 @@ export default function AboutPage() {
           </p>
         </div>
 
-        <aside className="h-fit space-y-8 rounded-2xl bg-surface p-6 text-sm lg:sticky lg:top-24">
+        <aside className="h-fit space-y-8 rounded-2xl bg-surface p-6 text-sm md:sticky md:top-24">
           <div>
             <h2 className="eyebrow">Education</h2>
             <p className="mt-3 text-foreground">B.Sc. Computer Science</p>

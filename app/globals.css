@@ -1,13 +1,14 @@
 @import "tailwindcss";
 
 :root {
-  --background: #eaeae6;
-  --surface: #dededa;
-  --foreground: #1c1e22;
-  --muted: #5c6066;
-  --border: #d3d3ce;
-  --accent: #a66a4c;
-  --accent-foreground: #1c1e22;
+  /* Cool paper + deep pine — avoids cream/terracotta AI-portfolio cluster */
+  --background: #e6e7ea;
+  --surface: #dbdde1;
+  --foreground: #14171c;
+  --muted: #5a5f68;
+  --border: #c9ccd2;
+  --accent: #2a5c55;
+  --accent-foreground: #f3f5f4;
 }
 
 @theme inline {

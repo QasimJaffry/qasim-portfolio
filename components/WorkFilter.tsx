@@ -18,27 +18,39 @@ export default function WorkFilter({
 
   const filtered = useMemo(() => {
     const list = filter === "All" ? projects : projects.filter((p) => p.category === filter);
-    // Featured first, then keep portfolio order within each group
     return [...list].sort((a, b) => Number(b.featured) - Number(a.featured));
   }, [filter, projects]);
 
   return (
     <>
-      <div className="mt-8 flex flex-wrap gap-2">
-        {filters.map((f) => (
-          <button
-            key={f}
-            type="button"
-            onClick={() => setFilter(f)}
-            className={`rounded-full px-4 py-1.5 text-sm font-medium transition-colors ${
-              filter === f
-                ? "bg-accent text-accent-foreground"
-                : "bg-surface text-muted hover:text-foreground"
-            }`}
-          >
-            {f}
-          </button>
-        ))}
+      <div
+        role="tablist"
+        aria-label="Filter by category"
+        className="mt-8 flex flex-wrap gap-x-5 gap-y-2 border-b border-border/80 pb-3"
+      >
+        {filters.map((f) => {
+          const active = filter === f;
+          return (
+            <button
+              key={f}
+              type="button"
+              role="tab"
+              aria-selected={active}
+              onClick={() => setFilter(f)}
+              className={`relative pb-3 text-sm font-medium transition-colors ${
+                active ? "text-foreground" : "text-muted hover:text-foreground"
+              }`}
+            >
+              {f}
+              {active && (
+                <span
+                  aria-hidden
+                  className="absolute inset-x-0 -bottom-px h-0.5 bg-accent"
+                />
+              )}
+            </button>
+          );
+        })}
       </div>
 
       <div className="mt-8 grid gap-4 sm:grid-cols-2">

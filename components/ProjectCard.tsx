@@ -17,6 +17,9 @@ export default function ProjectCard({
   image?: string;
   index: number;
 }) {
+  const stack = project.stack.slice(0, 3);
+  const remaining = project.stack.length - stack.length;
+
   return (
     <Link
       href={`/work/${project.slug}`}
@@ -31,18 +34,16 @@ export default function ProjectCard({
       />
 
       <div className="pt-4">
-        <div className="flex items-center justify-between gap-3">
-          <div className="flex items-baseline gap-3 text-xs text-muted">
+        <div className="flex items-center justify-between gap-3 text-xs text-muted">
+          <div className="flex items-baseline gap-3">
             <span>{project.year}</span>
             <span>{project.category}</span>
+            {project.featured && <span>Featured</span>}
           </div>
-          <div className="flex items-center gap-2">
-            {project.featured && <span className="tag-pill">Featured</span>}
-            <span className="tag-pill inline-flex items-center gap-1.5">
-              <span className={`h-1.5 w-1.5 rounded-full ${statusDot[project.status]}`} />
-              {project.status}
-            </span>
-          </div>
+          <span className="inline-flex items-center gap-1.5">
+            <span className={`h-1.5 w-1.5 rounded-full ${statusDot[project.status]}`} />
+            {project.status}
+          </span>
         </div>
 
         <h3 className="mt-3 font-display text-xl font-medium tracking-tight text-foreground">
@@ -50,13 +51,10 @@ export default function ProjectCard({
         </h3>
         <p className="mt-1 text-sm text-muted">{project.tagline}</p>
 
-        <div className="mt-4 flex flex-wrap gap-2">
-          {project.stack.map((tech) => (
-            <span key={tech} className="tag-pill">
-              {tech}
-            </span>
-          ))}
-        </div>
+        <p className="mt-4 text-xs text-muted">
+          {stack.join(" · ")}
+          {remaining > 0 ? ` · +${remaining}` : ""}
+        </p>
       </div>
     </Link>
   );

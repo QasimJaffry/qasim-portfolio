@@ -2,25 +2,47 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 
 const links = [
-  { href: "/work", label: "Work" },
-  { href: "/about", label: "About" },
-  { href: "/#contact", label: "Contact" },
+  { href: "/work", label: "Work", match: (path: string) => path === "/work" || path.startsWith("/work/") },
+  { href: "/about", label: "About", match: (path: string) => path === "/about" },
+  {
+    href: "/#contact",
+    label: "Contact",
+    match: (path: string) => path === "/" /* hash checked separately */,
+  },
 ];
 
 export default function Nav() {
+  const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [hash, setHash] = useState("");
 
   useEffect(() => {
     function handleScroll() {
       setScrolled(window.scrollY > 8);
     }
+    function handleHash() {
+      setHash(window.location.hash);
+    }
     handleScroll();
+    handleHash();
     window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
+    window.addEventListener("hashchange", handleHash);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("hashchange", handleHash);
+    };
   }, []);
+
+  function isActive(link: (typeof links)[number]) {
+    if (link.href === "/#contact") {
+      return pathname === "/" && hash === "#contact";
+    }
+    return link.match(pathname);
+  }
 
   return (
     <header
@@ -38,15 +60,23 @@ export default function Nav() {
         </Link>
 
         <nav className="hidden items-center gap-8 sm:flex">
-          {links.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="link-underline text-sm text-muted transition-colors hover:text-foreground"
-            >
-              {link.label}
-            </Link>
-          ))}
+          {links.map((link) => {
+            const active = isActive(link);
+            return (
+              <Link
+                key={link.href}
+                href={link.href}
+                aria-current={active ? "page" : undefined}
+                className={`text-sm transition-colors ${
+                  active
+                    ? "font-medium text-foreground"
+                    : "text-muted hover:text-foreground"
+                }`}
+              >
+                {link.label}
+              </Link>
+            );
+          })}
         </nav>
 
         <button
@@ -79,16 +109,24 @@ export default function Nav() {
       {open && (
         <nav className="border-t border-border sm:hidden">
           <div className="mx-auto flex max-w-5xl flex-col px-6 py-4">
-            {links.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                onClick={() => setOpen(false)}
-                className="py-3 text-sm text-muted transition-colors hover:text-foreground"
-              >
-                {link.label}
-              </Link>
-            ))}
+            {links.map((link) => {
+              const active = isActive(link);
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  onClick={() => setOpen(false)}
+                  aria-current={active ? "page" : undefined}
+                  className={`py-3 text-sm transition-colors ${
+                    active
+                      ? "font-medium text-foreground"
+                      : "text-muted hover:text-foreground"
+                  }`}
+                >
+                  {link.label}
+                </Link>
+              );
+            })}
           </div>
         </nav>
       )}

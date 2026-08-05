@@ -111,7 +111,7 @@ export const projects: Project[] = [
       "Embedding re-ID across frames",
     ],
     status: "Completed",
-    featured: true,
+    featured: false,
     links: {},
     images: [
       "/images/projects/realtag/hero.jpg",
@@ -292,7 +292,7 @@ export const projects: Project[] = [
       "Guided exercises + couple games",
     ],
     status: "Completed",
-    featured: true,
+    featured: false,
     links: {},
     images: [
       "/images/projects/sextherapypro/hero.jpg",
@@ -313,7 +313,7 @@ export const projects: Project[] = [
       "Installable PWA on Firebase Hosting",
     ],
     status: "Live",
-    featured: true,
+    featured: false,
     links: {
       web: "https://catchatapp-6f11c.web.app/",
     },
@@ -398,12 +398,9 @@ export function getProjectBySlug(slug: string): Project | undefined {
 const FEATURED_ORDER = [
   "agenticly",
   "innerverse",
-  "qubio",
-  "realtag",
   "bugmapper",
   "safedeal",
-  "sextherapypro",
-  "catchat",
+  "qubio",
 ] as const;
 
 export function getFeaturedProjects(): Project[] {

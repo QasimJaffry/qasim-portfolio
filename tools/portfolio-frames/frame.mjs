@@ -84,9 +84,21 @@ async function makeBackground(name) {
   return sharp(svgGradient(preset)).png().toBuffer();
 }
 
-async function roundedShot(shotPath, w, h, radius) {
-  const resized = await sharp(shotPath)
-    .resize(w, h, { fit: "cover", position: "centre" })
+async function roundedShot(shotPath, w, h, radius, { cropBottom = 0 } = {}) {
+  let input = sharp(shotPath);
+  if (cropBottom > 0) {
+    const meta = await sharp(shotPath).metadata();
+    const cropH = Math.max(1, Math.round(meta.height * (1 - cropBottom)));
+    input = sharp(shotPath).extract({
+      left: 0,
+      top: 0,
+      width: meta.width,
+      height: cropH,
+    });
+  }
+
+  const resized = await input
+    .resize(w, h, { fit: "cover", position: cropBottom > 0 ? "north" : "centre" })
     .png()
     .toBuffer();
 
@@ -104,7 +116,7 @@ async function roundedShot(shotPath, w, h, radius) {
     .toBuffer();
 }
 
-async function frameScreenshot(shotPath, device, { graphite = false } = {}) {
+async function frameScreenshot(shotPath, device, { graphite = false, cropBottom = 0 } = {}) {
   const meta = FRAME_META[device];
   if (!meta) throw new Error(`Unknown device: ${device}`);
 
@@ -113,6 +125,7 @@ async function frameScreenshot(shotPath, device, { graphite = false } = {}) {
     meta.screenWidth,
     meta.screenHeight,
     meta.cornerRadius,
+    { cropBottom },
   );
 
   let frameInput = path.join(FRAMES_DIR, meta.file);
@@ -304,12 +317,12 @@ async function makePlate(plate) {
     const laptop = await frameScreenshot(
       resolveShot(laptopSpec.shot),
       "macbook",
-      { graphite: false },
+      { graphite: false, cropBottom: laptopSpec.cropBottom ?? 0 },
     );
     const phone = await frameScreenshot(
       resolveShot(phoneSpec.shot),
       "iphone",
-      { graphite: !darkBg },
+      { graphite: !darkBg, cropBottom: phoneSpec.cropBottom ?? plate.cropBottom ?? 0 },
     );
 
     await composeCombo(layers, MARGIN, { layout, laptop, phone, darkBg });
@@ -320,7 +333,10 @@ async function makePlate(plate) {
     const framed = [];
     for (const shot of shots) {
       framed.push(
-        await frameScreenshot(resolveShot(shot), device, { graphite }),
+        await frameScreenshot(resolveShot(shot), device, {
+          graphite,
+          cropBottom: plate.cropBottom ?? 0,
+        }),
       );
     }
 

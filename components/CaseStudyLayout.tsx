@@ -68,7 +68,7 @@ export default function CaseStudyLayout({
       </header>
 
       {hero && (
-        <div className="mx-auto mt-10 max-w-6xl animate-fade-up px-4 sm:mt-12 sm:px-6">
+        <div className="mx-auto mt-10 max-w-5xl animate-fade-up px-4 sm:mt-12 sm:px-6">
           <FigurePlate
             src={hero}
             alt={`${project.title}`}
@@ -118,11 +118,11 @@ export default function CaseStudyLayout({
         </div>
       )}
 
-      <div className="mx-auto mt-16 grid max-w-5xl gap-14 px-6 sm:mt-24 lg:grid-cols-[minmax(0,1fr)_200px] lg:gap-16">
+      <div className="mx-auto mt-16 grid max-w-5xl gap-14 px-6 sm:mt-24 md:grid-cols-[minmax(0,1fr)_200px] md:gap-12 lg:gap-16">
         <div className="case-study-body">{children}</div>
 
-        <aside className="lg:sticky lg:top-28 lg:self-start">
-          <div className="space-y-8 border-t border-border/80 pt-6 lg:border-t-0 lg:border-l lg:pt-0 lg:pl-6">
+        <aside className="md:sticky md:top-28 md:self-start">
+          <div className="space-y-8 border-t border-border/80 pt-6 md:border-t-0 md:border-l md:pt-0 md:pl-6">
             <div>
               <h2 className="eyebrow">Stack</h2>
               <ul className="mt-3 space-y-1.5">

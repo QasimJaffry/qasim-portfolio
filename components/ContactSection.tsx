@@ -16,18 +16,12 @@ export default function ContactSection() {
           <p>Architecture and Technical Advisory</p>
         </div>
 
-        <div className="mt-8 space-y-2">
-          {/* TODO: placeholder — swap for real inbox */}
-          <a href="mailto:hello@qasimhassan.dev" className="link-underline block font-medium">
-            hello@qasimhassan.dev
-          </a>
-          <a
-            href="https://linkedin.com/in/qasim-hassan-02871a171"
-            className="link-underline block text-accent-foreground/75 transition-colors hover:text-accent-foreground"
-          >
-            linkedin.com/in/qasim-hassan-02871a171
-          </a>
-        </div>
+        <a
+          href="mailto:hello@qasimhassan.dev"
+          className="link-underline mt-8 inline-block font-medium"
+        >
+          hello@qasimhassan.dev
+        </a>
 
         <Magnetic strength={0.3} className="mt-8">
           <a

@@ -1,7 +1,15 @@
 "use client";
 
 import { useRef } from "react";
+import Link from "next/link";
 import Magnetic from "@/components/Magnetic";
+import FigurePlate from "@/components/FigurePlate";
+
+const LEAD = {
+  slug: "agenticly",
+  title: "Agenticly",
+  image: "/images/projects/agenticly/hero.jpg",
+};
 
 export default function Hero() {
   const blobA = useRef<HTMLDivElement>(null);
@@ -32,11 +40,13 @@ export default function Hero() {
         className="pointer-events-none absolute -bottom-32 -left-16 h-[320px] w-[320px] rounded-full bg-accent/[0.06] blur-3xl transition-transform duration-500 ease-out"
       />
 
-      <div className="mx-auto max-w-5xl px-6 pb-12 pt-16 sm:pb-16 sm:pt-24">
-        <div className="animate-fade-up max-w-3xl">
-          <span className="tag-pill">AI Products · Mobile · Scale</span>
+      <div className="mx-auto grid max-w-5xl items-center gap-10 px-6 pb-12 pt-16 sm:pb-16 sm:pt-24 md:grid-cols-[minmax(0,1fr)_minmax(260px,40%)] md:gap-10 lg:gap-12">
+        <div className="animate-fade-up min-w-0">
+          <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted">
+            AI Products · Mobile · Scale
+          </p>
 
-          <h1 className="mt-6 font-display text-6xl font-medium tracking-tight text-foreground sm:text-7xl lg:text-8xl">
+          <h1 className="mt-5 font-display text-6xl font-medium tracking-tight text-foreground sm:text-7xl lg:text-8xl">
             Qasim
             <br />
             <span className="relative inline-block">
@@ -76,6 +86,25 @@ export default function Hero() {
             Lahore, Pakistan — Open to relocation (Germany · Canada · UAE)
           </p>
         </div>
+
+        <Link
+          href={`/work/${LEAD.slug}`}
+          className="animate-fade-up group block min-w-0"
+          style={{ animationDelay: "120ms" }}
+          aria-label={`${LEAD.title} case study`}
+        >
+          <FigurePlate
+            src={LEAD.image}
+            alt={`${LEAD.title} product preview`}
+            category="AI"
+            tilt="none"
+            priority
+            className="shadow-[0_28px_70px_-36px_rgba(21,24,26,0.45)] transition-transform duration-300 ease-out group-hover:-translate-y-1"
+          />
+          <p className="mt-3 font-mono text-[11px] uppercase tracking-[0.16em] text-muted transition-colors group-hover:text-foreground">
+            Featured — {LEAD.title} →
+          </p>
+        </Link>
       </div>
     </section>
   );

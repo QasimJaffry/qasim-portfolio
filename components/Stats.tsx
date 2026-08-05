@@ -4,7 +4,8 @@ import { useEffect, useRef, useState } from "react";
 import { stats } from "@/lib/data/stats";
 
 function useCountUp(target: number, active: boolean, duration = 1200) {
-  const [value, setValue] = useState(0);
+  // Show the real value on first paint so tiles never flash "0".
+  const [value, setValue] = useState(target);
 
   useEffect(() => {
     if (!active) return;
@@ -15,6 +16,7 @@ function useCountUp(target: number, active: boolean, duration = 1200) {
 
     let frame: number;
     const start = performance.now();
+    setValue(0);
 
     function tick(now: number) {
       const progress = Math.min((now - start) / duration, 1);
