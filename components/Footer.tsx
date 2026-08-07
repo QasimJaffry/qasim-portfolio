@@ -1,25 +1,43 @@
+import { site } from "@/lib/site";
+
 export default function Footer() {
   return (
     <footer className="border-t border-border">
-      <div className="mx-auto flex max-w-5xl flex-col gap-3 px-6 py-8 text-sm text-muted sm:flex-row sm:items-center sm:justify-between">
-        <p>Qasim Hassan · Lahore, Pakistan</p>
-        <p>Built with Next.js</p>
-        <div className="flex gap-4">
+      <div className="mx-auto flex max-w-5xl flex-col gap-4 px-6 py-8 text-sm text-muted sm:flex-row sm:items-center sm:justify-between">
+        <div className="space-y-1">
+          <p>
+            {site.name} · {site.location}
+          </p>
+          <a href={`mailto:${site.email}`} className="link-underline text-foreground">
+            {site.email}
+          </a>
+        </div>
+        <p className="sm:text-center">Built with Next.js</p>
+        <div className="flex flex-wrap gap-4 sm:justify-end">
+          <a href="/resume" className="link-underline transition-colors hover:text-foreground">
+            Resume
+          </a>
           <a
-            href="https://github.com/QasimJaffry"
+            href={site.social.github}
             className="link-underline transition-colors hover:text-foreground"
+            target="_blank"
+            rel="noopener noreferrer"
           >
             GitHub
           </a>
           <a
-            href="https://linkedin.com/in/qasim-hassan-02871a171"
+            href={site.social.linkedin}
             className="link-underline transition-colors hover:text-foreground"
+            target="_blank"
+            rel="noopener noreferrer"
           >
             LinkedIn
           </a>
           <a
-            href="https://www.upwork.com/freelancers/~011828438344ce4299"
+            href={site.social.upwork}
             className="link-underline transition-colors hover:text-foreground"
+            target="_blank"
+            rel="noopener noreferrer"
           >
             Upwork
           </a>

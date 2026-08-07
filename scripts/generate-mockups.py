@@ -862,6 +862,92 @@ def compose_laptop_phone(
     return bg.convert("RGB")
 
 
+def compose_laptop_flanked(
+    web: Image.Image,
+    left_mobile: Image.Image,
+    right_mobile: Image.Image,
+    canvas: tuple[int, int] = (1600, 1200),
+    tint: tuple[int, int, int] = ACCENT,
+    studio: bool = False,
+    web_fit: str = "width",
+    phone_style: str = "ios",
+    phone_max_h: int = 720,
+    studio_black: bool = False,
+) -> Image.Image:
+    """Phone left + laptop center + phone right — classic product triad."""
+    margin = 36
+    angle = 3.2
+
+    def build(scale: float):
+        laptop = browser_in_laptop(web, screen_w=max(1, int(980 * scale)), fit=web_fit)
+        left = phone_frame(
+            left_mobile, max_h=max(1, int(phone_max_h * scale)), style=phone_style
+        )
+        right = phone_frame(
+            right_mobile, max_h=max(1, int(phone_max_h * scale)), style=phone_style
+        )
+        rl = left.rotate(-angle, resample=Image.Resampling.BICUBIC, expand=True)
+        rr = right.rotate(angle, resample=Image.Resampling.BICUBIC, expand=True)
+        # Phones tuck slightly under laptop edges so the set reads as one cluster
+        overlap = int(min(rl.width, rr.width) * 0.28)
+        total_w = rl.width + laptop.width + rr.width - overlap * 2
+        x0 = (canvas[0] - total_w) // 2
+        ly = (canvas[1] - laptop.height) // 2 - 8
+        lx = x0 + rl.width - overlap
+        left_x = x0
+        left_y = (canvas[1] - rl.height) // 2 + 36
+        right_x = lx + laptop.width - overlap
+        right_y = (canvas[1] - rr.height) // 2 + 36
+        return (
+            (laptop, lx, ly),
+            (rl, left_x, left_y),
+            (rr, right_x, right_y),
+        )
+
+    scale = 1.0
+    laptop_p, left_p, right_p = build(scale)
+    for _ in range(12):
+        devices = (laptop_p, left_p, right_p)
+        xs = [p[1] for p in devices] + [p[1] + p[0].width for p in devices]
+        ys = [p[2] for p in devices] + [p[2] + p[0].height for p in devices]
+        fit = min(
+            (canvas[0] - margin * 2) / max(1, max(xs) - min(xs)),
+            (canvas[1] - margin * 2) / max(1, max(ys) - min(ys)),
+            1.0,
+        )
+        if fit >= 0.995:
+            break
+        scale *= fit * 0.97
+        laptop_p, left_p, right_p = build(scale)
+
+    devices = (laptop_p, left_p, right_p)
+    xs = [p[1] for p in devices] + [p[1] + p[0].width for p in devices]
+    ys = [p[2] for p in devices] + [p[2] + p[0].height for p in devices]
+    shift_x = (canvas[0] - (max(xs) - min(xs))) // 2 - min(xs)
+    shift_y = (canvas[1] - (max(ys) - min(ys))) // 2 - min(ys)
+
+    bg = make_bg(
+        canvas,
+        tint,
+        studio,
+        strength=0.2 if studio else 0.15,
+        cy_shift=50,
+        studio_black=studio_black,
+    )
+    # Laptop first (behind), phones on top at the flanks
+    for device, dx, dy in (laptop_p, left_p, right_p):
+        paste_with_shadow(
+            bg,
+            device,
+            (dx + shift_x, dy + shift_y),
+            radius=16 if device is laptop_p[0] else 48,
+            blur=40 if device is laptop_p[0] else 32,
+            opacity=100,
+            studio=studio,
+        )
+    return bg.convert("RGB")
+
+
 def compose_phone_leading(
     mobile: Image.Image,
     web: Image.Image,
@@ -1886,17 +1972,18 @@ def build_qubio() -> None:
     home = open_shot("Qubio", "App", "Home.png")
     qr = open_shot("Qubio", "App", "QrBody.png")
     pages = open_shot("Qubio", "App", "AllPages.png")
+    blocks = open_shot("Qubio", "App", "AddBlock.png")
+    qrinfo = open_shot("Qubio", "App", "QrInfoPage.png")
+    share = open_shot("Qubio", "App", "ShareQrMulti.png")
     web = open_shot("Qubio", "Web", "WebDesktop.png")
     tint = (122, 82, 214)
-    save_set(
-        dest,
-        [
-            compose_laptop_phone(web, home, tint=tint),
-            compose_dual_phones(home, qr, tint=tint),
-            compose_plate(browser_in_laptop(web, screen_w=1180), tint=tint, offset_y=8),
-            compose_plate(phone_frame(pages, max_h=960), tint=tint),
-        ],
-    )
+    for old in dest.glob("detail-*.*"):
+        old.unlink(missing_ok=True)
+    for old in dest.glob("hero.*"):
+        old.unlink(missing_ok=True)
+    save(compose_laptop_flanked(web, pages, qr, tint=tint), dest / "hero.jpg")
+    save(compose_dual_phones(home, blocks, tint=tint), dest / "detail-1.jpg")
+    save(compose_dual_phones(qrinfo, share, tint=tint), dest / "detail-2.jpg")
 
 
 def build_dealflow() -> None:

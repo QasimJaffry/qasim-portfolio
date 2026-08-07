@@ -514,10 +514,10 @@ const builders = {
 		const bg = studio;
 		const c = phoneColors;
 		return {
-			// web.png is a mobile link-in-bio column — phones show it honestly
-			hero: await triple('qubio', ['home.png', 'editor.png', 'qr.png'], c, bg),
-			'detail-1': await duo('qubio', ['home.png', 'share.png'], c, bg),
-			'detail-2': await laptopPhone('qubio', 'web.png', 'editor.png', 'white-titanium', bg)
+			// Prefer Pillow compose_laptop_flanked (phone|laptop|phone) via generate-mockups.py.
+			hero: await laptopPhone('qubio', 'web.png', 'pages.png', 'white-titanium', bg),
+			'detail-1': await duo('qubio', ['home.png', 'blocks.png'], c, bg),
+			'detail-2': await duo('qubio', ['qrinfo.png', 'share.png'], c, bg)
 		};
 	},
 

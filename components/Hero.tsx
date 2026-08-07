@@ -2,6 +2,7 @@
 
 import { useRef } from "react";
 import Magnetic from "@/components/Magnetic";
+import { site } from "@/lib/site";
 
 const proof = [
   { value: "6+", label: "Years shipping" },
@@ -42,7 +43,7 @@ export default function Hero() {
       <div className="mx-auto grid max-w-5xl items-center gap-12 px-6 pb-12 pt-16 sm:pb-16 sm:pt-24 md:grid-cols-[minmax(0,1.15fr)_minmax(240px,0.85fr)] md:gap-14">
         <div className="animate-fade-up min-w-0">
           <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted">
-            AI Products · Mobile · Scale
+            React Native · Next.js · AI Products
           </p>
 
           <h1 className="mt-5 font-display text-6xl font-medium tracking-tight text-foreground sm:text-7xl lg:text-8xl">
@@ -55,9 +56,12 @@ export default function Hero() {
           </h1>
 
           <p className="mt-8 max-w-xl text-lg leading-relaxed text-muted sm:text-xl">
-            Senior Full-Stack Engineer shipping{" "}
+            {site.title} shipping{" "}
             <span className="font-medium text-foreground">AI-native</span> mobile and web
-            products, solo and in small teams.
+            products that reach real users — solo and in small teams.
+          </p>
+          <p className="mt-3 max-w-xl text-sm leading-relaxed text-muted sm:text-[15px]">
+            {site.positioning}
           </p>
 
           <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-4">
@@ -66,14 +70,19 @@ export default function Hero() {
                 View Work
               </a>
             </Magnetic>
+            <a href="#hire" className="btn-secondary link-underline">
+              Hire me for
+            </a>
+            <a href="/resume" className="btn-secondary link-underline">
+              Resume
+            </a>
             <a
-              href="https://linkedin.com/in/qasim-hassan-02871a171"
+              href={site.social.linkedin}
               className="btn-secondary link-underline"
+              target="_blank"
+              rel="noopener noreferrer"
             >
               LinkedIn ↗
-            </a>
-            <a href="https://github.com/QasimJaffry" className="btn-secondary link-underline">
-              GitHub ↗
             </a>
           </div>
 
@@ -82,7 +91,7 @@ export default function Hero() {
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent/60" />
               <span className="relative inline-flex h-2 w-2 rounded-full bg-accent" />
             </span>
-            Lahore, Pakistan — Open to relocation (Germany · Canada · UAE)
+            {site.location} — {site.relocation}
           </p>
         </div>
 

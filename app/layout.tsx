@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Fraunces } from "next/font/google";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
+import JsonLd from "@/components/JsonLd";
+import { site } from "@/lib/site";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -20,13 +22,11 @@ const fraunces = Fraunces({
   axes: ["opsz", "SOFT", "WONK"],
 });
 
-const siteUrl = "https://qasimhassan.dev";
-
 export const metadata: Metadata = {
-  metadataBase: new URL(siteUrl),
+  metadataBase: new URL(site.url),
   title: {
-    default: "Qasim Hassan — Senior Full-Stack Engineer",
-    template: "%s — Qasim Hassan",
+    default: `${site.name} — ${site.title}`,
+    template: `%s — ${site.name}`,
   },
   description:
     "Senior Full-Stack Engineer with 6+ years shipping mobile and web products. React Native, Next.js, AI integrations. Top Rated Plus on Upwork. Based in Lahore, Pakistan.",
@@ -37,13 +37,35 @@ export const metadata: Metadata = {
     "Full-stack engineer Pakistan",
     "mobile app developer Lahore",
     "senior developer Upwork",
+    "Expo developer",
+    "RevenueCat Stripe",
   ],
+  authors: [{ name: site.name, url: site.url }],
+  creator: site.name,
   openGraph: {
-    title: "Qasim Hassan — Senior Full-Stack Engineer",
-    description: "Shipping AI-powered mobile and web products. React Native · Next.js · AI · Scale.",
-    url: siteUrl,
-    siteName: "Qasim Hassan",
+    title: `${site.name} — ${site.title}`,
+    description: site.positioning,
+    url: site.url,
+    siteName: site.name,
     type: "website",
+    locale: "en_US",
+    images: [
+      {
+        url: "/images/og.png",
+        width: 1200,
+        height: 630,
+        alt: `${site.name} — ${site.title}`,
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `${site.name} — ${site.title}`,
+    description: site.positioning,
+    images: ["/images/og.png"],
+  },
+  alternates: {
+    canonical: site.url,
   },
 };
 
@@ -54,7 +76,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} ${fraunces.variable} antialiased flex min-h-screen flex-col`}>
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} ${fraunces.variable} antialiased flex min-h-screen flex-col`}
+      >
+        <JsonLd />
         <Nav />
         <main className="flex-1">{children}</main>
         <Footer />

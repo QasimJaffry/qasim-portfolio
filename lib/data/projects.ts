@@ -1,11 +1,19 @@
 export type ProjectCategory = "Mobile" | "Web" | "AI" | "Full-Stack";
 export type ProjectStatus = "Live" | "In Development" | "Completed";
 
+export type ProjectSummary = {
+  problem: string;
+  action: string;
+  result: string;
+};
+
 export type Project = {
   slug: string;
   title: string;
   tagline: string;
   description: string;
+  /** Scannable Problem → Action → Result for the first screen */
+  summary?: ProjectSummary;
   category: ProjectCategory;
   stack: string[];
   metrics: string[];
@@ -30,8 +38,16 @@ export const projects: Project[] = [
     tagline: "Ask crypto and markets in plain English — analytics, charts, insights.",
     description:
       "Frontend + payments for Agenticly’s Expo mobile and React web clients — NL research chat with streaming answers and charts across crypto, on-chain, and stocks. Team product; I owned the phone/web UI and subscription flows (RevenueCat on mobile, Stripe on web) into one entitlement model.",
+    summary: {
+      problem:
+        "Market research meant a dozen tabs and no single place to ask a question in plain English and get analytics back — on phone or web, with billing that works on either surface.",
+      action:
+        "Owned Expo + React/Vite clients and subscription UX: streaming NL research chat with charts against a teammate’s research API, RevenueCat on mobile and Stripe on web into one Firebase entitlement model.",
+      result:
+        "Live on Play Store (10K+ downloads, 4.9★), App Store, and web with subscription revenue on both channels.",
+    },
     category: "AI",
-    stack: ["React Native", "Expo", "React", "Firebase", "FastAPI", "LangGraph", "RevenueCat", "Stripe"],
+    stack: ["React Native", "Expo", "React", "Firebase", "RevenueCat", "Stripe"],
     metrics: [
       "10K+ Play Store downloads",
       "4.9★ on Google Play",
@@ -55,6 +71,13 @@ export const projects: Project[] = [
     tagline: "Log moods as stars in a personal galaxy — with an AI companion.",
     description:
       "Solo founder product under Jafrix Systems: React Native + Expo + Skia cosmos visualization, Mira AI for pattern reflection, meditation library, and RevenueCat premium. Live on Play Store and the web.",
+    summary: {
+      problem:
+        "Mood tracking apps feel like spreadsheets — people want reflection that feels personal, not another form to fill.",
+      action:
+        "Built and published solo: Expo + Skia cosmos journal, Mira AI companion, meditation library, and RevenueCat premium.",
+      result: "Live on Play Store and web as a Jafrix Systems product I own end-to-end.",
+    },
     category: "Mobile",
     stack: ["React Native", "Expo", "Skia", "Firebase", "OpenAI API", "RevenueCat"],
     metrics: [
@@ -80,6 +103,13 @@ export const projects: Project[] = [
     tagline: "QR/NFC digital identity pages you edit from phone or web.",
     description:
       "18-month engagement on a cross-platform identity system: React Native for scan/register and page editing, web admin for management, and a D3 analytics view of how the network is used — shared API for an international client deployment.",
+    summary: {
+      problem:
+        "Physical identity (QR/NFC) needed editable digital pages and ops tooling that worked for both field users on phone and admins on web.",
+      action:
+        "Owned RN scan/register + page editing, web admin, and D3 analytics against a shared API across an 18-month engagement.",
+      result: "International client deployment spanning mobile, web, and network analytics.",
+    },
     category: "Full-Stack",
     stack: ["React Native", "React", "D3.js", "Node.js", "NFC / QR"],
     metrics: [
@@ -94,6 +124,8 @@ export const projects: Project[] = [
     },
     images: [
       "/images/projects/qubio/hero.jpg",
+      "/images/projects/qubio/detail-1.jpg",
+      "/images/projects/qubio/detail-2.jpg",
     ],
     year: "2022",
   },
@@ -191,6 +223,14 @@ export const projects: Project[] = [
     tagline: "Field app for greenhouse trap work, offline sync, and PIM® photo upload.",
     description:
       "React Native + web frontend for BugMapper’s agri-tech platform — QR trap deployment, offline-first sync, PIM® photo upload, and the charts/maps advisors use in the greenhouse loop.",
+    summary: {
+      problem:
+        "Greenhouse trap work was slow and manual — counts took minutes per trap and broke down without reliable connectivity.",
+      action:
+        "Built RN + web frontend: QR trap deployment, offline sync queue, PIM® photo upload, and advisor charts/maps.",
+      result:
+        "Press-backed ~10 sec/trap workflows and live deployments across multiple Turkish greenhouse regions.",
+    },
     category: "Full-Stack",
     stack: ["React Native", "Expo", "SQLite", "Offline-first", "Web"],
     metrics: [
@@ -214,6 +254,13 @@ export const projects: Project[] = [
     tagline: "AI shopping browser for Amazon, eBay, and AliExpress — verdicts, not guesswork.",
     description:
       "React Native frontend for Safe Deal’s mobile shopping browser — in-app WebView for major marketplaces, product/seller rules, AI review summaries, and price history in one sheet.",
+    summary: {
+      problem:
+        "Phone shopping on Amazon, eBay, or AliExpress meant guessing at reviews, discounts, and seller quality without desktop extension helpers.",
+      action:
+        "Owned the RN shopping browser: in-app WebView, product/seller rules, AI review rollups, and price history in one sheet.",
+      result: "Live on Google Play (5K+ downloads) and iOS alongside the broader Safe Deal platform.",
+    },
     category: "Mobile",
     stack: ["React Native", "Expo", "WebView", "React Query"],
     metrics: [
@@ -328,6 +375,13 @@ export const projects: Project[] = [
     tagline: "AI-native CRM for freelancers — deals, tasks, and follow-ups in one place.",
     description:
       "Personal product: Next.js web + Expo mobile sharing a Supabase backend. Pipeline for clients and deals, activity timeline, and AI that summarizes deals, extracts next actions, and drafts follow-ups.",
+    summary: {
+      problem:
+        "Freelancer CRM tools are either too generic or too heavy — deals, tasks, and follow-ups scatter across notes and inboxes.",
+      action:
+        "Building Next.js + Expo on one Supabase backend: pipeline, timeline, and AI summarize → approve → tasks.",
+      result: "In development as a personal Jafrix product with a shared typed monorepo.",
+    },
     category: "AI",
     stack: ["Next.js", "Expo", "Supabase", "OpenAI / OpenRouter", "TypeScript"],
     metrics: [

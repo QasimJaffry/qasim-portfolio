@@ -2,7 +2,7 @@
 title: Agenticly
 year: 2024–present
 status: Live
-stack: [React Native, Expo, React, Firebase, FastAPI, LangGraph, RevenueCat, Stripe]
+stack: [React Native, Expo, React, Firebase, RevenueCat, Stripe]
 ---
 
 ## The Problem
@@ -11,7 +11,7 @@ Crypto and markets research still means a dozen tabs — CoinGecko, explorers, n
 
 ## What I Built
 
-I was the **frontend + payments** engineer on a team product — **Expo / React Native** for phone, **React + Vite** for web — against Firebase for auth/data and a FastAPI + LangGraph research backend for streaming chat.
+I was the **frontend + payments** engineer on a team product — **Expo / React Native** for phone, **React + Vite** for web — against Firebase for auth/data and a teammate-owned FastAPI + LangGraph research backend for streaming chat.
 
 - Natural-language queries across crypto (CoinGecko), on-chain (BigQuery), and stocks (Alpha Vantage), with interactive Plotly charts in the chat UI.
 - Stock recommendation / analyst-ranking flows alongside freeform research chat (SSE streaming).
@@ -38,4 +38,4 @@ Agenticly is live on Play Store (**10K+** downloads, **4.9★**), App Store, and
 
 ## Stack Decisions
 
-Expo + Vite React were chosen for fast dual-platform shipping rather than maximizing code reuse. Firebase kept auth/data overhead low for the clients; the FastAPI/LangGraph backend owns the agent loop. RevenueCat absorbs App Store / Play receipt complexity; Stripe handles web trials and cards — both normalize into one entitlement record the UIs trust.
+Expo + Vite React were chosen for fast dual-platform shipping rather than maximizing code reuse. Firebase kept auth/data overhead low for the clients; a teammate owned the FastAPI/LangGraph agent loop and related observability — I consumed that API from the clients and owned subscription UX. RevenueCat absorbs App Store / Play receipt complexity; Stripe handles web trials and cards — both normalize into one entitlement record the UIs trust.

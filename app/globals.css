@@ -196,3 +196,24 @@ body::before {
     transform: scaleX(1);
   }
 }
+
+@media print {
+  body::before {
+    display: none;
+  }
+
+  header,
+  footer {
+    display: none !important;
+  }
+
+  body {
+    background: white;
+    color: black;
+  }
+
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
+}

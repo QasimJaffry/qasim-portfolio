@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import type { Project } from "@/lib/data/projects";
 import { resolveProjectImage } from "@/lib/projectImage";
 import { getAdjacentCaseStudies } from "@/lib/projects";
+import ArchitectureDiagram from "@/components/ArchitectureDiagram";
 import FigurePlate from "@/components/FigurePlate";
 
 const linkLabels: Record<string, string> = {
@@ -21,6 +22,10 @@ export default function CaseStudyLayout({
 }) {
   const linkEntries = Object.entries(project.links).filter(([, href]) => Boolean(href));
   const hero = resolveProjectImage(project.images[0]);
+  const gallery = project.images
+    .slice(1)
+    .map((src) => resolveProjectImage(src))
+    .filter((src): src is string => Boolean(src));
   const liveLinks = linkEntries.filter(([key]) => key !== "github");
   const { prev, next } = getAdjacentCaseStudies(project.slug);
 
@@ -99,12 +104,31 @@ export default function CaseStudyLayout({
         </div>
       )}
 
-      {(project.description || project.metrics.length > 0) && (
+      {(project.summary || project.description || project.metrics.length > 0) && (
         <div className="mx-auto mt-10 max-w-3xl px-6 sm:mt-12">
-          {project.description && (
-            <p className="max-w-2xl text-[15px] leading-relaxed text-muted sm:text-base">
-              {project.description}
-            </p>
+          {project.summary ? (
+            <dl className="grid gap-6 sm:grid-cols-3 sm:gap-5">
+              {(
+                [
+                  ["Problem", project.summary.problem],
+                  ["Action", project.summary.action],
+                  ["Result", project.summary.result],
+                ] as const
+              ).map(([label, text]) => (
+                <div key={label} className="border-t border-border/80 pt-4">
+                  <dt className="font-mono text-[11px] uppercase tracking-[0.16em] text-accent">
+                    {label}
+                  </dt>
+                  <dd className="mt-2 text-sm leading-relaxed text-muted">{text}</dd>
+                </div>
+              ))}
+            </dl>
+          ) : (
+            project.description && (
+              <p className="max-w-2xl text-[15px] leading-relaxed text-muted sm:text-base">
+                {project.description}
+              </p>
+            )
           )}
           {project.metrics.length > 0 && (
             <ul className="mt-8 space-y-2 border-l-2 border-accent/40 pl-4">
@@ -115,6 +139,23 @@ export default function CaseStudyLayout({
               ))}
             </ul>
           )}
+
+          <ArchitectureDiagram slug={project.slug} />
+        </div>
+      )}
+
+      {gallery.length > 0 && (
+        <div className="mx-auto mt-10 grid max-w-5xl gap-5 px-4 sm:mt-12 sm:gap-6 sm:px-6 md:grid-cols-2">
+          {gallery.map((src, i) => (
+            <FigurePlate
+              key={src}
+              src={src}
+              alt={`${project.title} — screen ${i + 2}`}
+              category={project.category}
+              tilt="none"
+              className="shadow-[0_20px_50px_-28px_rgba(21,24,26,0.35)]"
+            />
+          ))}
         </div>
       )}
 

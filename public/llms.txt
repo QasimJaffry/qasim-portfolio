@@ -1,0 +1,38 @@
+# Qasim Hassan
+
+> Senior Full-Stack Engineer shipping AI-native mobile and web products. React Native, Next.js, Expo, Firebase, Stripe/RevenueCat. Based in Lahore, Pakistan. Top Rated Plus on Upwork (100% Job Success). Open to freelance, consulting, and senior remote roles.
+
+## Primary
+
+- [Home](https://qasimhassan.dev/): Positioning, featured work, hire-me scopes, process, FAQ, contact
+- [Work](https://qasimhassan.dev/work): Case studies across mobile, web, AI, and full-stack products
+- [About](https://qasimhassan.dev/about): Background, stats, experience timeline
+- [Resume](https://qasimhassan.dev/resume): Printable resume for recruiters
+- [Contact](https://qasimhassan.dev/#contact): Email qhassan1214@gmail.com — responds within 24 hours
+
+## Flagship case studies
+
+- [Agenticly](https://qasimhassan.dev/work/agenticly): AI crypto/markets research assistant — Expo + React web, RevenueCat + Stripe, 10K+ Play downloads, 4.9★
+- [Innerverse](https://qasimhassan.dev/work/innerverse): Solo founder mood-journal app with Skia cosmos + AI companion
+- [BugMapper](https://qasimhassan.dev/work/bugmapper): Agri-tech React Native field app for pest trapping
+- [SafeDeal](https://qasimhassan.dev/work/safedeal): Shopping assistant mobile frontend, 5K+ Play downloads
+- [Qubio](https://qasimhassan.dev/work/qubio): 18-month QR/NFC digital identity ecosystem (RN + Next.js)
+
+## Hire for
+
+- React Native + Expo products
+- AI features into live products (chat, agents, streaming, billing)
+- 0→1 MVPs (mobile + web)
+- Payments & subscriptions (RevenueCat, Stripe)
+- Architecture / tech-lead help
+- Senior remote IC / lead roles ($50K–$120K)
+
+## Social
+
+- [GitHub](https://github.com/QasimJaffry)
+- [LinkedIn](https://linkedin.com/in/qasim-hassan-02871a171)
+- [Upwork](https://www.upwork.com/freelancers/~011828438344ce4299)
+
+## Optional
+
+- [llms.txt](https://qasimhassan.dev/llms.txt): This file

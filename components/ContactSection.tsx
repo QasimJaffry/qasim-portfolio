@@ -1,12 +1,14 @@
-import Reveal from "@/components/Reveal";
 import Magnetic from "@/components/Magnetic";
+import { mailtoHref, site } from "@/lib/site";
 
 export default function ContactSection() {
+  const bookHref = site.calendlyUrl ?? mailtoHref("Project inquiry");
+
   return (
     <section id="contact" className="mx-auto max-w-5xl px-6 py-16 sm:py-24">
-      <Reveal className="rounded-3xl bg-accent p-8 text-accent-foreground sm:p-12">
+      <div className="rounded-3xl bg-accent p-8 text-accent-foreground sm:p-12">
         <h2 className="font-display text-3xl font-medium tracking-tight sm:text-4xl">
-          Let&apos;s work together.
+          Let&apos;s scope it.
         </h2>
 
         <div className="mt-8 space-y-2 text-accent-foreground/75">
@@ -16,24 +18,34 @@ export default function ContactSection() {
           <p>Architecture and Technical Advisory</p>
         </div>
 
-        <a
-          href="mailto:qhassan1214@gmail.com"
-          className="link-underline mt-8 inline-block font-medium"
-        >
-          qhassan1214@gmail.com
+        <a href={mailtoHref()} className="link-underline mt-8 inline-block font-medium">
+          {site.email}
         </a>
 
-        <Magnetic strength={0.3} className="mt-8">
+        <div className="mt-8 flex flex-wrap items-center gap-4">
+          <Magnetic strength={0.3}>
+            <a
+              href={bookHref}
+              className="inline-flex items-center gap-2 rounded-full bg-background px-6 py-3 text-sm font-medium text-foreground transition-transform duration-200 hover:-translate-y-0.5"
+              {...(site.calendlyUrl
+                ? { target: "_blank", rel: "noopener noreferrer" }
+                : {})}
+            >
+              {site.calendlyUrl ? "Book a 30-min call →" : "Email me →"}
+            </a>
+          </Magnetic>
           <a
-            href="https://linkedin.com/in/qasim-hassan-02871a171"
-            className="inline-flex items-center gap-2 rounded-full bg-background px-6 py-3 text-sm font-medium text-foreground transition-transform duration-200 hover:-translate-y-0.5"
+            href={site.social.linkedin}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="link-underline text-sm font-medium text-accent-foreground/90"
           >
-            Send Message on LinkedIn →
+            LinkedIn ↗
           </a>
-        </Magnetic>
+        </div>
 
-        <p className="mt-6 text-sm text-accent-foreground/75">I respond within 24 hours.</p>
-      </Reveal>
+        <p className="mt-6 text-sm text-accent-foreground/75">{site.replySla}</p>
+      </div>
     </section>
   );
 }
