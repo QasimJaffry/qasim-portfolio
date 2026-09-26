@@ -62,7 +62,7 @@ function StatTile({ label, value, delay }: { label: string; value: string; delay
       className={`reveal ${active ? "reveal-visible" : ""} rounded-2xl bg-accent/[0.07] px-4 py-6 text-center transition-colors duration-300 hover:bg-accent/[0.12]`}
       style={{ transitionDelay: active ? `${delay}ms` : "0ms" }}
     >
-      <p className="font-display text-3xl font-medium tracking-tight text-foreground tabular-nums sm:text-4xl">
+      <p className="font-display text-3xl font-extrabold tracking-tight text-foreground tabular-nums sm:text-4xl">
         {match ? `${prefix}${count}${suffix}` : value}
       </p>
       <p className="mt-2 text-xs uppercase tracking-wide text-muted">{label}</p>

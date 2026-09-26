@@ -58,11 +58,11 @@ export default function CaseStudyLayout({
               alt=""
               width={72}
               height={72}
-              className="mt-1 size-14 shrink-0 rounded-[18px] shadow-[0_12px_28px_-14px_rgba(21,24,26,0.45)] sm:mt-1.5 sm:size-[72px] sm:rounded-[20px]"
+              className="mt-1 size-14 shrink-0 rounded-[18px] ring-1 ring-border sm:mt-1.5 sm:size-[72px] sm:rounded-[20px]"
             />
           )}
           <div className="min-w-0">
-            <h1 className="font-display text-[2.35rem] font-medium leading-[1.1] tracking-tight text-foreground sm:text-5xl sm:leading-[1.08]">
+            <h1 className="font-display text-[2.6rem] font-extrabold leading-[1.02] tracking-[-0.045em] text-foreground sm:text-6xl sm:leading-[1]">
               {project.title}
             </h1>
             <p className="mt-5 text-xl leading-snug text-foreground/80 sm:text-2xl sm:leading-snug">
@@ -80,7 +80,7 @@ export default function CaseStudyLayout({
             category={project.category}
             tilt="none"
             priority
-            className="shadow-[0_28px_70px_-32px_rgba(21,24,26,0.4)]"
+            className="ring-1 ring-border"
           />
 
           {liveLinks.length > 0 && (
@@ -153,7 +153,7 @@ export default function CaseStudyLayout({
               alt={`${project.title} — screen ${i + 2}`}
               category={project.category}
               tilt="none"
-              className="shadow-[0_20px_50px_-28px_rgba(21,24,26,0.35)]"
+              className="ring-1 ring-border"
             />
           ))}
         </div>
@@ -199,7 +199,7 @@ export default function CaseStudyLayout({
       </div>
 
       <section className="mx-auto mt-20 max-w-3xl border-t border-border/80 px-6 pt-10 sm:mt-28">
-        <p className="font-display text-xl font-medium tracking-tight text-foreground sm:text-2xl">
+        <p className="font-display text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
           Building something in this space?
         </p>
         <p className="mt-3 max-w-xl text-sm leading-relaxed text-muted sm:text-[15px]">

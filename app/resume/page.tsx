@@ -24,7 +24,7 @@ export default function ResumePage() {
             </span>
             Home
           </Link>
-          <h1 className="mt-8 font-display text-3xl font-medium tracking-tight text-foreground sm:text-4xl">
+          <h1 className="mt-8 font-display text-4xl font-extrabold tracking-[-0.04em] text-foreground sm:text-5xl">
             Resume
           </h1>
           <p className="mt-2 text-sm text-muted">

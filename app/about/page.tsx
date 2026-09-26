@@ -20,7 +20,7 @@ export default function AboutPage() {
     <>
       <div className="mx-auto max-w-6xl px-6 py-14 sm:py-20">
         <div>
-          <h1 className="font-display text-3xl font-medium tracking-tight text-foreground sm:text-4xl">
+          <h1 className="font-display text-5xl font-extrabold tracking-[-0.045em] text-foreground sm:text-7xl">
             About
           </h1>
           <p className="mt-3 max-w-xl text-muted">{site.positioning}</p>
@@ -29,7 +29,7 @@ export default function AboutPage() {
         <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {aboutProof.map((item) => (
             <div key={item.label} className="rounded-2xl border border-border/80 bg-surface/65 px-4 py-4">
-              <p className="font-display text-2xl font-medium tracking-tight text-foreground">{item.value}</p>
+              <p className="font-display text-3xl font-extrabold tracking-tight text-accent">{item.value}</p>
               <p className="mt-1 text-xs uppercase tracking-[0.16em] text-muted">{item.label}</p>
             </div>
           ))}

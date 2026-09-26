@@ -60,7 +60,7 @@ export default function FigurePlate({
         ref={frameRef}
         onMouseMove={handleMove}
         onMouseLeave={handleLeave}
-        className={`relative overflow-hidden rounded-2xl transition-transform duration-300 ease-out will-change-transform ${
+        className={`relative overflow-hidden rounded-2xl ring-1 ring-border transition-transform duration-300 ease-out will-change-transform ${
           aspect === "portrait" ? "aspect-[3/4]" : "aspect-[16/10]"
         }`}
         style={{ transform: `rotate(${baseTilt}deg)` }}

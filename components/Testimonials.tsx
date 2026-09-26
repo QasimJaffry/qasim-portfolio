@@ -1,36 +1,64 @@
-import Reveal from "@/components/Reveal";
+"use client";
+
+import { useState } from "react";
 import { testimonials } from "@/lib/data/testimonials";
 
 export default function Testimonials() {
-  return (
-    <section id="proof" className="mx-auto max-w-6xl border-t border-border px-6 py-16 sm:py-24">
-      <Reveal>
-        <p className="eyebrow">What people say</p>
-        <h2 className="mt-3 font-display text-3xl font-medium tracking-tight text-foreground sm:text-4xl">
-          Ownership, standards, and follow-through.
-        </h2>
-      </Reveal>
+  const [index, setIndex] = useState(0);
+  const item = testimonials[index];
+  const count = testimonials.length;
 
-      <div className="mt-12 grid gap-8 md:grid-cols-3 md:gap-6">
-        {testimonials.map((item, i) => (
-          <Reveal
-            key={item.name + item.role}
-            delay={i * 70}
-            className="flex flex-col border-t border-border/80 pt-6 md:border-t-0 md:border-l md:border-border/80 md:pl-6 md:pt-0 first:md:border-l-0 first:md:pl-0"
+  return (
+    <section id="proof" className="mx-auto max-w-6xl px-6 py-20 sm:py-28">
+      <p className="eyebrow text-accent">What people say</p>
+
+      <figure className="mt-8 grid gap-8 lg:grid-cols-12 lg:gap-12">
+        <span
+          aria-hidden
+          className="font-display text-[8rem] font-extrabold leading-[0.6] text-accent lg:col-span-1 lg:text-[10rem]"
+        >
+          “
+        </span>
+        <div className="lg:col-span-11">
+          <blockquote
+            key={index}
+            className="animate-fade-up max-w-4xl text-2xl font-semibold leading-snug tracking-tight text-foreground sm:text-3xl lg:text-4xl"
           >
-            <blockquote className="flex-1 text-[15px] leading-relaxed text-muted">
-              “{item.quote}”
-            </blockquote>
-            <footer className="mt-6">
-              <p className="text-sm font-medium text-foreground">{item.name}</p>
-              <p className="mt-0.5 text-xs text-muted">
+            {item.quote}
+          </blockquote>
+          <figcaption className="mt-8 flex flex-wrap items-center justify-between gap-6">
+            <div>
+              <p className="font-semibold text-foreground">{item.name}</p>
+              <p className="mt-0.5 text-sm text-muted">
                 {item.role}
                 {item.source ? ` · ${item.source}` : ""}
               </p>
-            </footer>
-          </Reveal>
-        ))}
-      </div>
+            </div>
+
+            <div className="flex items-center gap-4">
+              <span className="font-mono text-xs tabular-nums text-muted">
+                {String(index + 1).padStart(2, "0")} / {String(count).padStart(2, "0")}
+              </span>
+              <button
+                type="button"
+                aria-label="Previous quote"
+                onClick={() => setIndex((index - 1 + count) % count)}
+                className="flex size-11 items-center justify-center rounded-full border border-border text-foreground transition-colors hover:border-accent hover:text-accent"
+              >
+                ←
+              </button>
+              <button
+                type="button"
+                aria-label="Next quote"
+                onClick={() => setIndex((index + 1) % count)}
+                className="flex size-11 items-center justify-center rounded-full border border-border text-foreground transition-colors hover:border-accent hover:text-accent"
+              >
+                →
+              </button>
+            </div>
+          </figcaption>
+        </div>
+      </figure>
     </section>
   );
 }

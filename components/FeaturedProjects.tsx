@@ -1,136 +1,140 @@
 import Link from "next/link";
-import { getFeaturedProjects } from "@/lib/data/projects";
+import { getFeaturedProjects, type Project } from "@/lib/data/projects";
 import { resolveProjectImage } from "@/lib/projectImage";
-import FigurePlate from "@/components/FigurePlate";
+import DeviceFrame from "@/components/DeviceFrame";
 import Reveal from "@/components/Reveal";
+
+function frameLabel(project: Project) {
+  const url = project.links.web ?? project.links.playStore ?? project.links.appStore;
+  if (!url) return project.title.toLowerCase();
+  try {
+    return new URL(url).hostname.replace(/^www\./, "");
+  } catch {
+    return project.title.toLowerCase();
+  }
+}
+
+const storeLinks: Array<[keyof Project["links"], string]> = [
+  ["playStore", "Google Play"],
+  ["appStore", "App Store"],
+  ["web", "Live site"],
+];
 
 export default function FeaturedProjects() {
   const featured = getFeaturedProjects();
-  const [lead, ...rest] = featured;
-
-  if (!lead) return null;
-
-  const leadLive = lead.links.web ?? lead.links.playStore ?? lead.links.appStore;
+  if (featured.length === 0) return null;
 
   return (
-    <section id="featured-work" className="mx-auto max-w-6xl px-6 pb-8 pt-16 sm:pb-12 sm:pt-24">
-      <h2 className="eyebrow">Featured Work</h2>
+    <section id="featured-work" className="mx-auto max-w-6xl px-6 py-20 sm:py-28">
+      <div className="flex items-end justify-between gap-6">
+        <div>
+          <p className="eyebrow text-accent">Selected work</p>
+          <h2 className="mt-3 font-display text-4xl font-extrabold tracking-[-0.04em] text-foreground sm:text-6xl">
+            Shipped, live, <br className="hidden sm:block" />
+            and in people&apos;s pockets.
+          </h2>
+        </div>
+        <Link
+          href="/work"
+          className="link-underline hidden shrink-0 pb-2 text-sm font-medium text-foreground sm:inline-block"
+        >
+          All work →
+        </Link>
+      </div>
 
-      <Reveal className="mt-8">
-        <article className="group">
-          <Link href={`/work/${lead.slug}`} className="block">
-            <FigurePlate
-              src={resolveProjectImage(lead.images[0])}
-              alt={`${lead.title} preview`}
-              category={lead.category}
-              tilt="none"
-              className="shadow-[0_24px_60px_-36px_rgba(21,24,26,0.4)] transition-transform duration-300 ease-out group-hover:-translate-y-0.5"
-            />
-          </Link>
+      <div className="mt-16 space-y-24 sm:mt-24 sm:space-y-36">
+        {featured.map((project, i) => {
+          const image = resolveProjectImage(project.images[0]);
+          const flip = i % 2 === 1;
+          const links = storeLinks.filter(([key]) => project.links[key]);
 
-          <div className="mt-6 max-w-2xl">
-            <div className="flex items-baseline gap-3 text-xs text-muted">
-              <span>{lead.year}</span>
-              <span>{lead.category}</span>
-            </div>
-            <h3 className="mt-2 font-display text-3xl font-medium tracking-tight text-foreground sm:text-4xl">
-              <Link href={`/work/${lead.slug}`} className="transition-colors hover:text-accent">
-                {lead.title}
-              </Link>
-            </h3>
-            <p className="mt-2 text-lg text-muted">{lead.tagline}</p>
-            <p className="mt-4 text-sm text-muted">{lead.metrics.join(" · ")}</p>
-            <div className="mt-5 flex flex-wrap gap-6">
-              <Link
-                href={`/work/${lead.slug}`}
-                className="link-underline text-sm font-medium text-foreground transition-colors hover:text-accent"
-              >
-                View Case Study →
-              </Link>
-              {leadLive && (
-                <a
-                  href={leadLive}
-                  className="link-underline text-sm text-muted transition-colors hover:text-foreground"
-                >
-                  Live ↗
-                </a>
-              )}
-            </div>
-          </div>
-        </article>
-      </Reveal>
+          return (
+            <Reveal key={project.slug}>
+              <article className="group grid items-center gap-8 lg:grid-cols-12 lg:gap-12">
+                <div className={`lg:col-span-7 ${flip ? "lg:order-2" : ""}`}>
+                  {image && (
+                    <Link href={`/work/${project.slug}`} className="block" aria-label={project.title}>
+                      <DeviceFrame
+                        src={image}
+                        alt={`${project.title} preview`}
+                        label={frameLabel(project)}
+                        sizes="(max-width: 1024px) 100vw, 700px"
+                        tilt={4}
+                      />
+                    </Link>
+                  )}
+                </div>
 
-      {rest.length > 0 && (
-        <div className="mt-14 divide-y divide-border/80 border-t border-border/80">
-          {rest.map((project, i) => {
-            const liveHref =
-              project.links.web ?? project.links.playStore ?? project.links.appStore;
-            const stack = project.stack.slice(0, 3).join(" · ");
-
-            return (
-              <Reveal
-                key={project.slug}
-                delay={(i + 1) * 70}
-                className="group grid gap-5 py-8 sm:grid-cols-[minmax(0,1fr)_200px] sm:items-center sm:gap-8"
-              >
-                <div className="min-w-0">
-                  <div className="flex items-baseline gap-3 text-xs text-muted">
-                    <span className="font-display text-lg font-medium text-accent/45">
-                      {String(i + 2).padStart(2, "0")}
+                <div className={`lg:col-span-5 ${flip ? "lg:order-1" : ""}`}>
+                  <p className="font-mono text-xs uppercase tracking-[0.16em] text-muted">
+                    <span className="text-accent">
+                      {String(i + 1).padStart(2, "0")} / {String(featured.length).padStart(2, "0")}
                     </span>
-                    <span>{project.year}</span>
-                    <span>{project.category}</span>
-                  </div>
-                  <h3 className="mt-2 font-display text-2xl font-medium tracking-tight text-foreground">
+                    <span className="mx-2.5 text-border">|</span>
+                    {project.category}
+                    <span className="mx-2.5 text-border">|</span>
+                    {project.year}
+                  </p>
+
+                  <h3 className="mt-4 font-display text-5xl font-extrabold tracking-[-0.045em] text-foreground sm:text-6xl">
                     <Link
                       href={`/work/${project.slug}`}
-                      className="transition-colors hover:text-accent"
+                      className="transition-colors group-hover:text-accent"
                     >
                       {project.title}
                     </Link>
                   </h3>
-                  <p className="mt-1 text-muted">{project.tagline}</p>
-                  <p className="mt-3 text-xs text-muted">{stack}</p>
-                  <div className="mt-4 flex flex-wrap gap-6">
+                  <p className="mt-4 text-lg leading-snug text-foreground/85">{project.tagline}</p>
+
+                  <ul className="mt-5 space-y-1.5 font-mono text-[13px] text-muted">
+                    {project.metrics.map((metric) => (
+                      <li key={metric} className="flex gap-2">
+                        <span className="text-accent">▸</span>
+                        {metric}
+                      </li>
+                    ))}
+                  </ul>
+
+                  <div className="mt-5 flex flex-wrap gap-1.5">
+                    {project.stack.slice(0, 4).map((tech) => (
+                      <span
+                        key={tech}
+                        className="rounded-md border border-border px-2 py-1 font-mono text-[11px] text-muted"
+                      >
+                        {tech}
+                      </span>
+                    ))}
+                  </div>
+
+                  <div className="mt-7 flex flex-wrap items-center gap-x-5 gap-y-3">
                     <Link
                       href={`/work/${project.slug}`}
-                      className="link-underline text-sm font-medium text-foreground transition-colors hover:text-accent"
+                      className="inline-flex items-center gap-2 rounded-full bg-foreground px-5 py-2.5 text-sm font-semibold text-background transition-transform hover:-translate-y-0.5"
                     >
-                      View Case Study →
+                      Case study →
                     </Link>
-                    {liveHref && (
+                    {links.map(([key, label]) => (
                       <a
-                        href={liveHref}
+                        key={key}
+                        href={project.links[key]}
+                        target="_blank"
+                        rel="noopener noreferrer"
                         className="link-underline text-sm text-muted transition-colors hover:text-foreground"
                       >
-                        Live ↗
+                        {label} ↗
                       </a>
-                    )}
+                    ))}
                   </div>
                 </div>
+              </article>
+            </Reveal>
+          );
+        })}
+      </div>
 
-                <Link href={`/work/${project.slug}`} className="block w-full sm:w-auto">
-                  <FigurePlate
-                    src={resolveProjectImage(project.images[0])}
-                    alt={`${project.title} preview`}
-                    index={i + 2}
-                    category={project.category}
-                    tilt="none"
-                    className="transition-transform duration-300 ease-out group-hover:-translate-y-0.5"
-                  />
-                </Link>
-              </Reveal>
-            );
-          })}
-        </div>
-      )}
-
-      <div className="mt-10">
-        <Link
-          href="/work"
-          className="link-underline text-sm font-medium text-foreground transition-colors hover:text-accent"
-        >
-          View all work →
+      <div className="mt-20 text-center sm:hidden">
+        <Link href="/work" className="link-underline text-sm font-medium text-foreground">
+          All work →
         </Link>
       </div>
     </section>

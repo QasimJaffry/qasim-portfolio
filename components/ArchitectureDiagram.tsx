@@ -102,9 +102,9 @@ export default function ArchitectureDiagram({ slug }: { slug: string }) {
                   width={w}
                   height={36}
                   rx={10}
-                  fill="#e6e7ea"
-                  stroke="#2a5c55"
-                  strokeOpacity={0.45}
+                  fill="var(--background)"
+                  stroke="var(--accent)"
+                  strokeOpacity={0.8}
                   strokeWidth={1.25}
                 />
                 <text
@@ -113,7 +113,7 @@ export default function ArchitectureDiagram({ slug }: { slug: string }) {
                   textAnchor="middle"
                   fontSize={11}
                   fontFamily="ui-monospace, SFMono-Regular, Menlo, monospace"
-                  fill="#14171c"
+                  fill="var(--foreground)"
                 >
                   {n.label}
                 </text>

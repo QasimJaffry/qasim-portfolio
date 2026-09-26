@@ -23,7 +23,7 @@ export default function ProjectCard({
   return (
     <Link
       href={`/work/${project.slug}`}
-      className="group block rounded-2xl p-3 transition-colors duration-200 hover:bg-accent/[0.06]"
+      className="group block rounded-2xl border border-transparent p-3 transition-colors duration-200 hover:border-border hover:bg-surface"
     >
       <FigurePlate
         src={image}
@@ -46,7 +46,7 @@ export default function ProjectCard({
           </span>
         </div>
 
-        <h3 className="mt-3 font-display text-xl font-medium tracking-tight text-foreground">
+        <h3 className="mt-3 font-display text-2xl font-bold tracking-tight text-foreground">
           {project.title}
         </h3>
         <p className="mt-1 text-sm text-muted">{project.tagline}</p>

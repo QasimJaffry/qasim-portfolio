@@ -4,14 +4,14 @@ import Reveal from "@/components/Reveal";
 export default function ExperienceTimeline() {
   return (
     <section className="mx-auto max-w-6xl px-6 py-16 sm:py-24">
-      <h2 className="eyebrow">Experience</h2>
+      <h2 className="eyebrow text-accent">Experience</h2>
 
       <div className="mt-8 space-y-12 border-l border-border pl-6">
         {experience.map((entry, i) => (
           <Reveal key={entry.company} delay={i * 80} className="group relative">
             <span className="absolute -left-[29px] top-1.5 h-2 w-2 rounded-full border-2 border-background bg-accent transition-transform duration-300 group-hover:scale-125" />
 
-            <h3 className="font-display text-xl font-medium tracking-tight text-foreground">
+            <h3 className="font-display text-2xl font-bold tracking-tight text-foreground">
               {entry.company}
             </h3>
             <p className="eyebrow mt-1.5 tracking-wide">
