@@ -22,6 +22,50 @@
   --accent-foreground: #ffffff;
 }
 
+/* Forest: deep green + cream + lime */
+:root[data-theme="forest"] {
+  --background: #0d1f1a;
+  --surface: #132a23;
+  --foreground: #f1efe4;
+  --muted: #9db3a8;
+  --border: #21403a;
+  --accent: #c8f169;
+  --accent-foreground: #0d1f1a;
+}
+
+/* Violet: charcoal + lavender */
+:root[data-theme="violet"] {
+  --background: #16161a;
+  --surface: #1e1e25;
+  --foreground: #f1f0f7;
+  --muted: #a3a2b3;
+  --border: #2c2c38;
+  --accent: #8b7cff;
+  --accent-foreground: #12101f;
+}
+
+/* Sage: warm off-white + sage green */
+:root[data-theme="sage"] {
+  --background: #f3f1ea;
+  --surface: #eae7dc;
+  --foreground: #1c2320;
+  --muted: #5c665f;
+  --border: #d9d5c6;
+  --accent: #4f6f54;
+  --accent-foreground: #ffffff;
+}
+
+/* Clay: linen + ink + terracotta */
+:root[data-theme="clay"] {
+  --background: #f2efe8;
+  --surface: #e9e4d8;
+  --foreground: #0b1320;
+  --muted: #5a6270;
+  --border: #d8d1c0;
+  --accent: #b5532e;
+  --accent-foreground: #ffffff;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-surface: var(--surface);
@@ -40,7 +84,9 @@ html {
   scroll-behavior: smooth;
 }
 
-html[data-theme="light"] {
+html[data-theme="light"],
+html[data-theme="sage"],
+html[data-theme="clay"] {
   color-scheme: light;
 }
 
