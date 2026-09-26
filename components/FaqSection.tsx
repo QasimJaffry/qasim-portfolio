@@ -5,7 +5,7 @@ export default function FaqSection({ limit }: { limit?: number }) {
   const items = typeof limit === "number" ? faqItems.slice(0, limit) : faqItems;
 
   return (
-    <section id="faq" className="mx-auto max-w-5xl border-t border-border px-6 py-16 sm:py-24">
+    <section id="faq" className="mx-auto max-w-6xl border-t border-border px-6 py-16 sm:py-24">
       <Reveal>
         <p className="eyebrow">FAQ</p>
         <h2 className="mt-3 font-display text-3xl font-medium tracking-tight text-foreground sm:text-4xl">

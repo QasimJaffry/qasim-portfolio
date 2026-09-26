@@ -3,7 +3,7 @@ import { hireScopes } from "@/lib/data/scopes";
 
 export default function HireScopes() {
   return (
-    <section id="hire" className="mx-auto max-w-5xl border-t border-border px-6 py-16 sm:py-24">
+    <section id="hire" className="mx-auto max-w-6xl border-t border-border px-6 py-16 sm:py-24">
       <Reveal>
         <p className="eyebrow">Hire me for</p>
         <h2 className="mt-3 max-w-2xl font-display text-3xl font-medium tracking-tight text-foreground sm:text-4xl">

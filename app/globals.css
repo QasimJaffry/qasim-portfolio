@@ -1,14 +1,14 @@
 @import "tailwindcss";
 
 :root {
-  /* Cool paper + deep pine — avoids cream/terracotta AI-portfolio cluster */
-  --background: #e6e7ea;
-  --surface: #dbdde1;
-  --foreground: #14171c;
-  --muted: #5a5f68;
-  --border: #c9ccd2;
-  --accent: #2a5c55;
-  --accent-foreground: #f3f5f4;
+  /* Dark stage + one hot accent */
+  --background: #0a0a0b;
+  --surface: #141416;
+  --foreground: #f2f1ee;
+  --muted: #a1a1a8;
+  --border: #26262b;
+  --accent: #ff5a1f;
+  --accent-foreground: #0a0a0b;
 }
 
 @theme inline {
@@ -21,11 +21,11 @@
   --color-accent-foreground: var(--accent-foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-  --font-display: var(--font-fraunces);
+  --font-display: var(--font-geist-sans);
 }
 
 html {
-  color-scheme: light;
+  color-scheme: dark;
   scroll-behavior: smooth;
 }
 
@@ -35,23 +35,16 @@ body {
   position: relative;
 }
 
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: 9999;
-  pointer-events: none;
-  opacity: 0.035;
-  mix-blend-mode: overlay;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-}
-
 ::selection {
   background: var(--accent);
   color: var(--accent-foreground);
 }
 
 @layer components {
+  .font-display {
+    letter-spacing: -0.03em;
+  }
+
   .btn-primary {
     @apply inline-flex items-center gap-2 rounded-full bg-accent px-6 py-3 text-sm font-medium text-accent-foreground transition-transform duration-200 hover:-translate-y-0.5;
   }
@@ -198,8 +191,14 @@ body::before {
 }
 
 @media print {
-  body::before {
-    display: none;
+  :root {
+    --background: #ffffff;
+    --surface: #f4f4f5;
+    --foreground: #111111;
+    --muted: #444444;
+    --border: #d4d4d8;
+    --accent: #c2410c;
+    --accent-foreground: #ffffff;
   }
 
   header,
@@ -215,5 +214,31 @@ body::before {
   a {
     text-decoration: none;
     color: inherit;
+  }
+}
+
+/* Proof ticker */
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee 38s linear infinite;
+}
+
+.marquee:hover .marquee-track {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track {
+    animation: none;
   }
 }

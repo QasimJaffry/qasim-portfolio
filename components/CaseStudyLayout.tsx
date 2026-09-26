@@ -73,7 +73,7 @@ export default function CaseStudyLayout({
       </header>
 
       {hero && (
-        <div className="mx-auto mt-10 max-w-5xl animate-fade-up px-4 sm:mt-12 sm:px-6">
+        <div className="mx-auto mt-10 max-w-6xl animate-fade-up px-4 sm:mt-12 sm:px-6">
           <FigurePlate
             src={hero}
             alt={`${project.title}`}
@@ -145,7 +145,7 @@ export default function CaseStudyLayout({
       )}
 
       {gallery.length > 0 && (
-        <div className="mx-auto mt-10 grid max-w-5xl gap-5 px-4 sm:mt-12 sm:gap-6 sm:px-6 md:grid-cols-2">
+        <div className="mx-auto mt-10 grid max-w-6xl gap-5 px-4 sm:mt-12 sm:gap-6 sm:px-6 md:grid-cols-2">
           {gallery.map((src, i) => (
             <FigurePlate
               key={src}
@@ -159,7 +159,7 @@ export default function CaseStudyLayout({
         </div>
       )}
 
-      <div className="mx-auto mt-16 grid max-w-5xl gap-14 px-6 sm:mt-24 md:grid-cols-[minmax(0,1fr)_200px] md:gap-12 lg:gap-16">
+      <div className="mx-auto mt-16 grid max-w-6xl gap-14 px-6 sm:mt-24 md:grid-cols-[minmax(0,1fr)_200px] md:gap-12 lg:gap-16">
         <div className="case-study-body">{children}</div>
 
         <aside className="md:sticky md:top-28 md:self-start">
@@ -217,7 +217,7 @@ export default function CaseStudyLayout({
       {(prev || next) && (
         <nav
           aria-label="More work"
-          className="mx-auto mt-16 max-w-5xl border-t border-border/80 px-6 pt-10 sm:mt-20"
+          className="mx-auto mt-16 max-w-6xl border-t border-border/80 px-6 pt-10 sm:mt-20"
         >
           <div className="grid gap-10 sm:grid-cols-2 sm:gap-8">
             {prev ? <AdjacentProject project={prev} direction="prev" /> : <div />}

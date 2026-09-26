@@ -5,7 +5,7 @@ export default function ContactSection() {
   const bookHref = site.calendlyUrl ?? mailtoHref("Project inquiry");
 
   return (
-    <section id="contact" className="mx-auto max-w-5xl px-6 py-16 sm:py-24">
+    <section id="contact" className="mx-auto max-w-6xl px-6 py-16 sm:py-24">
       <div className="rounded-3xl bg-accent p-8 text-accent-foreground sm:p-12">
         <h2 className="font-display text-3xl font-medium tracking-tight sm:text-4xl">
           Let&apos;s scope it.

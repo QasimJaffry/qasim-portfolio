@@ -18,7 +18,7 @@ const aboutProof = [
 export default function AboutPage() {
   return (
     <>
-      <div className="mx-auto max-w-5xl px-6 py-14 sm:py-20">
+      <div className="mx-auto max-w-6xl px-6 py-14 sm:py-20">
         <div>
           <h1 className="font-display text-3xl font-medium tracking-tight text-foreground sm:text-4xl">
             About

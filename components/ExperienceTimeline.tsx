@@ -3,7 +3,7 @@ import Reveal from "@/components/Reveal";
 
 export default function ExperienceTimeline() {
   return (
-    <section className="mx-auto max-w-5xl px-6 py-16 sm:py-24">
+    <section className="mx-auto max-w-6xl px-6 py-16 sm:py-24">
       <h2 className="eyebrow">Experience</h2>
 
       <div className="mt-8 space-y-12 border-l border-border pl-6">

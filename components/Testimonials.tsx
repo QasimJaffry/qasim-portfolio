@@ -3,7 +3,7 @@ import { testimonials } from "@/lib/data/testimonials";
 
 export default function Testimonials() {
   return (
-    <section id="proof" className="mx-auto max-w-5xl border-t border-border px-6 py-16 sm:py-24">
+    <section id="proof" className="mx-auto max-w-6xl border-t border-border px-6 py-16 sm:py-24">
       <Reveal>
         <p className="eyebrow">What people say</p>
         <h2 className="mt-3 font-display text-3xl font-medium tracking-tight text-foreground sm:text-4xl">

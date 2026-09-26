@@ -13,7 +13,7 @@ export default function FeaturedProjects() {
   const leadLive = lead.links.web ?? lead.links.playStore ?? lead.links.appStore;
 
   return (
-    <section id="featured-work" className="mx-auto max-w-5xl px-6 pb-8 pt-16 sm:pb-12 sm:pt-24">
+    <section id="featured-work" className="mx-auto max-w-6xl px-6 pb-8 pt-16 sm:pb-12 sm:pt-24">
       <h2 className="eyebrow">Featured Work</h2>
 
       <Reveal className="mt-8">

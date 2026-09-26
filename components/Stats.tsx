@@ -72,7 +72,7 @@ function StatTile({ label, value, delay }: { label: string; value: string; delay
 
 export default function Stats() {
   return (
-    <section className="mx-auto max-w-5xl px-6 py-16 sm:py-24">
+    <section className="mx-auto max-w-6xl px-6 py-16 sm:py-24">
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
         {stats.map((stat, i) => (
           <StatTile key={stat.label} label={stat.label} value={stat.value} delay={i * 60} />

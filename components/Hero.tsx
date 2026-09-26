@@ -1,120 +1,93 @@
-"use client";
-
-import { useRef } from "react";
-import Magnetic from "@/components/Magnetic";
-import { site } from "@/lib/site";
-
-const proof = [
-  { value: "6+", label: "Years shipping" },
-  { value: "60+", label: "Products shipped" },
-  { value: "10K+", label: "Play installs (Agenticly)" },
-  { value: "100%", label: "Upwork Job Success" },
-];
+import Link from "next/link";
+import DeviceFrame from "@/components/DeviceFrame";
+import { resolveProjectImage } from "@/lib/projectImage";
+import { mailtoHref, site } from "@/lib/site";
 
 export default function Hero() {
-  const blobA = useRef<HTMLDivElement>(null);
-  const blobB = useRef<HTMLDivElement>(null);
-
-  function handleMove(e: React.MouseEvent<HTMLElement>) {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = (e.clientX - rect.left) / rect.width - 0.5;
-    const y = (e.clientY - rect.top) / rect.height - 0.5;
-
-    if (blobA.current) {
-      blobA.current.style.transform = `translate(${x * 40}px, ${y * 40}px)`;
-    }
-    if (blobB.current) {
-      blobB.current.style.transform = `translate(${x * -30}px, ${y * -30}px)`;
-    }
-  }
+  const primary = resolveProjectImage("/images/projects/agenticly/hero.jpg");
+  const secondary = resolveProjectImage("/images/projects/innerverse/hero.jpg");
 
   return (
-    <section className="relative overflow-hidden" onMouseMove={handleMove}>
+    <section className="relative overflow-hidden">
       <div
-        ref={blobA}
-        className="pointer-events-none absolute -right-24 -top-24 h-[420px] w-[420px] rounded-full bg-accent/10 blur-3xl transition-transform duration-500 ease-out"
-      />
-      <div
-        ref={blobB}
-        className="pointer-events-none absolute -bottom-32 -left-16 h-[320px] w-[320px] rounded-full bg-accent/[0.06] blur-3xl transition-transform duration-500 ease-out"
+        aria-hidden
+        className="pointer-events-none absolute -right-40 top-10 h-[520px] w-[520px] rounded-full bg-accent/[0.14] blur-[120px]"
       />
 
-      <div className="mx-auto grid max-w-5xl items-center gap-12 px-6 pb-12 pt-16 sm:pb-16 sm:pt-24 md:grid-cols-[minmax(0,1.15fr)_minmax(240px,0.85fr)] md:gap-14">
-        <div className="animate-fade-up min-w-0">
-          <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted">
-            React Native · Next.js · AI Products
+      <div className="relative mx-auto grid max-w-6xl items-center gap-14 px-6 pb-16 pt-10 sm:pb-24 sm:pt-14 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] lg:gap-8">
+        <div>
+          <p className="animate-fade-up inline-flex items-center gap-2.5 rounded-full border border-border bg-surface px-4 py-1.5 font-mono text-[11px] uppercase tracking-[0.16em] text-muted">
+            <span className="relative flex size-2">
+              <span className="absolute inline-flex size-full animate-ping rounded-full bg-accent/70" />
+              <span className="relative inline-flex size-2 rounded-full bg-accent" />
+            </span>
+            Open to work · {site.location}
           </p>
 
-          <h1 className="mt-5 font-display text-6xl font-medium tracking-tight text-foreground sm:text-7xl lg:text-8xl">
+          <h1
+            className="animate-fade-up mt-7 font-display text-[clamp(3.75rem,10vw,9rem)] font-extrabold leading-[0.86] tracking-[-0.055em] text-foreground"
+            style={{ animationDelay: "80ms" }}
+          >
             Qasim
             <br />
-            <span className="relative inline-block">
-              Hassan
-              <span className="hero-underline absolute -bottom-1 left-0 -z-10 h-3 w-full bg-accent/25 sm:h-4" />
-            </span>
+            Hassan
+            <span className="text-accent">.</span>
           </h1>
 
-          <p className="mt-8 max-w-xl text-lg leading-relaxed text-muted sm:text-xl">
-            {site.title} shipping{" "}
-            <span className="font-medium text-foreground">AI-native</span> mobile and web
-            products that reach real users — solo and in small teams.
-          </p>
-          <p className="mt-3 max-w-xl text-sm leading-relaxed text-muted sm:text-[15px]">
-            {site.positioning}
-          </p>
+          <div className="animate-fade-up mt-9" style={{ animationDelay: "160ms" }}>
+            <p className="font-mono text-xs uppercase tracking-[0.18em] text-accent">
+              Mobile · Web · AI
+            </p>
+            <p className="mt-3 max-w-md text-xl font-semibold leading-snug tracking-tight text-foreground sm:text-2xl">
+              I build apps people install and pay for — React Native, Next.js and AI.
+            </p>
+            <p className="mt-3 max-w-md leading-relaxed text-muted">
+              Senior full-stack engineer. I take a product from first sketch to the App Store,
+              Play Store and Stripe checkout, mostly on my own or in small teams.
+            </p>
 
-          <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-4">
-            <Magnetic strength={0.4}>
+            <div className="mt-7 flex flex-wrap items-center gap-x-6 gap-y-4">
               <a href="#featured-work" className="btn-primary">
-                View Work
+                See the work ↓
               </a>
-            </Magnetic>
-            <a href="#hire" className="btn-secondary link-underline">
-              Hire me for
-            </a>
-            <a href="/resume" className="btn-secondary link-underline">
-              Resume
-            </a>
-            <a
-              href={site.social.linkedin}
-              className="btn-secondary link-underline"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              LinkedIn ↗
-            </a>
-          </div>
+              <a href={mailtoHref()} className="btn-secondary link-underline">
+                Email me
+              </a>
+              <Link href="/resume" className="btn-secondary link-underline">
+                Resume
+              </Link>
+            </div>
 
-          <p className="mt-10 flex items-center gap-2.5 text-sm text-muted">
-            <span className="relative flex h-2 w-2">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent/60" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-accent" />
-            </span>
-            {site.location} — {site.relocation}
-          </p>
+            <p className="mt-8 font-mono text-[11px] uppercase tracking-[0.14em] text-muted">
+              Now building{" "}
+              <span className="text-foreground">
+                {site.availability.currentlyBuilding.join(" · ")}
+              </span>
+            </p>
+          </div>
         </div>
 
-        <aside
-          className="animate-fade-up border-t border-border/80 pt-8 md:border-l md:border-t-0 md:pl-10 md:pt-0"
-          style={{ animationDelay: "120ms" }}
-          aria-label="Highlights"
-        >
-          <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted">At a glance</p>
-          <dl className="mt-6 space-y-6">
-            {proof.map((item) => (
-              <div key={item.label} className="flex items-baseline justify-between gap-4 md:block">
-                <dt className="order-2 text-sm text-muted md:order-none md:mt-1">{item.label}</dt>
-                <dd className="order-1 font-display text-3xl font-medium tracking-tight text-foreground sm:text-4xl md:order-none">
-                  {item.value}
-                </dd>
-              </div>
-            ))}
-          </dl>
-          <p className="mt-8 text-xs leading-relaxed text-muted">
-            Top Rated Plus on Upwork · Live apps on Play Store &amp; App Store
-          </p>
-        </aside>
+        {primary && (
+          <div className="animate-fade-up relative pb-12 sm:pb-16" style={{ animationDelay: "240ms" }}>
+            <DeviceFrame
+              src={primary}
+              alt="Agenticly on laptop and phone"
+              label="agenticly.app"
+              priority
+              sizes="(max-width: 1024px) 100vw, 640px"
+            />
+            {secondary && (
+              <DeviceFrame
+                src={secondary}
+                alt="Innerverse mood galaxy app"
+                label="innerverse"
+                sizes="320px"
+                tilt={8}
+                className="absolute -bottom-2 -left-2 w-[52%] sm:-left-8 sm:w-[44%]"
+              />
+            )}
+          </div>
+        )}
       </div>
     </section>
   );

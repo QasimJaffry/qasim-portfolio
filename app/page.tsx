@@ -1,5 +1,5 @@
 import Hero from "@/components/Hero";
-import AvailabilityStrip from "@/components/AvailabilityStrip";
+import ProofTicker from "@/components/ProofTicker";
 import FeaturedProjects from "@/components/FeaturedProjects";
 import HireScopes from "@/components/HireScopes";
 import Testimonials from "@/components/Testimonials";
@@ -12,7 +12,7 @@ export default function Home() {
   return (
     <>
       <Hero />
-      <AvailabilityStrip />
+      <ProofTicker />
       <FeaturedProjects />
       <HireScopes />
       <ProcessSection />

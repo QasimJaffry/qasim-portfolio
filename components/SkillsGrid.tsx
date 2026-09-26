@@ -3,7 +3,7 @@ import Reveal from "@/components/Reveal";
 
 export default function SkillsGrid() {
   return (
-    <section className="mx-auto max-w-5xl border-t border-border px-6 pb-16 pt-10 sm:pb-24 sm:pt-14">
+    <section className="mx-auto max-w-6xl border-t border-border px-6 pb-16 pt-10 sm:pb-24 sm:pt-14">
       <h2 className="eyebrow">Stack</h2>
 
       <div className="mt-8 divide-y divide-border border-t border-border">

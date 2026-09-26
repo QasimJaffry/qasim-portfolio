@@ -47,17 +47,17 @@ export default function Nav() {
 
   return (
     <header
-      className={`sticky top-0 z-50 border-b bg-background/90 backdrop-blur-sm transition-shadow duration-300 ${
+      className={`sticky top-0 z-50 border-b bg-background/80 backdrop-blur-md transition-shadow duration-300 ${
         scrolled ? "border-border shadow-[0_1px_0_0_var(--border)]" : "border-transparent"
       }`}
     >
       <div
-        className={`mx-auto flex max-w-5xl items-center justify-between px-6 transition-[padding] duration-300 ${
+        className={`mx-auto flex max-w-6xl items-center justify-between px-6 transition-[padding] duration-300 ${
           scrolled ? "py-3" : "py-4"
         }`}
       >
-        <Link href="/" className="font-display text-base font-medium tracking-tight text-foreground">
-          Qasim Hassan
+        <Link href="/" className="font-display text-base font-bold tracking-tight text-foreground">
+          Qasim Hassan<span className="text-accent">.</span>
         </Link>
 
         <nav className="hidden items-center gap-8 sm:flex">
@@ -68,11 +68,15 @@ export default function Nav() {
                 key={link.href}
                 href={link.href}
                 aria-current={active ? "page" : undefined}
-                className={`text-sm transition-colors ${
-                  active
-                    ? "font-medium text-foreground"
-                    : "text-muted hover:text-foreground"
-                }`}
+                className={
+                  link.label === "Contact"
+                    ? "rounded-full bg-accent px-4 py-1.5 text-sm font-semibold text-accent-foreground transition-transform hover:-translate-y-0.5"
+                    : `text-sm transition-colors ${
+                        active
+                          ? "font-medium text-foreground"
+                          : "text-muted hover:text-foreground"
+                      }`
+                }
               >
                 {link.label}
               </Link>
@@ -109,7 +113,7 @@ export default function Nav() {
 
       {open && (
         <nav className="border-t border-border sm:hidden">
-          <div className="mx-auto flex max-w-5xl flex-col px-6 py-4">
+          <div className="mx-auto flex max-w-6xl flex-col px-6 py-4">
             {links.map((link) => {
               const active = isActive(link);
               return (
