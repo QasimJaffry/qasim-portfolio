@@ -79,6 +79,6 @@ Each phase is a separate commit so any one can be reverted.
 4. Featured set unchanged (Agenticly, Innerverse, BugMapper, SafeDeal, Qubio).
 5. `DeviceFrame` wraps the existing composed hero images in browser chrome. Swap in raw app screenshots if they become available.
 
-## Status
+## Final direction
 
-All phases 0-7 done. Lint clean, static export builds with `GITHUB_PAGES=true`, 390/1440 screenshots reviewed, resume print view is light, OG image regenerated.
+Home is an editor-style shell (sticky sidebar, section tabs, card grid). Palette: warm gray + slate blue (background #eceae6, text #1e2a36, accent #4a6b88). Section names are plain-language so non-technical clients are not put off. Earlier explorations (dark navy/amber, orange, and 13 other palettes) were removed.

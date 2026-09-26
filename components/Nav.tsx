@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
-import ThemeToggle from "@/components/ThemeToggle";
 
 const links = [
   { href: "/work", label: "Work", match: (path: string) => path === "/work" || path.startsWith("/work/") },
@@ -65,7 +64,6 @@ export default function Nav() {
         </Link>
 
         <nav className="hidden items-center gap-8 sm:flex">
-          <ThemeToggle placement="down" />
           {links.map((link) => {
             const active = isActive(link);
             return (
@@ -119,7 +117,6 @@ export default function Nav() {
       {open && (
         <nav className="border-t border-border sm:hidden">
           <div className="mx-auto flex max-w-6xl flex-col px-6 py-4">
-            <ThemeToggle placement="down" className="mb-2 self-start" />
             {links.map((link) => {
               const active = isActive(link);
               return (

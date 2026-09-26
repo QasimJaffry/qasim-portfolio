@@ -1,5 +1,4 @@
 import Link from "next/link";
-import ThemeToggle from "@/components/ThemeToggle";
 import { SidebarIndex } from "@/components/SectionNav";
 import { mailtoHref, site } from "@/lib/site";
 
@@ -52,7 +51,6 @@ export default function Sidebar() {
       </div>
 
       <div className="mt-auto space-y-4">
-        <ThemeToggle />
         <a href={mailtoHref()} className="btn-primary w-full justify-center">
           Email me →
         </a>
