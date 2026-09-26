@@ -38,6 +38,9 @@ export default function Nav() {
     };
   }, []);
 
+  // The home page is a self-contained shell with its own sidebar and tabs.
+  if (pathname === "/") return null;
+
   function isActive(link: (typeof links)[number]) {
     if (link.href === "/#contact") {
       return pathname === "/" && hash === "#contact";
@@ -47,7 +50,7 @@ export default function Nav() {
 
   return (
     <header
-      className={`sticky top-0 z-50 border-b bg-background/80 backdrop-blur-md transition-shadow duration-300 ${
+      className={`site-nav sticky top-0 z-50 border-b bg-background/80 backdrop-blur-md transition-shadow duration-300 ${
         scrolled ? "border-border shadow-[0_1px_0_0_var(--border)]" : "border-transparent"
       }`}
     >

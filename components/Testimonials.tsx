@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import SectionLabel from "@/components/SectionLabel";
 import { testimonials } from "@/lib/data/testimonials";
 
 export default function Testimonials() {
@@ -9,20 +10,20 @@ export default function Testimonials() {
   const count = testimonials.length;
 
   return (
-    <section id="proof" className="mx-auto max-w-6xl px-6 py-20 sm:py-28">
-      <p className="eyebrow text-accent">What people say</p>
+    <section id="proof" className="border-t border-border px-6 py-16 sm:px-10 sm:py-24">
+      <SectionLabel n="review">code review comments</SectionLabel>
 
-      <figure className="mt-8 grid gap-8 lg:grid-cols-12 lg:gap-12">
+      <figure className="mt-8 grid gap-6 xl:grid-cols-12 xl:gap-8">
         <span
           aria-hidden
-          className="font-display text-[8rem] font-extrabold leading-[0.6] text-accent lg:col-span-1 lg:text-[10rem]"
+          className="font-display text-[8rem] font-extrabold leading-[0.6] text-accent xl:col-span-1 xl:text-[10rem]"
         >
           “
         </span>
-        <div className="lg:col-span-11">
+        <div className="xl:col-span-11">
           <blockquote
             key={index}
-            className="animate-fade-up max-w-4xl text-2xl font-semibold leading-snug tracking-tight text-foreground sm:text-3xl lg:text-4xl"
+            className="animate-fade-up max-w-4xl text-2xl font-semibold leading-snug tracking-tight text-foreground sm:text-3xl"
           >
             {item.quote}
           </blockquote>

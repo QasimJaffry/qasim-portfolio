@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
+import HideOnHome from "@/components/HideOnHome";
 import JsonLd from "@/components/JsonLd";
 import { site } from "@/lib/site";
 import "./globals.css";
@@ -80,7 +81,9 @@ export default function RootLayout({
         <JsonLd />
         <Nav />
         <main className="flex-1">{children}</main>
-        <Footer />
+        <HideOnHome>
+          <Footer />
+        </HideOnHome>
       </body>
     </html>
   );

@@ -1,20 +1,17 @@
-import Reveal from "@/components/Reveal";
+import SectionLabel from "@/components/SectionLabel";
 import { faqItems } from "@/lib/data/faq";
 
 export default function FaqSection({ limit }: { limit?: number }) {
   const items = typeof limit === "number" ? faqItems.slice(0, limit) : faqItems;
 
   return (
-    <section id="faq" className="border-t border-border">
-      <div className="mx-auto grid max-w-6xl gap-10 px-6 py-20 sm:py-28 lg:grid-cols-12 lg:gap-16">
-        <Reveal className="lg:col-span-4">
-          <p className="eyebrow text-accent">FAQ</p>
-          <h2 className="mt-3 font-display text-3xl font-extrabold tracking-[-0.04em] text-foreground sm:text-5xl">
-            Straight answers.
-          </h2>
-        </Reveal>
+    <section id="faq" className="scroll-mt-12 border-t border-border px-6 py-16 sm:px-10 sm:py-24">
+      <SectionLabel n="05">faq.md</SectionLabel>
+      <h2 className="mt-3 font-display text-4xl font-extrabold leading-[0.98] tracking-[-0.045em] text-foreground sm:text-6xl">
+        Straight answers.
+      </h2>
 
-        <div className="divide-y divide-border border-y border-border lg:col-span-8">
+      <div className="mt-10 divide-y divide-border border-y border-border">
           {items.map((item, i) => (
             <details key={item.question} className="group py-1" open={i === 0}>
               <summary className="flex cursor-pointer list-none items-center justify-between gap-6 py-5 text-lg font-semibold tracking-tight text-foreground marker:hidden [&::-webkit-details-marker]:hidden">
@@ -30,7 +27,6 @@ export default function FaqSection({ limit }: { limit?: number }) {
             </details>
           ))}
         </div>
-      </div>
     </section>
   );
 }
