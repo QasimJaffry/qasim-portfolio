@@ -71,9 +71,14 @@ Each phase is a separate commit so any one can be reverted.
 - Device frames built from flat JPGs may look pasted-on. Mitigation: build `DeviceFrame` in CSS/SVG around raw screenshots, not around already-composed mockups.
 - Scope creep into inner pages. Mitigation: home page first, review, then phase 6.
 
-## Open questions
+## Decisions taken (defaults, no input)
 
-1. Accent colour: acid green `#c6ff3d`, signal orange `#ff5a1f`, or electric blue `#3d5afe`? (Default: orange.)
-2. Portrait: available or use placeholder?
-3. Keep light mode as an option, or dark only? (Default: dark only.)
-4. Which five projects are featured? (Default: Agenticly, Innerverse, BugMapper, SafeDeal, Qubio.)
+1. Accent: signal orange `#ff5a1f`.
+2. No portrait yet; hero uses two overlapping device windows built from existing project images. Add a portrait later in `components/Hero.tsx`.
+3. Dark only; the resume switches to a light palette under `@media print`.
+4. Featured set unchanged (Agenticly, Innerverse, BugMapper, SafeDeal, Qubio).
+5. `DeviceFrame` wraps the existing composed hero images in browser chrome. Swap in raw app screenshots if they become available.
+
+## Status
+
+All phases 0-7 done. Lint clean, static export builds with `GITHUB_PAGES=true`, 390/1440 screenshots reviewed, resume print view is light, OG image regenerated.

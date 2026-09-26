@@ -80,7 +80,6 @@ export default function Hero() {
               <DeviceFrame
                 src={secondary}
                 alt="Innerverse mood galaxy app"
-                label="innerverse"
                 sizes="320px"
                 tilt={8}
                 className="absolute -bottom-2 -left-2 w-[52%] sm:-left-8 sm:w-[44%]"
