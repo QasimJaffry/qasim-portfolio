@@ -78,7 +78,7 @@ export default function RootLayout({
       <head>
         <script
           dangerouslySetInnerHTML={{
-            __html: `try{var t=localStorage.getItem("theme");if(["navy","light","forest","violet","sage","clay"].indexOf(t)>-1)document.documentElement.dataset.theme=t}catch(e){}`,
+            __html: `try{var t=localStorage.getItem("theme");if(["navy","light","forest","violet","sage","clay","indigo","coral","sand","slate","mocha","rose","burgundy","neon","ocean"].indexOf(t)>-1)document.documentElement.dataset.theme=t}catch(e){}`,
           }}
         />
       </head>

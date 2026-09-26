@@ -66,6 +66,105 @@
   --accent-foreground: #ffffff;
 }
 
+/* Indigo: cool gray + electric indigo */
+:root[data-theme="indigo"] {
+  --background: #f3f4f6;
+  --surface: #e8eaee;
+  --foreground: #111827;
+  --muted: #525a69;
+  --border: #d5d9e0;
+  --accent: #4f52e8;
+  --accent-foreground: #ffffff;
+}
+
+/* Coral: charcoal + coral */
+:root[data-theme="coral"] {
+  --background: #1f1f22;
+  --surface: #29292d;
+  --foreground: #f4f1ee;
+  --muted: #a9a6a3;
+  --border: #38383d;
+  --accent: #ff6b6b;
+  --accent-foreground: #1a1a1a;
+}
+
+/* Sand: sand + forest green */
+:root[data-theme="sand"] {
+  --background: #efe6d4;
+  --surface: #e6dbc4;
+  --foreground: #14301f;
+  --muted: #5b6650;
+  --border: #d6c9ae;
+  --accent: #2f6b4f;
+  --accent-foreground: #ffffff;
+}
+
+/* Slate: warm gray + slate blue */
+:root[data-theme="slate"] {
+  --background: #eceae6;
+  --surface: #e2dfd9;
+  --foreground: #1e2a36;
+  --muted: #586371;
+  --border: #d3cfc8;
+  --accent: #4a6b88;
+  --accent-foreground: #ffffff;
+}
+
+/* Mocha: mocha + rose gold */
+:root[data-theme="mocha"] {
+  --background: #1e1714;
+  --surface: #2a201b;
+  --foreground: #f3e9e2;
+  --muted: #b5a196;
+  --border: #3d2f27;
+  --accent: #d99a7c;
+  --accent-foreground: #1e1714;
+}
+
+/* Rose: blush + charcoal + rose */
+:root[data-theme="rose"] {
+  --background: #fbf3f2;
+  --surface: #f4e6e4;
+  --foreground: #2b2b2b;
+  --muted: #6a5d5d;
+  --border: #ead8d6;
+  --accent: #b5636b;
+  --accent-foreground: #ffffff;
+}
+
+/* Burgundy: ivory + burgundy */
+:root[data-theme="burgundy"] {
+  --background: #fbf8ef;
+  --surface: #f3eedf;
+  --foreground: #2a1216;
+  --muted: #6b5a5c;
+  --border: #e4dcc8;
+  --accent: #722f37;
+  --accent-foreground: #ffffff;
+}
+
+/* Neon: midnight + neon green */
+:root[data-theme="neon"] {
+  --background: #0d0d0d;
+  --surface: #161616;
+  --foreground: #f2f2f2;
+  --muted: #a0a0a0;
+  --border: #262626;
+  --accent: #39ff14;
+  --accent-foreground: #0d0d0d;
+}
+
+/* Ocean: white + ocean blue */
+:root[data-theme="ocean"] {
+  --background: #f6fafc;
+  --surface: #e9f1f6;
+  --foreground: #0b2a3d;
+  --muted: #4c6577;
+  --border: #d4e2eb;
+  --accent: #0077b6;
+  --accent-foreground: #ffffff;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-surface: var(--surface);
@@ -86,7 +185,13 @@ html {
 
 html[data-theme="light"],
 html[data-theme="sage"],
-html[data-theme="clay"] {
+html[data-theme="clay"],
+html[data-theme="indigo"],
+html[data-theme="sand"],
+html[data-theme="slate"],
+html[data-theme="rose"],
+html[data-theme="burgundy"],
+html[data-theme="ocean"] {
   color-scheme: light;
 }
 
