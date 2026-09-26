@@ -14,8 +14,8 @@ export default function Hero() {
         className="pointer-events-none absolute -right-32 -top-20 h-[460px] w-[460px] rounded-full bg-accent/[0.13] blur-[120px]"
       />
 
-      <p className="animate-fade-up relative font-mono text-sm tracking-[0.04em] text-muted">
-        <span className="text-accent">const</span> me = <span className="text-foreground">&quot;builder&quot;</span>;
+      <p className="animate-fade-up relative text-sm font-medium text-muted">
+        Hi, I&apos;m Qasim — a full-stack engineer based in Lahore.
       </p>
 
       <h2

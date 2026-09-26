@@ -4,12 +4,10 @@ import { hireScopes } from "@/lib/data/scopes";
 import { processSteps } from "@/lib/data/process";
 import { mailtoHref } from "@/lib/site";
 
-const hashes = ["a1f3c9e", "b72d40a", "c58e1b7", "d94a06f"];
-
 export default function WhatITakeOn() {
   return (
     <section id="services" className="scroll-mt-12 border-t border-border px-6 py-16 sm:px-10 sm:py-24">
-      <SectionLabel n="02">services.md</SectionLabel>
+      <SectionLabel n="02">Services</SectionLabel>
       <div className="mt-3 flex flex-wrap items-end justify-between gap-6">
         <h2 className="max-w-xl font-display text-4xl font-extrabold leading-[0.98] tracking-[-0.045em] text-foreground sm:text-6xl">
           Bring me the messy middle.
@@ -35,16 +33,20 @@ export default function WhatITakeOn() {
       </ul>
 
       <div id="process" className="mt-20">
-        <SectionLabel n="03">git log --oneline</SectionLabel>
-        <ol className="mt-6 overflow-hidden rounded-2xl border border-border bg-surface/50 font-mono text-sm">
+        <SectionLabel n="03">How I work</SectionLabel>
+        <h3 className="mt-3 font-display text-3xl font-extrabold tracking-[-0.04em] text-foreground sm:text-4xl">
+          From first call to shipped.
+        </h3>
+
+        <ol className="relative mt-10 grid gap-8 sm:grid-cols-2 xl:grid-cols-4 xl:gap-5">
+          <span aria-hidden className="absolute left-0 right-0 top-[7px] hidden h-px bg-border xl:block" />
           {processSteps.map((item, i) => (
             <Reveal key={item.step} delay={i * 60}>
-              <li className="grid gap-x-5 gap-y-1 border-b border-border px-5 py-5 last:border-b-0 sm:grid-cols-[5rem_10rem_1fr]">
-                <span className="text-accent">{hashes[i] ?? item.step}</span>
-                <span className="font-sans text-base font-bold text-foreground">
-                  {item.title.toLowerCase()}
-                </span>
-                <span className="font-sans text-sm leading-relaxed text-muted">{item.detail}</span>
+              <li className="relative">
+                <span className="relative z-10 block size-3.5 rounded-full border-2 border-accent bg-background" />
+                <p className="mt-4 text-xs font-semibold text-accent">Step {item.step}</p>
+                <h4 className="mt-1 text-lg font-bold tracking-tight text-foreground">{item.title}</h4>
+                <p className="mt-2 text-sm leading-relaxed text-muted">{item.detail}</p>
               </li>
             </Reveal>
           ))}

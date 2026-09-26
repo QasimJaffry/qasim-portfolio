@@ -6,7 +6,7 @@ export default function FaqSection({ limit }: { limit?: number }) {
 
   return (
     <section id="faq" className="scroll-mt-12 border-t border-border px-6 py-16 sm:px-10 sm:py-24">
-      <SectionLabel n="05">faq.md</SectionLabel>
+      <SectionLabel n="05">FAQ</SectionLabel>
       <h2 className="mt-3 font-display text-4xl font-extrabold leading-[0.98] tracking-[-0.045em] text-foreground sm:text-6xl">
         Straight answers.
       </h2>

@@ -10,7 +10,7 @@ export default function ContactSection() {
       className="scroll-mt-12 bg-accent px-6 py-16 text-accent-foreground sm:px-10 sm:py-24"
     >
       <p className="font-mono text-xs font-semibold uppercase tracking-[0.18em] opacity-70">
-        $ ./contact.sh --open-to freelance,consulting,senior-remote
+        Open to freelance, consulting and senior remote roles
       </p>
       <h2 className="mt-6 font-display text-[clamp(3rem,7vw,6.5rem)] font-extrabold leading-[0.9] tracking-[-0.055em]">
         Let&apos;s build

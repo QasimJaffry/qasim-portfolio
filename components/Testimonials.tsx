@@ -11,7 +11,7 @@ export default function Testimonials() {
 
   return (
     <section id="proof" className="border-t border-border px-6 py-16 sm:px-10 sm:py-24">
-      <SectionLabel n="review">code review comments</SectionLabel>
+      <SectionLabel n="03">Kind words</SectionLabel>
 
       <figure className="mt-8 grid gap-6 xl:grid-cols-12 xl:gap-8">
         <span

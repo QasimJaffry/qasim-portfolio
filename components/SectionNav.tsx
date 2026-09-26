@@ -3,11 +3,11 @@
 import { useEffect, useState } from "react";
 
 export const sections = [
-  { id: "work", file: "work.tsx", label: "Work" },
-  { id: "services", file: "services.md", label: "Services" },
-  { id: "stack", file: "package.json", label: "Stack" },
-  { id: "faq", file: "faq.md", label: "FAQ" },
-  { id: "contact", file: "contact.sh", label: "Contact" },
+  { id: "work", file: "Work", label: "Work" },
+  { id: "services", file: "Services", label: "Services" },
+  { id: "stack", file: "Skills", label: "Skills" },
+  { id: "faq", file: "FAQ", label: "FAQ" },
+  { id: "contact", file: "Contact", label: "Contact" },
 ] as const;
 
 function useActiveSection() {
@@ -55,7 +55,7 @@ export function SidebarIndex() {
               <a
                 href={`#${s.id}`}
                 aria-current={on ? "true" : undefined}
-                className={`flex items-center gap-3 rounded-md px-2 py-1.5 font-mono text-sm transition-colors ${
+                className={`flex items-center gap-3 rounded-md px-2 py-1.5 text-sm transition-colors ${
                   on ? "bg-surface text-accent" : "text-muted hover:text-foreground"
                 }`}
               >
@@ -82,12 +82,12 @@ export function TabBar() {
       >
         <a
           href="#top"
-          className={`shrink-0 border-r border-border px-4 py-3 font-mono text-xs transition-colors ${
+          className={`shrink-0 border-r border-border px-4 py-3 text-sm transition-colors ${
             active === "" ? "bg-surface text-foreground" : "text-muted hover:text-foreground"
           }`}
         >
           <span className="mr-2 text-accent">●</span>
-          index.tsx
+          Home
         </a>
         {sections.map((s) => {
           const on = active === s.id;
@@ -95,7 +95,7 @@ export function TabBar() {
             <a
               key={s.id}
               href={`#${s.id}`}
-              className={`relative shrink-0 border-r border-border px-4 py-3 font-mono text-xs transition-colors ${
+              className={`relative shrink-0 border-r border-border px-4 py-3 text-sm transition-colors ${
                 on ? "bg-surface text-foreground" : "text-muted hover:text-foreground"
               }`}
             >
@@ -105,12 +105,12 @@ export function TabBar() {
           );
         })}
       </nav>
-      <div className="hidden shrink-0 items-center gap-5 border-l border-border px-5 font-mono text-xs text-muted sm:flex">
+      <div className="hidden shrink-0 items-center gap-5 border-l border-border px-5 text-sm text-muted sm:flex">
         <a href="/about" className="transition-colors hover:text-foreground">
-          about
+          About
         </a>
         <a href="/resume" className="transition-colors hover:text-foreground">
-          resume
+          Resume
         </a>
       </div>
     </div>

@@ -1,14 +1,15 @@
 import Link from "next/link";
+import ThemeToggle from "@/components/ThemeToggle";
 import { SidebarIndex } from "@/components/SectionNav";
 import { mailtoHref, site } from "@/lib/site";
 
 const facts = [
-  ["role", "Senior full-stack"],
-  ["based", "Lahore, PK"],
-  ["exp", "6+ years"],
-  ["shipped", "60+ products"],
-  ["installs", "10K+ (Agenticly)"],
-  ["upwork", "100% JSS · Top Rated+"],
+  ["Role", "Senior full-stack"],
+  ["Based in", "Lahore, PK"],
+  ["Experience", "6+ years"],
+  ["Shipped", "60+ products"],
+  ["Installs", "10K+ (Agenticly)"],
+  ["Upwork", "100% JSS · Top Rated+"],
 ];
 
 export default function Sidebar() {
@@ -36,7 +37,7 @@ export default function Sidebar() {
         </p>
       </div>
 
-      <dl className="space-y-2 font-mono text-[13px]">
+      <dl className="space-y-2 text-sm">
         {facts.map(([k, v]) => (
           <div key={k} className="flex items-baseline gap-2">
             <dt className="text-muted">{k}</dt>
@@ -51,21 +52,22 @@ export default function Sidebar() {
       </div>
 
       <div className="mt-auto space-y-4">
+        <ThemeToggle />
         <a href={mailtoHref()} className="btn-primary w-full justify-center">
           Email me →
         </a>
-        <div className="flex flex-wrap gap-x-5 gap-y-2 font-mono text-xs text-muted">
+        <div className="flex flex-wrap gap-x-5 gap-y-2 text-sm text-muted">
           <a href={site.social.github} target="_blank" rel="noopener noreferrer" className="link-underline hover:text-foreground">
-            github ↗
+            GitHub ↗
           </a>
           <a href={site.social.linkedin} target="_blank" rel="noopener noreferrer" className="link-underline hover:text-foreground">
-            linkedin ↗
+            LinkedIn ↗
           </a>
           <a href={site.social.upwork} target="_blank" rel="noopener noreferrer" className="link-underline hover:text-foreground">
-            upwork ↗
+            Upwork ↗
           </a>
           <Link href="/resume" className="link-underline hover:text-foreground">
-            resume
+            Resume
           </Link>
         </div>
       </div>

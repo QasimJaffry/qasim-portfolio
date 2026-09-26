@@ -109,16 +109,16 @@ export default function FeaturedProjects() {
 
   return (
     <section id="work" className="scroll-mt-12 border-t border-border px-6 py-16 sm:px-10 sm:py-24">
-      <SectionLabel n="01">selected work</SectionLabel>
+      <SectionLabel n="01">Selected work</SectionLabel>
       <div className="mt-3 flex items-end justify-between gap-6">
         <h2 className="max-w-2xl font-display text-4xl font-extrabold leading-[0.98] tracking-[-0.045em] text-foreground sm:text-6xl">
           Shipped, live, and in people&apos;s pockets.
         </h2>
         <Link
           href="/work"
-          className="link-underline hidden shrink-0 pb-2 font-mono text-xs text-foreground sm:inline-block"
+          className="link-underline hidden shrink-0 pb-2 text-sm font-medium text-foreground sm:inline-block"
         >
-          all {"{"}16{"}"} →
+          All 16 projects →
         </Link>
       </div>
 
@@ -132,7 +132,7 @@ export default function FeaturedProjects() {
 
       <div className="mt-10 sm:hidden">
         <Link href="/work" className="link-underline font-mono text-xs text-foreground">
-          all work →
+          All projects →
         </Link>
       </div>
     </section>

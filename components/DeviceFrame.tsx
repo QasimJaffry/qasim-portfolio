@@ -47,7 +47,7 @@ export default function DeviceFrame({
       ref={ref}
       onMouseMove={handleMove}
       onMouseLeave={handleLeave}
-      className={`overflow-hidden rounded-xl border border-border bg-surface shadow-[0_30px_80px_-30px_rgba(0,0,0,0.9)] transition-transform duration-300 ease-out will-change-transform ${className}`}
+      className={`overflow-hidden rounded-xl border border-border bg-surface shadow-[0_30px_70px_-30px_rgba(11,19,32,0.6)] transition-transform duration-300 ease-out will-change-transform ${className}`}
     >
       <div className="flex items-center gap-3 border-b border-border px-3.5 py-2.5">
         <div className="flex gap-1.5" aria-hidden>
