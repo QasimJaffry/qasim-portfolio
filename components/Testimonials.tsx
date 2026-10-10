@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import SectionLabel from "@/components/SectionLabel";
 import { testimonials } from "@/lib/data/testimonials";
 
 export default function Testimonials() {
@@ -10,41 +9,30 @@ export default function Testimonials() {
   const count = testimonials.length;
 
   return (
-    <section id="proof" className="border-t border-border px-6 py-16 sm:px-10 sm:py-24">
-      <SectionLabel n="03">Kind words</SectionLabel>
-
-      <figure className="mt-8 grid gap-6 xl:grid-cols-12 xl:gap-8">
-        <span
-          aria-hidden
-          className="font-display text-[8rem] font-extrabold leading-[0.6] text-accent xl:col-span-1 xl:text-[10rem]"
-        >
-          “
-        </span>
-        <div className="xl:col-span-11">
+    <section id="proof" className="px-6 py-28 sm:px-10 sm:py-40">
+      <div className="mx-auto max-w-[88rem]">
+        <figure className="grid gap-12 lg:grid-cols-12">
           <blockquote
-            key={index}
-            className="animate-fade-up max-w-4xl text-2xl font-semibold leading-snug tracking-tight text-foreground sm:text-3xl"
+            aria-live="polite"
+            className="text-3xl leading-[1.35] text-foreground sm:text-[2.6rem] lg:col-span-9"
           >
-            {item.quote}
+            “{item.quote}”
           </blockquote>
-          <figcaption className="mt-8 flex flex-wrap items-center justify-between gap-6">
+
+          <figcaption className="flex flex-col justify-end gap-8 lg:col-span-3">
             <div>
-              <p className="font-semibold text-foreground">{item.name}</p>
-              <p className="mt-0.5 text-sm text-muted">
+              <p className="font-display text-lg font-semibold text-foreground">{item.name}</p>
+              <p className="mt-1 text-base text-muted">
                 {item.role}
-                {item.source ? ` · ${item.source}` : ""}
+                {item.source ? `, via ${item.source}` : ""}
               </p>
             </div>
-
-            <div className="flex items-center gap-4">
-              <span className="font-mono text-xs tabular-nums text-muted">
-                {String(index + 1).padStart(2, "0")} / {String(count).padStart(2, "0")}
-              </span>
+            <div className="flex items-center gap-3">
               <button
                 type="button"
                 aria-label="Previous quote"
                 onClick={() => setIndex((index - 1 + count) % count)}
-                className="flex size-11 items-center justify-center rounded-full border border-border text-foreground transition-colors hover:border-accent hover:text-accent"
+                className="flex size-12 items-center justify-center rounded-full border border-foreground/25 font-display text-lg text-foreground transition-colors hover:border-foreground hover:bg-accent hover:text-accent-foreground"
               >
                 ←
               </button>
@@ -52,14 +40,17 @@ export default function Testimonials() {
                 type="button"
                 aria-label="Next quote"
                 onClick={() => setIndex((index + 1) % count)}
-                className="flex size-11 items-center justify-center rounded-full border border-border text-foreground transition-colors hover:border-accent hover:text-accent"
+                className="flex size-12 items-center justify-center rounded-full border border-foreground/25 font-display text-lg text-foreground transition-colors hover:border-foreground hover:bg-accent hover:text-accent-foreground"
               >
                 →
               </button>
+              <span className="ml-1 text-sm tabular-nums text-muted">
+                {index + 1} of {count}
+              </span>
             </div>
           </figcaption>
-        </div>
-      </figure>
+        </figure>
+      </div>
     </section>
   );
 }

@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 
 const links = [
+  { href: "/#services", label: "Services", match: () => false },
   { href: "/work", label: "Work", match: (path: string) => path === "/work" || path.startsWith("/work/") },
   { href: "/about", label: "About", match: (path: string) => path === "/about" },
   { href: "/resume", label: "Resume", match: (path: string) => path === "/resume" },
@@ -38,9 +39,6 @@ export default function Nav() {
     };
   }, []);
 
-  // The home page is a self-contained shell with its own sidebar and tabs.
-  if (pathname === "/") return null;
-
   function isActive(link: (typeof links)[number]) {
     if (link.href === "/#contact") {
       return pathname === "/" && hash === "#contact";
@@ -55,12 +53,12 @@ export default function Nav() {
       }`}
     >
       <div
-        className={`mx-auto flex max-w-6xl items-center justify-between px-6 transition-[padding] duration-300 ${
+        className={`mx-auto flex max-w-[calc(88rem+5rem)] items-center justify-between px-6 sm:px-10 transition-[padding] duration-300 ${
           scrolled ? "py-3" : "py-4"
         }`}
       >
-        <Link href="/" className="font-display text-base font-bold tracking-tight text-foreground">
-          Qasim Hassan<span className="text-accent">.</span>
+        <Link href="/" className="text-lg tracking-tight text-foreground">
+          <span className="font-display text-lg font-bold tracking-tight">Qasim Hassan</span><span className="text-accent">.</span>
         </Link>
 
         <nav className="hidden items-center gap-8 sm:flex">
@@ -73,7 +71,7 @@ export default function Nav() {
                 aria-current={active ? "page" : undefined}
                 className={
                   link.label === "Contact"
-                    ? "rounded-full bg-accent px-4 py-1.5 text-sm font-semibold text-accent-foreground transition-transform hover:-translate-y-0.5"
+                    ? "rounded-md bg-accent px-4 py-1.5 font-display text-sm font-semibold text-accent-foreground transition-colors hover:bg-foreground"
                     : `text-sm transition-colors ${
                         active
                           ? "font-medium text-foreground"
