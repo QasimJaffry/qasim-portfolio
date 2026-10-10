@@ -3,35 +3,39 @@ export type HireScope = {
   description: string;
 };
 
+/**
+ * What I take on, described by the work and the outcome. Tool names live in the Skills
+ * section, not here.
+ */
 export const hireScopes: HireScope[] = [
   {
-    title: "React Native + Expo products",
+    title: "mobile apps for iOS and Android",
     description:
-      "Ship or rebuild iOS/Android apps — auth, offline, payments, store releases, and the messy mid-tier device reality.",
+      "One product on both stores, from sign-in and offline support to store releases and updates, built to feel right on mid-range phones too.",
   },
   {
-    title: "AI features into live products",
+    title: "AI features in live products",
     description:
-      "Chat, agents, RAG, streaming answers, and billing around them — production UX, not demo wrappers.",
+      "Assistants and agents that answer from your own data, with streaming responses and usage billing around them. Built for production, not demos.",
   },
   {
-    title: "0→1 MVPs (mobile + web)",
+    title: "MVPs from idea to launch",
     description:
-      "Fixed-scope builds with weekly demos: Expo / Next.js, Firebase or Postgres, Stripe / RevenueCat when money matters.",
+      "Fixed-scope builds across mobile and web with a working demo every week, ready for real users and real payments.",
   },
   {
-    title: "Payments & subscriptions",
+    title: "payments and subscriptions",
     description:
-      "RevenueCat, Stripe, entitlements that stay coherent across phone and web so pay-once works everywhere.",
+      "Checkout, subscriptions and access rules that stay consistent across phone and web, so a customer who pays once is covered everywhere.",
   },
   {
-    title: "Architecture & tech lead help",
+    title: "technical direction and architecture",
     description:
-      "Second opinion on stack, AI feasibility, handoff quality, and whether to fix, refactor, or rewrite.",
+      "A second opinion on architecture, AI feasibility and handoff quality, with a clear answer on whether to fix, refactor or rewrite.",
   },
   {
-    title: "Senior remote IC / lead roles",
+    title: "senior and lead roles on small teams",
     description:
-      "Own surfaces end-to-end with a small team — mobile, web, and the integrations that keep them honest.",
+      "Owning mobile, web and the integrations between them as part of a small team, from first commit to production.",
   },
 ];

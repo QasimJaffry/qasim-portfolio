@@ -325,6 +325,16 @@ body::before {
   transform: scaleX(1);
 }
 
+.js .tl .tl-line-v {
+  transform-origin: top;
+  transform: scaleY(0);
+  transition: transform 1.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.js .tl.is-in .tl-line-v {
+  transform: scaleY(1);
+}
+
 .js .tl .tl-dot {
   background-color: var(--background);
   transition: background-color 0.4s ease;
@@ -380,6 +390,7 @@ details[open]::details-content {
   }
 
   .js .tl .tl-line,
+  .js .tl .tl-line-v,
   .js .tl .tl-dot,
   .js .tl .tl-body {
     transform: none;

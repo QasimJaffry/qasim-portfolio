@@ -7,7 +7,7 @@ export const faqItems: FaqItem[] = [
   {
     question: "What do you typically take on?",
     answer:
-      "React Native / Expo apps, Next.js product surfaces, AI features in live products, payments (Stripe / RevenueCat), and senior IC or tech-lead help on small teams. See the Hire me for section for the full list.",
+      "Mobile apps for iOS and Android, web products, AI features in live products, payments and subscriptions, and senior or lead roles on small teams. The tools I use are listed under Skills and tools.",
   },
   {
     question: "Freelance, full-time, or both?",

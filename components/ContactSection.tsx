@@ -8,7 +8,7 @@ export default function ContactSection() {
   return (
     <section id="contact" className="scroll-mt-12 bg-accent px-6 py-24 text-accent-foreground sm:px-10 sm:py-36">
       <div className="mx-auto max-w-[88rem]">
-        <h2 className="hd text-[clamp(3.3rem,10vw,9.5rem)] leading-[0.96]">Let&apos;s build it properly.</h2>
+        <h2 className="hd text-[clamp(3.3rem,10vw,9.5rem)] leading-[0.96]">Let&apos;s talk about your project.</h2>
 
         <p className="mt-8 max-w-xl text-xl leading-[1.55] text-accent-foreground/75">
           Open to freelance projects, consulting and senior remote roles. {site.replySla}
