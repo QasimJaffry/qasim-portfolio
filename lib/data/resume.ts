@@ -23,7 +23,7 @@ export type ResumeProject = {
 export const resumeProjects: ResumeProject[] = [
   {
     name: "Agenticly",
-    line: "Frontend + payments for AI crypto/markets research — Expo & React clients, RevenueCat + Stripe; 10K+ Play downloads, 4.9★, App Store + web live.",
+    line: "Frontend + payments for AI crypto/markets research — Expo & React clients, RevenueCat + Stripe; 10K+ Play downloads, 4.5★, App Store + web live.",
     stack: "React Native, Expo, React, Firebase, RevenueCat, Stripe",
   },
   {
@@ -38,7 +38,7 @@ export const resumeProjects: ResumeProject[] = [
   },
   {
     name: "Innerverse",
-    line: "Solo-founded mood journal with Skia cosmos UI, AI companion, and RevenueCat premium — live on Play Store + web.",
+    line: "Solo-founded mood journal with Skia cosmos UI, AI companion, and RevenueCat premium — live on Google Play.",
     stack: "React Native, Expo, Skia, OpenAI API, RevenueCat",
   },
   {

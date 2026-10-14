@@ -12,7 +12,7 @@
 
 ## Flagship case studies
 
-- [Agenticly](https://qasimhassan.dev/work/agenticly): AI crypto/markets research assistant — Expo + React web, RevenueCat + Stripe, 10K+ Play downloads, 4.9★
+- [Agenticly](https://qasimhassan.dev/work/agenticly): AI crypto/markets research assistant — Expo + React web, RevenueCat + Stripe, 10K+ Play downloads, 4.5★
 - [Innerverse](https://qasimhassan.dev/work/innerverse): Solo founder mood-journal app with Skia cosmos + AI companion
 - [BugMapper](https://qasimhassan.dev/work/bugmapper): Agri-tech React Native field app for pest trapping
 - [SafeDeal](https://qasimhassan.dev/work/safedeal): Shopping assistant mobile frontend, 5K+ Play downloads
