@@ -44,13 +44,13 @@ export const projects: Project[] = [
       action:
         "Owned Expo + React/Vite clients and subscription UX: streaming NL research chat with charts against a teammate’s research API, RevenueCat on mobile and Stripe on web into one Firebase entitlement model.",
       result:
-        "Live on Play Store (10K+ downloads, 4.9★), App Store, and web with subscription revenue on both channels.",
+        "Live on Play Store (10K+ downloads, 4.5★), App Store, and web with subscription revenue on both channels.",
     },
     category: "AI",
     stack: ["React Native", "Expo", "React", "Firebase", "RevenueCat", "Stripe"],
     metrics: [
       "10K+ Play Store downloads",
-      "4.9★ on Google Play",
+      "4.5★ on Google Play",
       "iOS + Android + web live",
     ],
     status: "Live",
@@ -70,18 +70,18 @@ export const projects: Project[] = [
     title: "Innerverse",
     tagline: "Log moods as stars in a personal galaxy — with an AI companion.",
     description:
-      "Solo founder product under Jafrix Systems: React Native + Expo + Skia cosmos visualization, Mira AI for pattern reflection, meditation library, and RevenueCat premium. Live on Play Store and the web.",
+      "Solo founder product under Jafrix Systems: React Native + Expo + Skia cosmos visualization, Mira AI for pattern reflection, meditation library, and RevenueCat premium. Live on Google Play.",
     summary: {
       problem:
         "Mood tracking apps feel like spreadsheets — people want reflection that feels personal, not another form to fill.",
       action:
         "Built and published solo: Expo + Skia cosmos journal, Mira AI companion, meditation library, and RevenueCat premium.",
-      result: "Live on Play Store and web as a Jafrix Systems product I own end-to-end.",
+      result: "Live on Google Play as a Jafrix Systems product I own end-to-end.",
     },
     category: "Mobile",
     stack: ["React Native", "Expo", "Skia", "Firebase", "OpenAI API", "RevenueCat"],
     metrics: [
-      "Live on Play Store + web",
+      "Live on Google Play",
       "Skia cosmos mood journal",
       "Built and published solo",
     ],
@@ -89,7 +89,6 @@ export const projects: Project[] = [
     featured: true,
     links: {
       playStore: "https://play.google.com/store/apps/details?id=innerverse.app",
-      web: "https://innerverse.app",
       github: "https://github.com/QasimJaffry/Innerverse",
     },
     images: [

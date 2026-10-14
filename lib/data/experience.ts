@@ -21,7 +21,7 @@ export const experience: ExperienceEntry[] = [
     description:
       "Senior engineer on a US product team shipping live AI mobile and web apps — clients, payments, and production ownership across concurrent products.",
     bullets: [
-      "Own Expo/React Native and React web clients plus RevenueCat/Stripe entitlements for Agenticly, an AI markets research product live on Play Store (10K+ downloads, 4.9★), App Store, and web.",
+      "Own Expo/React Native and React web clients plus RevenueCat/Stripe entitlements for Agenticly, an AI markets research product live on Play Store (10K+ downloads, 4.5★), App Store, and web.",
       "Took full product ownership of Kitty Nip (geo social, chat, IAP, Firebase) — live on Play Store and App Store with 10K+ Play downloads.",
       "Ship AI product surfaces end-to-end (CatChat and related clients) against Firebase/cloud backends with US stakeholders on architecture and release trade-offs.",
       "Operate across mobile, web, payments, and third-party integrations from design handoff through store release on multiple concurrent products.",
@@ -37,7 +37,7 @@ export const experience: ExperienceEntry[] = [
     description:
       "Studio founder shipping mobile-first AI products end-to-end — from scope and architecture through Play Store and web launches.",
     bullets: [
-      "Built and published Innerverse solo (React Native, Expo, Skia, OpenAI, RevenueCat) — live on Play Store and web.",
+      "Built and published Innerverse solo (React Native, Expo, Skia, OpenAI, RevenueCat) — live on Google Play.",
       "Delivered BugMapper frontend for agri-tech field ops (offline sync, trap workflows, advisor charts) used in live greenhouse deployments.",
       "Building Dealflow AI and Decidr as AI SaaS products (Next.js, Expo, Supabase, Stripe, LLM APIs).",
       "Own full delivery loop for studio work: scoping, architecture, implementation, payments, and release.",
