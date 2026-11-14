@@ -1,104 +1,104 @@
 import type { Metadata } from "next";
 import ExperienceTimeline from "@/components/ExperienceTimeline";
-import Stats from "@/components/Stats";
+import { stats } from "@/lib/data/stats";
 import { site } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "About",
-  description: `${site.name} — ${site.title} based in Lahore, Pakistan.`,
+  description: `${site.name}, ${site.title} in Lahore, Pakistan. Apps with 10K+ and 100K+ downloads, teams of up to nine.`,
 };
 
-const aboutProof = [
-  { value: "6+", label: "Years shipping" },
-  { value: "60+", label: "Products shipped" },
-  { value: "100%", label: "Upwork Job Success" },
-  { value: "18 mo", label: "Longest client engagement" },
-];
 
 export default function AboutPage() {
   return (
     <>
       <div className="mx-auto max-w-6xl px-6 py-14 sm:py-20">
         <div>
-          <h1 className="font-display text-5xl font-extrabold tracking-[-0.045em] text-foreground sm:text-7xl">
+          <h1 className="hd text-5xl text-foreground sm:text-7xl">
             About
           </h1>
           <p className="mt-3 max-w-xl text-muted">{site.positioning}</p>
         </div>
 
-        <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          {aboutProof.map((item) => (
-            <div key={item.label} className="rounded-2xl border border-border/80 bg-surface/65 px-4 py-4">
-              <p className="font-display text-3xl font-extrabold tracking-tight text-accent">{item.value}</p>
-              <p className="mt-1 text-xs uppercase tracking-[0.16em] text-muted">{item.label}</p>
-            </div>
-          ))}
-        </div>
-
         <div className="mt-8 grid gap-10 md:grid-cols-[1fr_280px] md:gap-12 lg:gap-16">
-          <div className="max-w-2xl space-y-5 leading-relaxed text-muted">
+          <div className="max-w-2xl space-y-5 text-lg leading-relaxed text-muted">
+            <p className="text-foreground">
+              Senior React Native and Next.js engineer. I take mobile and web products from first build to live
+              release, and I have owned apps with 10K+ and 100K+ downloads on Google Play and the App Store.
+            </p>
+            <div>
+              <p>What I am usually trusted with:</p>
+              <ul className="mt-3 space-y-2 pl-5 marker:text-accent [list-style:square]">
+                <li>Subscriptions and payments: RevenueCat, Stripe, store billing</li>
+                <li>Offline-first mobile apps: Expo, Firebase, Supabase</li>
+                <li>LLM-backed features in production: OpenAI, Claude API, AWS Bedrock</li>
+                <li>
+                  Releases and upgrades: React Native 0.79 on the New Architecture, 16 KB page-size support,
+                  Android and iOS store submissions
+                </li>
+              </ul>
+            </div>
             <p>
-              I&apos;m a Senior Full-Stack Engineer based in Lahore, Pakistan, with 6+ years building
-              mobile and web products end to end — architecture, frontend, backend, payments, and
-              increasingly, AI integrations. Most of that time has been spent owning products
-              completely rather than working on isolated pieces of someone else&apos;s system.
+              Right now I work remotely with a US team at Star Computer Labs. Agenticly, an AI crypto research
+              assistant, has 26K installs across web, Android and iOS. I took over full ownership of Kitty Nip,
+              which now reports 100% crash-free on Crashlytics. I also own releases for AI Maker Pro, a Flutter
+              app with 100K+ downloads.
             </p>
             <p>
-              My core stack is React Native and Next.js on the frontend, with Node.js, FastAPI, and
-              PostgreSQL on the backend. Over the last two years that&apos;s expanded into applied AI —
-              integrating the OpenAI and Claude APIs into production products, and working with
-              computer vision models like YOLO11, SAM2, and DINOv2 on real-time pipelines.
+              On the side I run Jafrix Systems, a small software studio. Its longest engagement is BugMapper, a
+              greenhouse pest-monitoring platform used in Kayseri, Türkiye: recording a trap went from 5 to 10
+              minutes on paper to about 10 seconds.
             </p>
             <p>
-              Day to day I work AI-assisted in Cursor and Claude to move faster on exploration,
-              scaffolding, and refactors. Architecture, reviews, edge cases, and what ships still
-              stay mine.
-            </p>
-            <p>
-              I&apos;ve worked across both freelance and long-term engagements: 100% Job Success on
-              Upwork as a Top Rated Plus freelancer, an 18-month international client engagement on the
-              Qubio ecosystem, and full-time work at StarComputer Labs where I lead architecture across
-              mobile, web, payments, and AI. Across freelance and studio work I&apos;ve shipped{" "}
-              <span className="font-medium text-foreground">60+ products</span>
-              — this site focuses on a selected set of case studies. Alongside client work, I run
-              Jafrix System, my own studio, where I&apos;ve built and published Innerverse and am
-              currently developing Dealflow AI and Decidr.
-            </p>
-            <p>
-              I hold a B.Sc. in Computer Science from COMSATS University, Lahore. Right now I&apos;m
-              working through a structured AI curriculum (Level 1–5) while shipping updates to
-              Innerverse.
+              Before that I was Tech Lead at StackUp Solutions for four years, leading teams of up to nine across
+              client products in healthcare, workplace and payments.
             </p>
           </div>
 
-          <aside className="h-fit space-y-8 rounded-2xl bg-surface p-6 text-sm md:sticky md:top-24">
+          <aside className="h-fit space-y-8 text-[15px] md:sticky md:top-24">
             <div>
               <h2 className="eyebrow">Education</h2>
-              <p className="mt-3 text-foreground">B.Sc. Computer Science</p>
-              <p className="text-muted">COMSATS University, Lahore</p>
+              <p className="mt-3 text-foreground">B.Sc. Computer Science, 2016 – 2020</p>
+              <p className="text-muted">COMSATS University Islamabad, Lahore campus</p>
             </div>
 
             <div>
-              <h2 className="eyebrow">Available For</h2>
+              <h2 className="eyebrow">Available for</h2>
               <div className="mt-3 space-y-1.5 text-muted">
-                <p>Senior/Lead Remote Roles ($50K–$120K)</p>
-                <p>Architecture Consulting</p>
-                <p>High-Value Freelance</p>
+                <p>Senior React Native, mobile and full-stack roles ($50K–$120K)</p>
+                <p>Remote, or relocating</p>
+                <p>Freelance projects</p>
               </div>
             </div>
 
             <div>
               <h2 className="eyebrow">Resume</h2>
-              <a href="/resume" className="mt-3 inline-block link-underline text-foreground">
-                View printable resume →
+              <a href="/resume" className="mt-2 inline-block py-1 link-underline text-foreground">
+                View printable resume
               </a>
+            </div>
+
+            <div>
+              <h2 className="eyebrow">Languages</h2>
+              <p className="mt-3 text-muted">English (C1 to C2), Urdu (native)</p>
             </div>
           </aside>
         </div>
       </div>
 
-      <Stats />
-      <ExperienceTimeline />
+      <div className="mx-auto max-w-6xl space-y-24 px-6 pb-24">
+        <section aria-label="By the numbers">
+          <dl className="grid grid-cols-2 gap-x-8 gap-y-10 border-t border-border pt-10 sm:grid-cols-3">
+            {stats.map((stat) => (
+              <div key={stat.label}>
+                <dt className={`hd text-foreground ${stat.value.length > 6 ? "text-2xl sm:text-3xl" : "text-4xl"}`}>{stat.value}</dt>
+                <dd className="mt-2 text-muted">{stat.label}</dd>
+              </div>
+            ))}
+          </dl>
+        </section>
+        <ExperienceTimeline />
+      </div>
     </>
   );
 }

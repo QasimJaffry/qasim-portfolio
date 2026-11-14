@@ -34,14 +34,14 @@ export const metadata: Metadata = {
     template: `%s — ${site.name}`,
   },
   description:
-    "Senior Full-Stack Engineer with 6+ years shipping mobile and web products. React Native, Next.js, AI integrations. Top Rated Plus on Upwork. Based in Lahore, Pakistan.",
+    "Senior React Native and Full-Stack Engineer with nearly six years owning mobile and web products end to end. Apps with 10K+ and 100K+ downloads, teams of up to nine, LLM features in production. Based in Lahore, Pakistan.",
   keywords: [
     "React Native developer",
     "Next.js engineer",
     "AI integration developer",
     "Full-stack engineer Pakistan",
     "mobile app developer Lahore",
-    "senior developer Upwork",
+    "Senior React Native engineer",
     "Expo developer",
     "RevenueCat Stripe",
   ],

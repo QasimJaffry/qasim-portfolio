@@ -8,26 +8,25 @@ const diagrams: Record<
   agenticly: {
     title: "Architecture",
     caption:
-      "Separate Expo and Vite clients share Firebase auth/data and one entitlement truth; a teammate-owned FastAPI + LangGraph service runs the research agent loop; RevenueCat and Stripe normalize into the same access model on the clients I owned.",
+      "React Native and Next.js clients share one Firebase backend. Cloud Functions run the scheduled agents and save each run with its date; RevenueCat on mobile and Stripe on web write one subscription record that decides who can run an agent.",
     nodes: [
-      { id: "expo", label: "Expo / RN", x: 40, y: 28 },
-      { id: "web", label: "React + Vite", x: 220, y: 28 },
+      { id: "expo", label: "React Native", x: 40, y: 28 },
+      { id: "web", label: "Next.js web", x: 220, y: 28 },
       { id: "fb", label: "Firebase", x: 130, y: 110 },
-      { id: "api", label: "Research API (team)", x: 310, y: 110, w: 160 },
+      { id: "fn", label: "Scheduled agents", x: 310, y: 110, w: 150 },
       { id: "rc", label: "RevenueCat", x: 40, y: 200 },
       { id: "stripe", label: "Stripe", x: 200, y: 200 },
-      { id: "data", label: "Market data APIs", x: 360, y: 200, w: 130 },
+      { id: "data", label: "Research + market data", x: 340, y: 200, w: 170 },
     ],
     edges: [
       { from: "expo", to: "fb" },
       { from: "web", to: "fb" },
-      { from: "expo", to: "api" },
-      { from: "web", to: "api" },
+      { from: "fb", to: "fn" },
       { from: "expo", to: "rc" },
       { from: "web", to: "stripe" },
       { from: "rc", to: "fb" },
       { from: "stripe", to: "fb" },
-      { from: "api", to: "data" },
+      { from: "fn", to: "data" },
     ],
   },
   "dealflow-ai": {

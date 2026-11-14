@@ -1,41 +1,30 @@
----
-title: Agenticly
-year: 2024–present
-status: Live
-stack: [React Native, Expo, React, Firebase, RevenueCat, Stripe]
----
-
 ## The Problem
 
-Crypto and markets research still means a dozen tabs — CoinGecko, explorers, news, charts — and no single place to ask a question in plain English and get analytics back. Agenticly was built to sit that assistant on both phone and web, with subscriptions that work on either surface.
+Market research usually means many tabs and queries. Agenticly puts one assistant on web, Android and iOS: ask about crypto and stocks in plain language and get a table, a chart and a written answer back. Some research repeats every week, so agents can also run on a schedule, and running them is a paid feature that has to behave the same on every device.
 
 ## What I Built
 
-I was the **frontend + payments** engineer on a team product — **Expo / React Native** for phone, **React + Vite** for web — against Firebase for auth/data and a teammate-owned FastAPI + LangGraph research backend for streaming chat.
+I led the engineering on this team product at Star Computer Labs. I built and own:
 
-- Natural-language queries across crypto (CoinGecko), on-chain (BigQuery), and stocks (Alpha Vantage), with interactive Plotly charts in the chat UI.
-- Stock recommendation / analyst-ranking flows alongside freeform research chat (SSE streaming).
-- **Subscription billing** — **RevenueCat** for App Store / Play purchases, **Stripe** for web — wired into one Firebase entitlement model so access doesn’t depend on which surface you paid on (including credits, trials, and cancel paths).
+- The **React Native** app and the **Next.js** web client, sharing one **Firebase** backend, so each agent's status, Run Now and run history appear on both.
+- **Scheduled agents** on Firebase Functions: write the question, pick frequency and time, pause without deleting. Each run saves its own dated result, so runs can be compared.
+- **Payments**: sign-in with email, Google or Apple, a 7-day free trial, **RevenueCat** on mobile and **Stripe** on web, both writing one subscription record that decides who can run an agent.
+- The **landing page**, with App Store and Google Play links, free sign-up, and navigation to pricing, market trends and the blog.
 
-Live on [Play Store](https://play.google.com/store/apps/details?id=computer.star.agenticly), [App Store](https://apps.apple.com/us/app/agenticly-stock-crypto-ai/id6760048191), and [agenticly.app](https://agenticly.app).
-
-## Major Features
-
-- **NL research assistant** — ask in English; get structured analytics and charts, not a SQL console.
-- **Multi-source data** — crypto, on-chain, and equities behind one chat surface on phone and web.
-- **Cross-platform clients** — separate Expo and Vite apps that share the same product flows and billing entitlements.
-- **Cross-platform billing** — RevenueCat + Stripe into a single entitlement truth (pay on web, use on mobile and vice versa).
-- **Streaming answers** — SSE chat so long research replies feel live.
-- **Product surfaces beyond chat** — market trends, scheduled agents (web), settings, and payment history.
+Live on [Google Play](https://play.google.com/store/apps/details?id=computer.star.agenticly), the [App Store](https://apps.apple.com/us/app/agenticly-stock-crypto-ai/id6760048191) and [agenticly.app](https://agenticly.app).
 
 ## Key Challenges
 
-Shipping mobile and web as separate clients (not a forced shared UI kit) kept each surface feeling native while still telling one product story. Keeping subscription UX coherent across RevenueCat and Stripe — different purchase flows, renewals, and failure modes — meant the clients had to read one entitlement truth from Firebase without leaking store-specific mess into the UI.
+**One plan, two stores and the web.** A customer can pay through the App Store, Google Play or Stripe. Every path writes the same subscription record, so access never depends on where someone paid.
+
+**Answers people can read at a glance.** A typed question replaces a dozen research tabs, so every answer comes back as a table, a chart and plain text rather than a query language to learn.
+
+**Repeat research without repeat work.** Scheduled runs keep their own history, so a weekly question builds a record instead of overwriting the last answer.
 
 ## Results
 
-Agenticly is live on Play Store (**10K+** downloads, **4.9★**), App Store, and web, with subscription revenue on both mobile and web channels. I owned the frontend surfaces and the Stripe / RevenueCat payment flows as part of the team that shipped the product.
+**26K installs** across web, Android and iOS combined, about **2.3K monthly active users**, and typically **100% crash-free** on Firebase Crashlytics. Rated 4.5 on Google Play.
 
 ## Stack Decisions
 
-Expo + Vite React were chosen for fast dual-platform shipping rather than maximizing code reuse. Firebase kept auth/data overhead low for the clients; a teammate owned the FastAPI/LangGraph agent loop and related observability — I consumed that API from the clients and owned subscription UX. RevenueCat absorbs App Store / Play receipt complexity; Stripe handles web trials and cards — both normalize into one entitlement record the UIs trust.
+React Native for both stores and Next.js for the web, on one Firebase backend with Cloud Functions for scheduled agents. RevenueCat absorbs App Store and Play receipt handling; Stripe handles web trials and cards; both normalise into one subscription record the clients read.

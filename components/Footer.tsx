@@ -7,7 +7,6 @@ const links = [
   { label: "Resume", href: "/resume", external: false },
   { label: "GitHub", href: site.social.github, external: true },
   { label: "LinkedIn", href: site.social.linkedin, external: true },
-  { label: "Upwork", href: site.social.upwork, external: true },
 ];
 
 export default function Footer() {
@@ -21,7 +20,7 @@ export default function Footer() {
           <p>
             {site.title} · {site.location}
           </p>
-          <a href={`mailto:${site.email}`} className="link-underline text-foreground">
+          <a href={`mailto:${site.email}`} className="link-underline inline-block py-1 text-foreground">
             {site.email}
           </a>
         </div>
@@ -34,7 +33,7 @@ export default function Footer() {
                 href={link.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="link-underline transition-colors hover:text-foreground"
+                className="link-underline inline-block py-1 transition-colors hover:text-foreground"
               >
                 {link.label} ↗
               </a>
@@ -42,7 +41,7 @@ export default function Footer() {
               <Link
                 key={link.label}
                 href={link.href}
-                className="link-underline transition-colors hover:text-foreground"
+                className="link-underline inline-block py-1 transition-colors hover:text-foreground"
               >
                 {link.label}
               </Link>

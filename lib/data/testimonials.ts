@@ -5,20 +5,20 @@ export type Testimonial = {
   source?: string;
 };
 
-/** Real quotes from LinkedIn / public recommendations — replace or extend with client Upwork reviews when you have permission. */
+/** Real quotes from LinkedIn recommendations. */
 export const testimonials: Testimonial[] = [
   {
     quote:
       "From day one, you stood out. Not just for your technical strength, but for your integrity, ownership, and the standards you set for the team. You played an important role in shaping both the team and the products we built.",
     name: "Hasnain Raza Jaffery",
-    role: "Leadership · Stackup Solutions",
+    role: "Leadership, StackUp Solutions",
     source: "LinkedIn",
   },
   {
     quote:
       "Looking back, the time we worked together was one of the most important phases of my growth. You set high standards, pushed us to improve, and led by example.",
     name: "Former teammate",
-    role: "Engineering · Stackup Solutions",
+    role: "Engineering, StackUp Solutions",
     source: "LinkedIn",
   },
   {

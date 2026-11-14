@@ -12,7 +12,7 @@ export const faqItems: FaqItem[] = [
   {
     question: "Freelance, full-time, or both?",
     answer:
-      "Both. I’m open to high-value freelance and consulting, and to senior/lead remote roles in roughly the $50K–$120K range depending on scope and location.",
+      "Both. I’m open to senior React Native, mobile and full-stack roles, remote or relocating, in roughly the $50K–$120K range depending on scope and location, and to freelance projects.",
   },
   {
     question: "Timezone and communication?",
@@ -22,7 +22,7 @@ export const faqItems: FaqItem[] = [
   {
     question: "Can you join an existing codebase?",
     answer:
-      "Yes — often. I slot in as a senior IC, match your PR process and stack, and leave the repo in a state your team can keep shipping.",
+      "Yes, and it is a lot of what I do. I took over Kitty Nip when its team left and upgraded it to React Native 0.79 on the New Architecture, and I have owned every release of AI Maker Pro, a Flutter app with 100K+ downloads, for about a year and a half.",
   },
   {
     question: "NDAs and IP?",

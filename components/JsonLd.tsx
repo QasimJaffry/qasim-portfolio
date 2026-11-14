@@ -15,7 +15,7 @@ export default function JsonLd() {
       addressLocality: "Lahore",
       addressCountry: "PK",
     },
-    sameAs: [site.social.github, site.social.linkedin, site.social.upwork],
+    sameAs: [site.social.github, site.social.linkedin],
     knowsAbout: [
       "React Native",
       "Expo",

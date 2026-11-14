@@ -1,38 +1,37 @@
 # Qasim Hassan
 
-> Senior Full-Stack Engineer shipping AI-native mobile and web products. React Native, Next.js, Expo, Firebase, Stripe/RevenueCat. Based in Lahore, Pakistan. Top Rated Plus on Upwork (100% Job Success). Open to freelance, consulting, and senior remote roles.
+> Senior React Native and Full-Stack Engineer with nearly six years across React Native and Next.js, owning products end to end: mobile and web clients, Firebase backends, and Stripe and RevenueCat billing. Has owned live apps with 10K+ and 100K+ downloads, led teams of up to nine, and put LLM-backed features into production. Senior Full-Stack Engineer at Star Computer Labs (remote, US). Based in Lahore, Pakistan; open to senior remote roles and relocation.
 
 ## Primary
 
-- [Home](https://qasimhassan.dev/): Positioning, featured work, hire-me scopes, process, FAQ, contact
-- [Work](https://qasimhassan.dev/work): Case studies across mobile, web, AI, and full-stack products
-- [About](https://qasimhassan.dev/about): Background, stats, experience timeline
-- [Resume](https://qasimhassan.dev/resume): Printable resume for recruiters
-- [Contact](https://qasimhassan.dev/#contact): Email qhassan1214@gmail.com — responds within 24 hours
+- [Home](https://qasimjaffry.github.io/qasim-portfolio/): Positioning, featured work, services, experience, FAQ, contact
+- [Work](https://qasimjaffry.github.io/qasim-portfolio/work/): Case studies across mobile, web and AI
+- [About](https://qasimjaffry.github.io/qasim-portfolio/about/): Background, numbers, experience timeline
+- [Resume](https://qasimjaffry.github.io/qasim-portfolio/resume/): Printable resume for recruiters
+- [Contact](https://qasimjaffry.github.io/qasim-portfolio/#contact): Email qhassan1214@gmail.com, replies within 24 hours
 
 ## Flagship case studies
 
-- [Agenticly](https://qasimhassan.dev/work/agenticly): AI crypto/markets research assistant — Expo + React web, RevenueCat + Stripe, 10K+ Play downloads, 4.5★
-- [Innerverse](https://qasimhassan.dev/work/innerverse): Solo founder mood-journal app with Skia cosmos + AI companion
-- [BugMapper](https://qasimhassan.dev/work/bugmapper): Agri-tech React Native field app for pest trapping
-- [SafeDeal](https://qasimhassan.dev/work/safedeal): Shopping assistant mobile frontend, 5K+ Play downloads
-- [Qubio](https://qasimhassan.dev/work/qubio): 18-month QR/NFC digital identity ecosystem (RN + Next.js)
+- [Agenticly](https://qasimjaffry.github.io/qasim-portfolio/work/agenticly/): AI crypto and stock research assistant. Led the engineering: React Native app, Next.js web, Firebase, scheduled agents, RevenueCat and Stripe. 26K installs across web, Android and iOS, about 2.3K monthly active users
+- [Kitty Nip](https://qasimjaffry.github.io/qasim-portfolio/work/kitty-nip/): Took over a live cat dating app (10K+ Google Play downloads), upgraded React Native to 0.79 on the New Architecture; now 100% crash-free on Crashlytics
+- [Innerverse](https://qasimjaffry.github.io/qasim-portfolio/work/innerverse/): Mood journal for Android, designed, built and published solo with Expo, Skia and Firebase
+- [BugMapper](https://qasimjaffry.github.io/qasim-portfolio/work/bugmapper/): Offline-first greenhouse trap-counting app; about 10 seconds per trap against 5 to 10 minutes by hand
+- [SafeDeal](https://qasimjaffry.github.io/qasim-portfolio/work/safedeal/): Shopping verdict app, 5,000+ Google Play downloads; contributed the in-app browser, state and data layer
+- [Qubio](https://qasimjaffry.github.io/qasim-portfolio/work/qubio/): QR and NFC digital identity for Qubio Global over 18 months; led frontend and payments
 
 ## Hire for
 
-- React Native + Expo products
-- AI features into live products (chat, agents, streaming, billing)
-- 0→1 MVPs (mobile + web)
-- Payments & subscriptions (RevenueCat, Stripe)
-- Architecture / tech-lead help
-- Senior remote IC / lead roles ($50K–$120K)
+- Senior React Native, mobile and full-stack roles
+- Subscriptions and payments (RevenueCat, Stripe, store billing)
+- Offline-first mobile apps (Expo, Firebase, Supabase)
+- LLM-backed features in production (OpenAI, Claude API, AWS Bedrock)
+- Releases and upgrades (React Native New Architecture, store submissions)
 
 ## Social
 
 - [GitHub](https://github.com/QasimJaffry)
 - [LinkedIn](https://linkedin.com/in/qasim-hassan-02871a171)
-- [Upwork](https://www.upwork.com/freelancers/~011828438344ce4299)
 
 ## Optional
 
-- [llms.txt](https://qasimhassan.dev/llms.txt): This file
+- [llms.txt](https://qasimjaffry.github.io/qasim-portfolio/llms.txt): This file

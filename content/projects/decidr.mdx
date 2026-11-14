@@ -1,13 +1,6 @@
----
-title: Decidr
-year: 2026
-status: In Development
-stack: [Next.js, TypeScript, Supabase, Stripe, OpenRouter]
----
-
 ## The Problem
 
-Hard decisions rarely fail because of a lack of information — they fail because that information never gets structured into a clear comparison. Spreadsheets and chat threads bury the trade-offs; Decidr is a personal SaaS exploring whether an AI-native tool can make the structuring step feel obvious.
+Hard decisions rarely fail because of a lack of information — they fail because that information never gets structured into a clear comparison. Spreadsheets and chat threads bury the trade-offs; Decidr is a personal project exploring whether an AI-native tool can make the structuring step feel obvious.
 
 ## What I Built
 
@@ -17,7 +10,7 @@ Decidr turns a messy dilemma into a **weighted option × criteria matrix** with 
 - AI extracts options and criteria into structured JSON via OpenRouter (model-agnostic).
 - Server-side ranking with risk, confidence, and a maturity score; results show ranked tables, charts, heatmaps, and an expandable reasoning trace.
 - What-if weight simulation recomputes locally without another AI call; side-by-side decision compare; public share links and PDF via print.
-- Email auth, Supabase data, and Stripe Pro billing on a Next.js App Router stack.
+- Email auth and Supabase data on a Next.js App Router stack.
 
 Try it live: [decidr-henna.vercel.app](https://decidr-henna.vercel.app/).
 
@@ -27,7 +20,6 @@ Try it live: [decidr-henna.vercel.app](https://decidr-henna.vercel.app/).
 - **Explainable AI scoring** — ranked options with reasoning you can expand, not a black-box “pick this.”
 - **What-if simulation** — drag weights and see rankings update without re-calling the model.
 - **Compare & share** — side-by-side decisions and public `/d/[token]` links.
-- **Billing-ready** — Stripe Pro wired for the SaaS path.
 
 ## Key Challenges
 
@@ -35,8 +27,8 @@ Using OpenRouter instead of a single model provider means prompts and output par
 
 ## Results
 
-Decidr is in active development as a personal SaaS: core decision flow, charts, share links, and Stripe are in place on a public Vercel deploy.
+Decidr is a personal prototype, deployed publicly during development: the core decision flow, charts and share links work on a public Vercel deploy.
 
 ## Stack Decisions
 
-OpenRouter avoids locking decision intelligence to one vendor’s pricing and availability. Supabase and Stripe cover auth, data, and billing without a custom backend, so product time stayed on the matrix UX and scoring pipeline rather than infrastructure.
+OpenRouter avoids locking decision intelligence to one vendor’s pricing and availability. Supabase covers auth and data without a custom backend, so product time stayed on the matrix UX and scoring pipeline rather than infrastructure.
