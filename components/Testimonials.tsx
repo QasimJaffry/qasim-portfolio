@@ -9,17 +9,18 @@ export default function Testimonials() {
   const count = testimonials.length;
 
   return (
-    <section id="proof" className="px-6 py-28 sm:px-10 sm:py-40">
-      <div className="mx-auto max-w-[88rem]">
-        <figure className="grid gap-12 lg:grid-cols-12">
+    <section id="proof" className="scroll-mt-20">
+      <h2 className="hd text-[clamp(2.8rem,7vw,5.5rem)] text-foreground">What teammates say</h2>
+      <div>
+        <figure className="mt-8">
           <blockquote
             aria-live="polite"
-            className="text-3xl leading-[1.35] text-foreground sm:text-[2.6rem] lg:col-span-9"
+            className="min-h-[12rem] max-w-5xl text-[clamp(1.6rem,3.2vw,2.8rem)] leading-[1.3] text-foreground"
           >
             “{item.quote}”
           </blockquote>
 
-          <figcaption className="flex flex-col justify-end gap-8 lg:col-span-3">
+          <figcaption className="mt-8 flex flex-wrap items-end justify-between gap-6">
             <div>
               <p className="font-display text-lg font-semibold text-foreground">{item.name}</p>
               <p className="mt-1 text-base text-muted">
@@ -32,7 +33,7 @@ export default function Testimonials() {
                 type="button"
                 aria-label="Previous quote"
                 onClick={() => setIndex((index - 1 + count) % count)}
-                className="flex size-12 items-center justify-center rounded-full border border-foreground/25 font-display text-lg text-foreground transition-colors hover:border-foreground hover:bg-accent hover:text-accent-foreground"
+                className="flex size-11 items-center justify-center rounded-full border border-foreground/25 font-display text-lg text-foreground transition-colors hover:border-foreground hover:bg-accent hover:text-accent-foreground"
               >
                 ←
               </button>
@@ -40,7 +41,7 @@ export default function Testimonials() {
                 type="button"
                 aria-label="Next quote"
                 onClick={() => setIndex((index + 1) % count)}
-                className="flex size-12 items-center justify-center rounded-full border border-foreground/25 font-display text-lg text-foreground transition-colors hover:border-foreground hover:bg-accent hover:text-accent-foreground"
+                className="flex size-11 items-center justify-center rounded-full border border-foreground/25 font-display text-lg text-foreground transition-colors hover:border-foreground hover:bg-accent hover:text-accent-foreground"
               >
                 →
               </button>

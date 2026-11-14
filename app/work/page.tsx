@@ -15,13 +15,12 @@ export default function WorkPage() {
 
   return (
     <div className="mx-auto max-w-6xl px-6 py-16 sm:py-24">
-      <p className="eyebrow text-accent">Portfolio</p>
-      <h1 className="mt-3 font-display text-5xl font-extrabold tracking-[-0.045em] text-foreground sm:text-7xl">
+      <h1 className="hd text-5xl text-foreground sm:text-7xl">
         Work
       </h1>
       <p className="mt-2 text-muted">
-        {projects.length} selected case studies from 60+ products shipped across mobile, web, and
-        AI.
+        {projects.length} case studies across mobile, web and AI: products I own, lead, or built as part
+        of a team. Each one says which.
       </p>
 
       <WorkFilter projects={projects} images={images} />

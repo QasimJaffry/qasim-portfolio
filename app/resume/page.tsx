@@ -2,7 +2,14 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import ResumePrintButton from "@/components/ResumePrintButton";
 import { experience } from "@/lib/data/experience";
-import { resumeProjects, resumeSkills, resumeSummary } from "@/lib/data/resume";
+import {
+  resumeCertifications,
+  resumeEducation,
+  resumeLanguages,
+  resumeProjects,
+  resumeSkills,
+  resumeSummary,
+} from "@/lib/data/resume";
 import { mailtoHref, site } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -17,14 +24,14 @@ export default function ResumePage() {
         <div>
           <Link
             href="/"
-            className="group inline-flex items-center gap-1.5 text-sm text-muted transition-colors hover:text-foreground"
+            className="group inline-flex items-center gap-1.5 py-1 text-sm text-muted transition-colors hover:text-foreground"
           >
             <span aria-hidden className="transition-transform group-hover:-translate-x-0.5">
               ←
             </span>
             Home
           </Link>
-          <h1 className="mt-8 font-display text-4xl font-extrabold tracking-[-0.04em] text-foreground sm:text-5xl">
+          <h1 className="mt-8 hd text-4xl text-foreground sm:text-5xl">
             Resume
           </h1>
           <p className="mt-2 text-sm text-muted">
@@ -41,13 +48,13 @@ export default function ResumePage() {
           </h2>
           <p className="mt-1 text-base font-medium text-foreground print:text-sm">{site.title}</p>
           <p className="mt-2 text-sm text-muted print:text-[11px]">
-            {site.location} · Open to remote ·{" "}
+            {site.location} · {site.relocation} ·{" "}
             <a href={mailtoHref()} className="text-foreground">
               {site.email}
             </a>{" "}
             ·{" "}
             <a href={site.url} className="text-foreground">
-              qasimhassan.dev
+              {site.url.replace(/^https:\/\//, "")}
             </a>{" "}
             ·{" "}
             <a href={site.social.linkedin} className="text-foreground">
@@ -61,14 +68,14 @@ export default function ResumePage() {
         </header>
 
         <section>
-          <h3 className="text-xs font-semibold uppercase tracking-[0.14em] text-foreground">
+          <h3 className="font-display text-lg font-semibold text-foreground">
             Summary
           </h3>
           <p className="mt-2 text-muted print:text-[12px]">{resumeSummary}</p>
         </section>
 
         <section>
-          <h3 className="text-xs font-semibold uppercase tracking-[0.14em] text-foreground">
+          <h3 className="font-display text-lg font-semibold text-foreground">
             Skills
           </h3>
           <ul className="mt-3 space-y-1.5">
@@ -81,7 +88,7 @@ export default function ResumePage() {
         </section>
 
         <section>
-          <h3 className="text-xs font-semibold uppercase tracking-[0.14em] text-foreground">
+          <h3 className="font-display text-lg font-semibold text-foreground">
             Experience
           </h3>
           <ul className="mt-4 space-y-6 print:space-y-4">
@@ -107,8 +114,8 @@ export default function ResumePage() {
         </section>
 
         <section>
-          <h3 className="text-xs font-semibold uppercase tracking-[0.14em] text-foreground">
-            Selected Projects
+          <h3 className="font-display text-lg font-semibold text-foreground">
+            Projects
           </h3>
           <ul className="mt-3 space-y-3 print:space-y-2">
             {resumeProjects.map((project) => (
@@ -122,12 +129,20 @@ export default function ResumePage() {
         </section>
 
         <section>
-          <h3 className="text-xs font-semibold uppercase tracking-[0.14em] text-foreground">
+          <h3 className="font-display text-lg font-semibold text-foreground">
             Education
           </h3>
-          <p className="mt-2 text-sm text-foreground print:text-[12px]">
-            B.Sc. Computer Science · COMSATS University, Lahore · 2016 – 2020
-          </p>
+          <p className="mt-2 text-sm text-foreground print:text-[12px]">{resumeEducation}</p>
+        </section>
+
+        <section>
+          <h3 className="font-display text-lg font-semibold text-foreground">Certifications</h3>
+          <p className="mt-2 text-sm text-muted print:text-[12px]">{resumeCertifications}</p>
+        </section>
+
+        <section>
+          <h3 className="font-display text-lg font-semibold text-foreground">Languages</h3>
+          <p className="mt-2 text-sm text-muted print:text-[12px]">{resumeLanguages}</p>
         </section>
       </article>
     </div>

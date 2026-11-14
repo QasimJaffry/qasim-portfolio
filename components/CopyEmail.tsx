@@ -20,7 +20,7 @@ export default function CopyEmail({ email }: { email: string }) {
     <button
       type="button"
       onClick={copy}
-      className="link-underline font-display text-[15px] font-medium"
+      className="link-underline py-1 font-display text-[15px] font-medium"
     >
       <span aria-live="polite">
         {state === "copied" ? "Copied" : state === "failed" ? "Copy failed, select the address above" : "Copy email address"}

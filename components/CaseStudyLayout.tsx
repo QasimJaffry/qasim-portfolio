@@ -27,6 +27,8 @@ export default function CaseStudyLayout({
     .map((src) => resolveProjectImage(src))
     .filter((src): src is string => Boolean(src));
   const liveLinks = linkEntries.filter(([key]) => key !== "github");
+  // The "See it live" row under the hero already lists store and web links.
+  const sideLinks = hero ? linkEntries.filter(([key]) => key === "github") : linkEntries;
   const { prev, next } = getAdjacentCaseStudies(project.slug);
 
   return (
@@ -34,7 +36,7 @@ export default function CaseStudyLayout({
       <header className="mx-auto max-w-3xl px-6 pt-16 sm:pt-24">
         <Link
           href="/work"
-          className="group inline-flex items-center gap-1.5 text-sm text-muted transition-colors hover:text-foreground"
+          className="group inline-flex items-center gap-1.5 py-1 text-sm text-muted transition-colors hover:text-foreground"
         >
           <span aria-hidden className="transition-transform group-hover:-translate-x-0.5">
             ←
@@ -42,11 +44,11 @@ export default function CaseStudyLayout({
           Work
         </Link>
 
-        <p className="mt-10 font-mono text-[11px] uppercase tracking-[0.18em] text-muted">
+        <p className="mt-10 text-sm text-muted">
           {project.year}
-          <span className="mx-2.5 text-border">/</span>
+          <span aria-hidden className="mx-2.5 text-border">/</span>
           {project.category}
-          <span className="mx-2.5 text-border">/</span>
+          <span aria-hidden className="mx-2.5 text-border">/</span>
           {project.status}
         </p>
 
@@ -62,7 +64,7 @@ export default function CaseStudyLayout({
             />
           )}
           <div className="min-w-0">
-            <h1 className="font-display text-[2.6rem] font-extrabold leading-[1.02] tracking-[-0.045em] text-foreground sm:text-6xl sm:leading-[1]">
+            <h1 className="hd text-[2.6rem] text-foreground sm:text-6xl sm:leading-[1]">
               {project.title}
             </h1>
             <p className="mt-5 text-xl leading-snug text-foreground/80 sm:text-2xl sm:leading-snug">
@@ -85,7 +87,7 @@ export default function CaseStudyLayout({
 
           {liveLinks.length > 0 && (
             <div className="mt-5 flex flex-wrap items-center gap-x-6 gap-y-2 px-1">
-              <span className="font-mono text-[11px] uppercase tracking-[0.16em] text-muted">
+              <span className="text-sm text-muted">
                 See it live
               </span>
               {liveLinks.map(([key, href]) => (
@@ -94,7 +96,7 @@ export default function CaseStudyLayout({
                   href={href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="link-underline text-sm font-medium text-foreground transition-colors hover:text-accent"
+                  className="link-underline py-1 text-sm font-medium text-foreground transition-colors hover:text-accent"
                 >
                   {linkLabels[key] ?? key} ↗
                 </a>
@@ -116,7 +118,7 @@ export default function CaseStudyLayout({
                 ] as const
               ).map(([label, text]) => (
                 <div key={label} className="border-t border-border/80 pt-4">
-                  <dt className="font-mono text-[11px] uppercase tracking-[0.16em] text-accent">
+                  <dt className="text-sm font-medium text-accent">
                     {label}
                   </dt>
                   <dd className="mt-2 text-sm leading-relaxed text-muted">{text}</dd>
@@ -150,8 +152,9 @@ export default function CaseStudyLayout({
             <FigurePlate
               key={src}
               src={src}
-              alt={`${project.title} — screen ${i + 2}`}
+              alt={`${project.title}, slide ${i + 1}`}
               category={project.category}
+              aspect="slide"
               tilt="none"
               className="ring-1 ring-border"
             />
@@ -175,11 +178,11 @@ export default function CaseStudyLayout({
               </ul>
             </div>
 
-            {linkEntries.length > 0 && (
+            {sideLinks.length > 0 && (
               <div>
                 <h2 className="eyebrow">Links</h2>
                 <ul className="mt-3 space-y-2">
-                  {linkEntries.map(([key, href]) => (
+                  {sideLinks.map(([key, href]) => (
                     <li key={key}>
                       <a
                         href={href}
@@ -208,9 +211,9 @@ export default function CaseStudyLayout({
         </p>
         <Link
           href="/#contact"
-          className="mt-6 inline-flex link-underline text-sm font-medium text-foreground transition-colors hover:text-accent"
+          className="btn-primary mt-6"
         >
-          Get in touch →
+          Get in touch
         </Link>
       </section>
 

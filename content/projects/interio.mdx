@@ -1,23 +1,16 @@
----
-title: Interio
-year: 2019–present
-status: Completed
-stack: [React Native, Expo, ViroReact, ML Kit, Firebase]
----
-
 ## The Problem
 
 Buying furniture from a flat product photo is a gamble. Scale, proportion, and how a piece sits next to what you already own only become clear after delivery — when returns are expensive and rooms already feel wrong.
 
 ## What I Built
 
-Interio started as my **final-year project in 2019** and is still a side project I return to. The current Expo / React Native build closes the buy-before-you-see gap in three steps:
+Interio started as my **final-year project in 2019**, then called Interior Assistant, and is still a side project I return to. The current Expo / React Native build closes the buy-before-you-see gap in three steps:
 
 1. **Scan** — point the camera at a room; on-device ML Kit object detection classifies furniture (sofa, chair, table, …) with a confidence score.
 2. **Match** — a post-scan screen shows layout tips, interior inspiration for that category, and catalogue picks that complement what was detected.
 3. **Place** — ViroReact AR places true-to-scale GLB models in the live camera view — drag, pinch, and rotate until the piece feels right.
 
-Firebase handles auth, favourites, and the furniture catalogue. Earlier FYP-era builds used TensorFlow Lite and Viro on the RN CLI stack; the 2026 Expo rewrite keeps the same product idea with a cleaner router, Zustand state, and a custom development build for camera + AR.
+Firebase handles auth, favourites, and the furniture catalogue. The original build ran on **React Native 0.62** with a custom **TensorFlow Lite** model and react-viro. In 2026 I rebuilt it on **Expo SDK 53 and React Native 0.79**: ML Kit replaced the custom model, ViroReact replaced react-viro, and Expo Router and Zustand replaced the old navigation and state, with a custom development build for camera and AR.
 
 ## Major Features
 

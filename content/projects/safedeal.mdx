@@ -1,10 +1,3 @@
----
-title: SafeDeal
-year: 2023–present
-status: Live
-stack: [React Native, Expo, WebView, React Query]
----
-
 ## The Problem
 
 Shopping on Amazon, eBay, or AliExpress means reading long review threads, guessing whether a discount is real, and trusting seller badges that don’t always tell the full story. That work is worse on a phone, where comparison tabs and extension overlays don’t exist.
@@ -13,7 +6,11 @@ Shopping on Amazon, eBay, or AliExpress means reading long review threads, guess
 
 ## What I Built
 
-I was the **React Native frontend** engineer on the Safe Deal mobile app — an Expo shopping browser that opens marketplace product pages in an in-app WebView and surfaces a buy/caution verdict with evidence on top of the live page. Shipped for Android and iOS.
+I contributed to the Safe Deal mobile app, an Expo shopping browser that opens marketplace product pages in an in-app WebView and shows a green, yellow or red verdict on top of the live page. My part was mainly the in-app browser, state and data:
+
+- Moved state from Redux and Context to **Zustand**, and reworked data fetching with **React Query**.
+- Routed shop links through the app and added a **redirect-loop guard** (15 loads of one URL in 10 seconds).
+- Used the device's user agent and **injected scripts** to hide promo banners, so in-app browsing stays stable.
 
 ## Major Features
 
@@ -44,8 +41,8 @@ I was the **React Native frontend** engineer on the Safe Deal mobile app — an 
 
 ## Results
 
-The app is live on [Google Play](https://play.google.com/store/apps/details?id=com.safedeal.navigator&pli=1) (**5K+ downloads**) and iOS, alongside the product site at [joinsafedeal.com](https://www.joinsafedeal.com/). The Safe Deal platform also ships as a browser extension across major desktop browsers.
+The app is live on [Google Play](https://play.google.com/store/apps/details?id=com.safedeal.navigator&pli=1) with **5,000+ downloads**, alongside the product site at [joinsafedeal.com](https://www.joinsafedeal.com/). The Safe Deal platform also ships as a browser extension across major desktop browsers.
 
 ## Approach
 
-React Native with Expo for iOS and Android. React Native WebView for the shopping shell. React Query for analysis fetches. Stack details live in the sidebar.
+React Native with Expo. React Native WebView for the shopping shell, Zustand for state, React Query for analysis fetches. Stack details live in the sidebar.

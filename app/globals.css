@@ -54,11 +54,11 @@ body {
   }
 
   .btn-secondary {
-    @apply inline-flex items-center gap-1.5 font-display text-[15px] font-medium text-foreground transition-colors hover:text-accent;
+    @apply inline-flex items-center gap-1.5 py-1 font-display text-[15px] font-medium text-foreground transition-colors hover:text-accent;
   }
 
   .eyebrow {
-    @apply font-mono text-xs font-medium uppercase tracking-[0.2em] text-muted;
+    @apply text-sm font-medium text-muted;
   }
 
   .tag-pill {
@@ -221,68 +221,21 @@ body {
   }
 }
 
-/* Proof ticker */
-@keyframes marquee {
-  from {
-    transform: translateX(0);
+
+/* Display headings. In the components layer so per-heading utilities (leading, tracking) win. */
+@layer components {
+  .hd {
+    font-family: var(--font-bricolage), system-ui, sans-serif;
+    font-weight: 700;
+    line-height: 1.02;
+    letter-spacing: -0.035em;
   }
-  to {
-    transform: translateX(-50%);
-  }
-}
-
-.marquee-track {
-  display: flex;
-  width: max-content;
-  animation: marquee 38s linear infinite;
-}
-
-.marquee:hover .marquee-track {
-  animation-play-state: paused;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .marquee-track {
-    animation: none;
-  }
-}
-
-
-/* Headline face: Archivo at narrow width, heavy, upper-case */
-.hd {
-  font-family: var(--font-bricolage), system-ui, sans-serif;
-  font-weight: 700;
-  line-height: 1.02;
-  letter-spacing: -0.035em;
 }
 
 :focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 3px;
   border-radius: 4px;
-}
-
-/* Hero headline: each line rises into place once on load */
-@keyframes rise {
-  from { transform: translateY(105%); }
-  to { transform: translateY(0); }
-}
-
-.line {
-  display: block;
-  overflow: hidden;
-  padding-bottom: 0.12em;
-  margin-bottom: -0.12em;
-}
-
-.rise {
-  display: block;
-  animation: rise 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) both;
-  animation-delay: calc(var(--d) * 120ms + 80ms);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .rise { animation: none; }
 }
 
 /* Fine grain over the whole page for a tactile, printed feel */
@@ -298,71 +251,6 @@ body::before {
 
 @media print {
   body::before { display: none; }
-}
-
-
-/*
- * Reveal states only apply once the page has JavaScript (the .js class is set before first paint),
- * so with scripting off everything is simply visible.
- */
-.js .reveal-pre {
-  clip-path: inset(0 0 100% 0 round 1rem);
-  transition: clip-path 1.1s cubic-bezier(0.2, 0.8, 0.2, 1);
-}
-
-.js .reveal-pre.is-in {
-  clip-path: inset(0 0 0 0 round 1rem);
-}
-
-/* Process timeline draws itself, then each stop lights up in order */
-.js .tl .tl-line {
-  transform-origin: left;
-  transform: scaleX(0);
-  transition: transform 1.5s cubic-bezier(0.2, 0.8, 0.2, 1);
-}
-
-.js .tl.is-in .tl-line {
-  transform: scaleX(1);
-}
-
-.js .tl .tl-line-v {
-  transform-origin: top;
-  transform: scaleY(0);
-  transition: transform 1.5s cubic-bezier(0.2, 0.8, 0.2, 1);
-}
-
-.js .tl.is-in .tl-line-v {
-  transform: scaleY(1);
-}
-
-.js .tl .tl-dot {
-  background-color: var(--background);
-  transition: background-color 0.4s ease;
-  transition-delay: calc(var(--i) * 330ms + 150ms);
-}
-
-.js .tl.is-in .tl-dot {
-  background-color: var(--accent);
-}
-
-.js .tl .tl-body {
-  opacity: 0.3;
-  transition: opacity 0.6s ease;
-  transition-delay: calc(var(--i) * 330ms + 150ms);
-}
-
-.js .tl.is-in .tl-body {
-  opacity: 1;
-}
-
-/* Services description swaps in when you pick a different phrase */
-@keyframes swap-in {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.swap {
-  animation: swap-in 0.45s cubic-bezier(0.2, 0.8, 0.2, 1) both;
 }
 
 /* FAQ answers open and close smoothly where the browser supports it */
@@ -383,28 +271,6 @@ details[open]::details-content {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .js .reveal-pre,
-  .js .reveal-pre.is-in {
-    clip-path: none;
-    transition: none;
-  }
-
-  .js .tl .tl-line,
-  .js .tl .tl-line-v,
-  .js .tl .tl-dot,
-  .js .tl .tl-body {
-    transform: none;
-    opacity: 1;
-    transition: none;
-  }
-
-  .js .tl .tl-dot {
-    background-color: var(--accent);
-  }
-
-  .swap {
-    animation: none;
-  }
 
   details::details-content {
     transition: none;

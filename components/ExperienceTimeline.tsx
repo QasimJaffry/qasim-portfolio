@@ -1,38 +1,26 @@
 import { experience } from "@/lib/data/experience";
-import Reveal from "@/components/Reveal";
 
 export default function ExperienceTimeline() {
   return (
-    <section className="mx-auto max-w-6xl px-6 py-16 sm:py-24">
-      <h2 className="eyebrow text-accent">Experience</h2>
-
-      <div className="mt-8 space-y-12 border-l border-border pl-6">
-        {experience.map((entry, i) => (
-          <Reveal key={entry.company} delay={i * 80} className="group relative">
-            <span className="absolute -left-[29px] top-1.5 h-2 w-2 rounded-full border-2 border-background bg-accent transition-transform duration-300 group-hover:scale-125" />
-
-            <h3 className="font-display text-2xl font-bold tracking-tight text-foreground">
-              {entry.company}
-            </h3>
-            <p className="eyebrow mt-1.5 tracking-wide">
-              {entry.role} · {entry.period}
-            </p>
-            <p className="mt-1 text-sm text-muted">{entry.location}</p>
-
-            <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted">
-              {entry.description}
-            </p>
-
-            <div className="mt-4 flex flex-wrap gap-2">
-              {entry.stack.map((tech) => (
-                <span key={tech} className="tag-pill">
-                  {tech}
-                </span>
-              ))}
+    <section id="experience" className="scroll-mt-20">
+      <h2 className="hd text-[clamp(2.8rem,7vw,5.5rem)] text-foreground">Experience</h2>
+      <ol className="mt-12 divide-y divide-border border-y border-border">
+        {experience.map((e) => (
+          <li key={e.company + e.period} className="grid gap-x-10 gap-y-2 py-8 md:grid-cols-[10rem_minmax(0,1fr)] lg:grid-cols-[12rem_minmax(0,1fr)_minmax(0,1.2fr)]">
+            <p className="pt-1 text-sm text-muted">{e.period}</p>
+            <div>
+              <h3 className="font-display text-xl font-semibold text-foreground">
+                {e.company}
+              </h3>
+              <p className="mt-1 text-muted">{e.role}</p>
             </div>
-          </Reveal>
+            <div className="md:col-start-2 lg:col-start-auto">
+              <p className="leading-[1.6] text-foreground/75">{e.description}</p>
+              <p className="mt-3 text-sm text-foreground/60">{e.stack.join(", ")}</p>
+            </div>
+          </li>
         ))}
-      </div>
+      </ol>
     </section>
   );
 }

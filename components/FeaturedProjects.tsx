@@ -1,21 +1,30 @@
-import { getFeaturedProjects } from "@/lib/data/projects";
-import { resolveProjectImage } from "@/lib/projectImage";
-import Showcase, { type ShowcaseItem } from "@/components/Showcase";
+import Link from "next/link";
+import { getFeaturedProjects, projects } from "@/lib/data/projects";
+import { appTint, getScreens } from "@/lib/screens";
+import WorkStory, { type StoryItem } from "@/components/WorkStory";
 
-/** Prepares the featured projects for the pinned showcase that opens the page. */
 export default function FeaturedProjects() {
-  const featured = getFeaturedProjects();
-  if (featured.length === 0) return null;
-
-  const items: ShowcaseItem[] = featured.map((p) => ({
+  const items: StoryItem[] = getFeaturedProjects().map((p) => ({
     slug: p.slug,
     title: p.title,
     tagline: p.tagline,
     category: p.category,
     year: p.year,
-    metrics: p.metrics.slice(0, 2),
-    image: resolveProjectImage(p.images[0]) ?? null,
+    metrics: p.metrics,
+    screens: getScreens(p.slug, p.title),
+    tint: appTint[p.slug] ?? "#60a5fa",
   }));
+  if (items.length === 0) return null;
 
-  return <Showcase items={items} />;
+  return (
+    <section id="work" className="scroll-mt-16">
+      <div className="flex flex-wrap items-end justify-between gap-6 pb-12">
+        <h2 className="hd text-[clamp(2.8rem,7vw,5.5rem)] text-foreground">Selected work</h2>
+        <Link href="/work" className="btn-secondary link-underline">
+          All {projects.length} projects
+        </Link>
+      </div>
+      <WorkStory items={items} />
+    </section>
+  );
 }

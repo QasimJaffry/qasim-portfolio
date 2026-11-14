@@ -3,7 +3,6 @@
 import { useMemo, useState } from "react";
 import { type Project, type ProjectCategory } from "@/lib/data/projects";
 import ProjectCard from "@/components/ProjectCard";
-import Reveal from "@/components/Reveal";
 
 const filters: Array<ProjectCategory | "All"> = ["All", "Mobile", "Web", "AI", "Full-Stack"];
 
@@ -53,13 +52,18 @@ export default function WorkFilter({
         })}
       </div>
 
-      <div className="mt-8 grid gap-4 sm:grid-cols-2">
+      <div className="mt-10 grid gap-x-10 gap-y-14 sm:grid-cols-2">
         {filtered.map((project, i) => (
-          <Reveal key={project.slug} delay={(i % 4) * 60}>
-            <ProjectCard project={project} image={images[project.slug]} index={i + 1} />
-          </Reveal>
+          <ProjectCard
+            key={project.slug}
+            project={project}
+            image={images[project.slug]}
+            index={i + 1}
+            priority={i < 2}
+          />
         ))}
       </div>
+
     </>
   );
 }

@@ -12,10 +12,12 @@ export default function ProjectCard({
   project,
   image,
   index,
+  priority = false,
 }: {
   project: Project;
   image?: string;
   index: number;
+  priority?: boolean;
 }) {
   const stack = project.stack.slice(0, 3);
   const remaining = project.stack.length - stack.length;
@@ -23,7 +25,7 @@ export default function ProjectCard({
   return (
     <Link
       href={`/work/${project.slug}`}
-      className="group block rounded-2xl border border-transparent p-3 transition-colors duration-200 hover:border-border hover:bg-surface"
+      className="group block"
     >
       <FigurePlate
         src={image}
@@ -31,6 +33,7 @@ export default function ProjectCard({
         index={index}
         category={project.category}
         tilt="none"
+        priority={priority}
       />
 
       <div className="pt-4">
@@ -38,7 +41,6 @@ export default function ProjectCard({
           <div className="flex items-baseline gap-3">
             <span>{project.year}</span>
             <span>{project.category}</span>
-            {project.featured && <span>Featured</span>}
           </div>
           <span className="inline-flex items-center gap-1.5">
             <span className={`h-1.5 w-1.5 rounded-full ${statusDot[project.status]}`} />
@@ -46,10 +48,10 @@ export default function ProjectCard({
           </span>
         </div>
 
-        <h3 className="mt-3 font-display text-2xl font-bold tracking-tight text-foreground">
+        <h2 className="mt-3 font-display text-2xl font-bold tracking-tight text-foreground transition-colors group-hover:text-accent">
           {project.title}
-        </h3>
-        <p className="mt-1 text-sm text-muted">{project.tagline}</p>
+        </h2>
+        <p className="mt-1 leading-[1.6] text-muted">{project.tagline}</p>
 
         <p className="mt-4 text-xs text-muted">
           {stack.join(" · ")}

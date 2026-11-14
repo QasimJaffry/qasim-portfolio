@@ -1,41 +1,27 @@
----
-title: Kitty Nip
-year: 2020–present
-status: Live
-stack: [React Native, Firebase, Redux, IAP, Geolocation]
----
-
 ## The Problem
 
-Kitty Nip already had an audience as a location-based cat social / dating-style app — but needed an engineer to own the full stack and keep it stable as the product grew past early stage.
+Kitty Nip is a cat dating app on Android and iOS with 10K+ downloads on Google Play. The app predates my work. When the previous team left, it was crashing on newer Android devices after native platform changes, and nobody owned the backend.
 
 ## What I Built
 
-I took over **full product ownership**: React Native client plus Firebase (Auth, Firestore, Storage, Functions, Messaging, Analytics, Crashlytics).
+As lead engineer I took over the whole product, backend included.
 
-- Geo discovery and swipe matching with location/discovery settings.
-- Cat and human profiles; photo galleries (premium unlocks richer media).
-- Private chat with photos/videos after match; push for matches and messages.
-- Premium via IAP; Google Mobile Ads; report flows; Google/Apple sign-in.
+- **Kept it running on current Android.** Upgraded React Native to **0.79** and its libraries onto the **New Architecture** (Fabric and TurboModules), handled Android's **16 KB page size**, and converted legacy class components to functional components.
+- **Sign-in.** Shipped Google, Apple and phone sign-in.
+- **Subscriptions.** Reworked the plans with restore purchase, fixed iOS and Android subscription issues, and added a **Cloud Function** that validates Android purchase receipts against the Play Developer API.
+- **Photos and premium.** The Photos screen ties the plan to adding photos of the owner as well as the cat, and a Cloud Function I added runs **Google Vision** label and face detection on uploads.
+- **Swipe to conversation.** The swipe card opens a full profile with bio, distance and every photo; new matches sit above the message list, unread chats are marked, and photos send inline.
 
-Live on [Play Store](https://play.google.com/store/apps/details?id=computer.star.kittynip) and [App Store](https://apps.apple.com/us/app/kitty-nip-cat-dating-app/id1520805359).
-
-## Major Features
-
-- **Swipe + location discovery** — match with nearby cat people / profiles.
-- **Profiles & media** — cat-forward identity with gallery and premium photo rules.
-- **Private chat** — post-match messaging with media and push.
-- **Monetization** — IAP premium and ads without a separate backend rewrite.
-- **Ownership** — client + Firebase backend ops under one engineer.
+Live on [Google Play](https://play.google.com/store/apps/details?id=computer.star.kittynip) and the [App Store](https://apps.apple.com/us/app/kitty-nip-cat-dating-app/id1520805359).
 
 ## Key Challenges
 
-Taking over a live codebase meant stabilizing Firebase data and auth flows before feature work — real users were already depending on chat and matching. Location queries and media-heavy chat needed careful indexing and storage habits as the base grew.
+Taking over a live app meant fixing what users were already hitting before adding anything. The crashes came from native changes in Android upgrades, so the fix was the platform upgrade itself rather than patches on top of an old React Native version.
 
 ## Results
 
-Kitty Nip stayed live on iOS and Android under my ownership, past **10,000+** Play Store downloads, with backend responsibility included in that scope.
+The app now reports **100% crash-free** on Crashlytics, with **10K+ downloads** on Google Play and a live App Store listing, under one engineer's ownership.
 
 ## Stack Decisions
 
-The existing React Native + Firebase stack was retained rather than rewritten — a live social app doesn’t justify rewrite risk. Redux Toolkit and native IAP/ads plugins stayed aligned with what the stores and users already expected.
+The React Native and Firebase stack was kept rather than rewritten: a live social app does not justify rewrite risk. Upgrading in place to React Native 0.79 and the New Architecture fixed the crashes and leaves the app on a supported path.

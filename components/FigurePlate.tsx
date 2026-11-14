@@ -1,6 +1,3 @@
-"use client";
-
-import { useRef } from "react";
 import Image from "next/image";
 import type { ProjectCategory } from "@/lib/data/projects";
 
@@ -18,7 +15,7 @@ type FigurePlateProps = {
   index?: number;
   label?: string;
   category?: ProjectCategory;
-  aspect?: "portrait" | "landscape";
+  aspect?: "portrait" | "landscape" | "slide";
   tilt?: "left" | "right" | "none";
   priority?: boolean;
   className?: string;
@@ -35,33 +32,13 @@ export default function FigurePlate({
   priority = false,
   className = "",
 }: FigurePlateProps) {
-  const frameRef = useRef<HTMLDivElement>(null);
   const baseTilt = tilt === "left" ? -1.25 : tilt === "right" ? 1.25 : 0;
-
-  function handleMove(e: React.MouseEvent<HTMLDivElement>) {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const el = frameRef.current;
-    if (!el) return;
-    const rect = el.getBoundingClientRect();
-    const x = (e.clientX - rect.left) / rect.width - 0.5;
-    const y = (e.clientY - rect.top) / rect.height - 0.5;
-    el.style.transform = `perspective(800px) rotateX(${y * -6}deg) rotateY(${x * 6}deg) scale3d(1.02, 1.02, 1.02)`;
-  }
-
-  function handleLeave() {
-    const el = frameRef.current;
-    if (!el) return;
-    el.style.transform = `perspective(800px) rotateX(0deg) rotateY(0deg) rotate(${baseTilt}deg)`;
-  }
 
   return (
     <figure className={`group ${className}`}>
       <div
-        ref={frameRef}
-        onMouseMove={handleMove}
-        onMouseLeave={handleLeave}
-        className={`relative overflow-hidden rounded-2xl ring-1 ring-border transition-transform duration-300 ease-out will-change-transform ${
-          aspect === "portrait" ? "aspect-[3/4]" : "aspect-[16/10]"
+        className={`relative overflow-hidden rounded-2xl ring-1 ring-border ${
+          aspect === "portrait" ? "aspect-[3/4]" : aspect === "slide" ? "aspect-[4/3]" : "aspect-[16/10]"
         }`}
         style={{ transform: `rotate(${baseTilt}deg)` }}
       >
@@ -80,7 +57,7 @@ export default function FigurePlate({
       </div>
 
       {label && (
-        <figcaption className="mt-2 font-mono text-[11px] uppercase tracking-wide text-muted">
+        <figcaption className="mt-2 text-sm text-muted">
           {index !== undefined ? `${String(index).padStart(2, "0")} — ` : ""}
           {label}
         </figcaption>
@@ -109,7 +86,7 @@ function IndexPlate({ index, category }: { index?: number; category: ProjectCate
           {String(index).padStart(2, "0")}
         </span>
       )}
-      <span className="absolute left-4 top-4 font-mono text-[10px] uppercase tracking-widest text-accent">
+      <span className="absolute left-4 top-4 text-sm text-accent">
         {category}
       </span>
     </div>

@@ -36,7 +36,7 @@ export default function MobileCta() {
   return (
     <div
       aria-hidden={!show}
-      className={`fixed inset-x-4 bottom-4 z-40 transition-[transform,opacity] duration-300 lg:hidden ${
+      className={`fixed inset-x-4 bottom-4 z-40 transition-[transform,opacity] duration-300 md:hidden ${
         show ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-6 opacity-0"
       }`}
     >
