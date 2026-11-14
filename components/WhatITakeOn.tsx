@@ -39,22 +39,19 @@ export default function WhatITakeOn() {
           <p className="mt-3 leading-[1.6] text-muted">{mobile.description}</p>
         </article>
 
-        <article className={`${card} lg:col-span-2`}>
-          <h3 className="font-display text-2xl font-semibold text-foreground">{capitalize(mvp.title)}</h3>
-          <p className="mt-3 leading-[1.6] text-muted">{mvp.description}</p>
+        <article className={`${card} md:col-span-2 lg:col-span-4`}>
+          <h3 className="font-display text-2xl font-semibold text-foreground">Also on the table</h3>
+          <dl className="mt-6 grid gap-x-8 gap-y-6 sm:grid-cols-3">
+            {[mvp, direction, roles].map((s) => (
+              <div key={s.title}>
+                <dt className="font-display text-lg font-semibold text-foreground">{capitalize(s.title)}</dt>
+                <dd className="mt-2 text-[15px] leading-[1.55] text-muted">{s.description}</dd>
+              </div>
+            ))}
+          </dl>
         </article>
 
-        <article className={`${card} lg:col-span-2`}>
-          <h3 className="font-display text-2xl font-semibold text-foreground">{capitalize(direction.title)}</h3>
-          <p className="mt-3 leading-[1.6] text-muted">{direction.description}</p>
-        </article>
-
-        <article className={`${card} lg:col-span-2`}>
-          <h3 className="font-display text-2xl font-semibold text-foreground">{capitalize(roles.title)}</h3>
-          <p className="mt-3 leading-[1.6] text-muted">{roles.description}</p>
-        </article>
-
-        <article id="process" className={`${card} scroll-mt-16 md:col-span-2 lg:col-span-4`}>
+        <article id="process" className={`${card} scroll-mt-16 md:col-span-2 lg:col-span-6`}>
           <h3 className="font-display text-2xl font-semibold text-foreground">How an engagement runs</h3>
           <ol className="mt-6 grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
             {processSteps.map((step, i) => (

@@ -34,9 +34,10 @@ const proof = [
 
 export default function Home() {
   return (
+    <>
     <div className="mx-auto max-w-[90rem] px-6 sm:px-10">
       <section className="relative pt-8 sm:pt-12">
-        <h1 className="hd whitespace-nowrap text-[calc((100vw-3rem)/6.7)] sm:text-[min(calc((100vw-5rem)/6.7),12.6rem)] leading-[0.85] tracking-[-0.055em] text-foreground">
+        <h1 className="relative z-20 hd whitespace-nowrap text-[calc((100vw-3rem)/6.7)] sm:text-[min(calc((100vw-5rem)/6.7),12.6rem)] leading-[0.85] tracking-[-0.055em] text-foreground">
           Qasim Hassan
         </h1>
 
@@ -79,22 +80,23 @@ export default function Home() {
             caption
             priority
             interval={2200}
-            className="relative z-10 mx-auto w-[15rem] md:w-full lg:-mt-[5vw] lg:w-[18rem]"
+            className="relative z-10 mx-auto w-[12.5rem] md:w-full lg:-mt-[5vw] lg:w-[18rem]"
           />
         </div>
       </section>
 
-      <div className="mt-28 space-y-32 pb-24 sm:mt-36 sm:space-y-44">
+      <div className="mt-20 space-y-24 pb-24 sm:mt-36 sm:space-y-44">
         <FeaturedProjects />
         <WhatITakeOn />
         <ExperienceTimeline />
         <SkillsGrid />
         <Testimonials />
         <FaqSection limit={3} />
-        <ContactSection />
       </div>
 
       <MobileCta />
     </div>
+    <ContactSection />
+    </>
   );
 }

@@ -13,12 +13,15 @@ export default function Phone({
   interval = 2600,
   caption = false,
   priority = false,
+  compact = false,
   className = "",
 }: {
   screens: Screen[];
   interval?: number;
   caption?: boolean;
   priority?: boolean;
+  /** Small phones (about 7rem wide): tighter corners, bezel and island. */
+  compact?: boolean;
   className?: string;
 }) {
   const [index, setIndex] = useState(0);
@@ -55,9 +58,11 @@ export default function Phone({
         ref={ref}
         onMouseEnter={() => setPaused(true)}
         onMouseLeave={() => setPaused(false)}
-        className="relative aspect-[9/19.5] w-full rounded-[2.6rem] bg-[#05080f] p-[0.55rem] shadow-[0_40px_80px_-30px_rgba(0,0,0,0.8)] ring-1 ring-white/15"
+        className={`relative aspect-[9/19.5] w-full bg-[#05080f] shadow-[0_40px_80px_-30px_rgba(0,0,0,0.8)] ring-1 ring-white/15 ${
+          compact ? "rounded-[1.25rem] p-[0.25rem]" : "rounded-[2.6rem] p-[0.55rem]"
+        }`}
       >
-        <div className="relative h-full w-full overflow-hidden rounded-[2.1rem] bg-black">
+        <div className={`relative h-full w-full overflow-hidden bg-black ${compact ? "rounded-[1.05rem]" : "rounded-[2.1rem]"}`}>
           {screens.map((s, i) => {
             const fit = s.contain ? "object-contain bg-[#0b0a08]" : "object-cover object-top";
             const shown = i === index ? "opacity-100" : "opacity-0";
@@ -86,7 +91,10 @@ export default function Phone({
               </div>
             );
           })}
-          <span aria-hidden className="absolute left-1/2 top-2 h-[1.35rem] w-[32%] -translate-x-1/2 rounded-full bg-black" />
+          <span
+            aria-hidden
+            className={`absolute left-1/2 w-[32%] -translate-x-1/2 rounded-full bg-black ${compact ? "top-1 h-[0.55rem]" : "top-2 h-[1.35rem]"}`}
+          />
         </div>
       </div>
 

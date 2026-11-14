@@ -44,35 +44,40 @@ export default function WorkStory({ items }: { items: StoryItem[] }) {
             key={p.slug}
             data-chapter
             data-i={i}
-            className="flex flex-col justify-center border-t border-border py-16 lg:min-h-[88vh] lg:py-24"
+            className="grid grid-cols-[6.5rem_minmax(0,1fr)] gap-x-5 border-t border-border py-10 sm:grid-cols-[9rem_minmax(0,1fr)] sm:gap-x-8 lg:flex lg:min-h-[88vh] lg:flex-col lg:justify-center lg:py-24"
           >
-            {p.screens.length > 0 && (
-              <Phone screens={p.screens} className="mx-auto mb-10 w-[13.5rem] lg:hidden" />
-            )}
-            <p className="text-muted">
-              {p.category}, {p.year}
-            </p>
-            <h3
-              className={`hd mt-3 text-[clamp(3rem,8vw,6.5rem)] transition-colors duration-500 ${
-                i === active ? "text-foreground" : "text-foreground lg:text-foreground/35"
-              }`}
-            >
-              {p.title}
-            </h3>
-            <p className="mt-5 max-w-xl text-xl leading-[1.5] text-foreground/75 sm:text-2xl">{p.tagline}</p>
-            <ul className="mt-8 flex flex-wrap gap-x-10 gap-y-3">
-              {p.metrics.slice(0, 3).map((m) => (
-                <li key={m} className="font-display text-lg font-semibold text-foreground">
-                  {m}
-                </li>
-              ))}
-            </ul>
-            <Link
-              href={`/work/${p.slug}`}
-              className="mt-10 inline-flex w-fit items-center rounded-full border border-foreground/25 px-6 py-3 font-display text-[15px] font-semibold text-foreground transition-colors hover:border-accent hover:bg-accent hover:text-accent-foreground"
-            >
-              Read the {p.title} case study
-            </Link>
+            {p.screens.length > 0 && <Phone screens={p.screens} compact className="row-span-2 w-full lg:hidden" />}
+            <div className="self-center">
+              <p className="text-sm text-muted sm:text-base">
+                {p.category}, {p.year}
+              </p>
+              <h3
+                className={`hd mt-2 text-[clamp(1.45rem,7.4vw,6.5rem)] transition-colors duration-500 sm:mt-3 ${
+                  i === active ? "text-foreground" : "text-foreground lg:text-foreground/35"
+                }`}
+              >
+                {p.title}
+              </h3>
+              <p className="mt-3 max-w-xl text-base leading-[1.5] text-foreground/75 sm:mt-5 sm:text-xl lg:text-2xl">
+                {p.tagline}
+              </p>
+            </div>
+            <div className="col-span-2 mt-6 sm:col-span-1 sm:col-start-2 lg:mt-0">
+              <ul className="flex flex-wrap gap-x-8 gap-y-2 lg:mt-8 lg:gap-x-10 lg:gap-y-3">
+                {p.metrics.slice(0, 3).map((m) => (
+                  <li key={m} className="font-display text-[15px] font-semibold text-foreground sm:text-lg">
+                    {m}
+                  </li>
+                ))}
+              </ul>
+              <Link
+                href={`/work/${p.slug}`}
+                aria-label={`Read the ${p.title} case study`}
+                className="mt-6 inline-flex w-fit items-center rounded-full border border-foreground/25 px-6 py-3 font-display text-[15px] font-semibold text-foreground transition-colors hover:border-accent hover:bg-accent hover:text-accent-foreground lg:mt-10"
+              >
+                Read the case study
+              </Link>
+            </div>
           </li>
         ))}
       </ol>
