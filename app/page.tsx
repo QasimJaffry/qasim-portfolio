@@ -11,9 +11,7 @@ import { withBasePath } from "@/lib/projectImage";
 
 const proof = [
   ["100K+", "downloads on AI Maker Pro"],
-  ["26K", "Agenticly installs"],
-  ["9", "engineers led, at most"],
-  ["99.9%+", "crash-free users on Kitty Nip"],
+  ["26K", "Agenticly installs, web + Android + iOS"],
 ];
 
 export default function Home() {
@@ -49,14 +47,20 @@ export default function Home() {
               </div>
             </div>
 
-            <dl className="mt-14 grid max-w-2xl grid-cols-2 gap-x-8 gap-y-6 border-t border-border pt-8 lg:grid-cols-4">
-              {proof.map(([value, label]) => (
-                <div key={label}>
-                  <dt className="hd text-3xl text-foreground sm:text-4xl">{value}</dt>
-                  <dd className="mt-1 text-sm leading-snug text-muted">{label}</dd>
-                </div>
-              ))}
-            </dl>
+            <div className="mt-14 max-w-2xl border-t border-border pt-8">
+              <dl className="grid grid-cols-2 gap-x-8 gap-y-6">
+                {proof.map(([value, label]) => (
+                  <div key={label}>
+                    <dt className="hd text-4xl text-foreground sm:text-5xl">{value}</dt>
+                    <dd className="mt-1 text-sm leading-snug text-muted">{label}</dd>
+                  </div>
+                ))}
+              </dl>
+              <p className="mt-6 text-base leading-snug text-foreground/70">
+                Led up to 9 engineers at StackUp Solutions. 99.9%+ crash-free on Kitty Nip after the React Native 0.79
+                upgrade.
+              </p>
+            </div>
           </div>
         </div>
       </section>
