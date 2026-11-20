@@ -1,3 +1,4 @@
+import { site } from "@/lib/site";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { MDXRemote } from "next-mdx-remote/rsc";
@@ -23,6 +24,7 @@ export async function generateMetadata({
   return {
     title: caseStudy.project.title,
     description: caseStudy.project.tagline,
+    alternates: { canonical: `${site.url}/work/${slug}/` },
   };
 }
 

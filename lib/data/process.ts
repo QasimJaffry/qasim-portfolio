@@ -9,7 +9,7 @@ export const processSteps: ProcessStep[] = [
     step: "01",
     title: "Discovery",
     detail:
-      "A short call or async brief — goal, constraints, stack, and what success looks like. Clear go / no-go.",
+      "A short call or written brief: the goal, constraints, stack and what success looks like. A clear go or no-go.",
   },
   {
     step: "02",

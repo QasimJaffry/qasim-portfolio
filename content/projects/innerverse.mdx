@@ -15,7 +15,9 @@ Live on [Google Play](https://play.google.com/store/apps/details?id=innerverse.a
 
 ## Key Challenges
 
-**A galaxy that stays smooth.** The worlds are rendered with Skia and Reanimated, so a growing map of animated worlds has to keep redraws disciplined on mid-range Android phones.
+**A galaxy that stays readable.** The map is drawn with Skia and has to work whether it holds ten logs or a year of them, so the year view gathers each month into its own cloud.
+
+**Premium that the server decides.** Plus is sold through RevenueCat. Premium status is written only by a webhook handler on the server; the app can read it but never write it. The handler ignores replayed, out-of-order and test events, and it has unit tests and Firestore rules tests.
 
 **Private by design.** Journal text stays on the user's side: no entry text is sent to any AI service in the shipped app.
 

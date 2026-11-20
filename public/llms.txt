@@ -1,4 +1,4 @@
-# Qasim Hassan
+# Qasim Hassan Jaffry
 
 > Senior React Native and Full-Stack Engineer with nearly six years across React Native and Next.js, owning products end to end: mobile and web clients, Firebase backends, and Stripe and RevenueCat billing. Has owned live apps with 10K+ and 100K+ downloads, led teams of up to nine, and put LLM-backed features into production. Senior Full-Stack Engineer at Star Computer Labs (remote, US). Based in Lahore, Pakistan; open to senior remote roles and relocation.
 
@@ -13,7 +13,7 @@
 ## Flagship case studies
 
 - [Agenticly](https://qasimjaffry.github.io/qasim-portfolio/work/agenticly/): AI crypto and stock research assistant. Led the engineering: React Native app, Next.js web, Firebase, scheduled agents, RevenueCat and Stripe. 26K installs across web, Android and iOS, about 2.3K monthly active users
-- [Kitty Nip](https://qasimjaffry.github.io/qasim-portfolio/work/kitty-nip/): Took over a live cat dating app (10K+ Google Play downloads), upgraded React Native to 0.79 on the New Architecture; now 100% crash-free on Crashlytics
+- [Kitty Nip](https://qasimjaffry.github.io/qasim-portfolio/work/kitty-nip/): Took over a live cat dating app (10K+ Google Play downloads), upgraded React Native to 0.79 on the New Architecture; now 99.9%+ crash-free users on Crashlytics
 - [Innerverse](https://qasimjaffry.github.io/qasim-portfolio/work/innerverse/): Mood journal for Android, designed, built and published solo with Expo, Skia and Firebase
 - [BugMapper](https://qasimjaffry.github.io/qasim-portfolio/work/bugmapper/): Offline-first greenhouse trap-counting app; about 10 seconds per trap against 5 to 10 minutes by hand
 - [SafeDeal](https://qasimjaffry.github.io/qasim-portfolio/work/safedeal/): Shopping verdict app, 5,000+ Google Play downloads; contributed the in-app browser, state and data layer

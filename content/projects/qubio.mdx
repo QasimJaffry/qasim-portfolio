@@ -1,34 +1,27 @@
 ## The Problem
 
-An international client needed digital identity that lived on **QR and NFC** touchpoints — pages people could open from a tap or scan — plus admin tools and analytics so the network’s usage wasn’t a black box.
+Qubio Global, a client in Australia, needed digital identity that lives on **QR and NFC** tags: pages people open with a scan or a tap, which the owner can change at any time from a phone. Behind that sat a web dashboard, analytics and paid plans.
 
 ## What I Built
 
-Qubio is a cross-platform identity system I worked on across an **18-month** engagement with a distributed remote team:
+At StackUp Solutions I worked on the **Qubio Ecosystem** for **18 months**. Users build content stacks of video, audio, images and links and share them as QR codes that keep working when the content changes. I led the frontend and the payments:
 
-- **React Native** for scanning/registering identities and editing page content on the phone.
-- **Web admin** for managing pages and the identity network.
-- **Analytics dashboard** (D3) for scan/tap visibility across the network.
-- Shared backend so mobile and web read the same source of truth.
+- The **React Native** app for registering tags and editing page content on the phone.
+- The **Next.js** web dashboard, with **D3.js** analytics, **Redux Toolkit** and **RTK Query**.
+- **RevenueCat** subscriptions.
 
-Product surface: [pages.qubio.me](https://pages.qubio.me/).
-
-## Major Features
-
-- **QR / NFC identity pages** — open, share, and present a digital presence from a physical tag.
-- **In-app page editing** — add blocks / update content without a separate CMS dance.
-- **Web management** — desktop admin for the same identity graph.
-- **Usage analytics** — dashboard views of how the network is actually used.
-- **Long-running delivery** — sustained feature work across time zones for an international deploy.
+I led a team of two, a senior frontend developer and a junior backend developer working in MongoDB, and ran daily scrums with the client's team in Australia.
 
 ## Key Challenges
 
-Treating the API as a contract mattered: mobile and web couldn’t break each other mid-sprint over 18 months. Analytics had to stay responsive as usage grew — push aggregation down rather than chart raw dumps client-side.
+**Two clients, one backend.** The app and the dashboard read and write the same data, so changes on one side could not break the other over 18 months of releases.
+
+**Working across time zones.** Daily scrums with the Australian team kept a small team in Pakistan in step with the client's priorities.
 
 ## Results
 
-The system shipped and ran in the client’s international operation across the engagement window.
+Delivered the app, the web dashboard and subscriptions for Qubio Global over the 18-month engagement.
 
 ## Stack Decisions
 
-Native mobile for field scan/edit, web for admin density, D3 for custom analytics control. A shared API kept identity data from forking into two products.
+React Native for editing on the phone and Next.js for the denser dashboard work, with D3.js for analytics charts. Redux Toolkit and RTK Query kept the dashboard's data fetching and caching in one place, and RevenueCat handled store billing.

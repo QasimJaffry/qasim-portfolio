@@ -1,51 +1,33 @@
 ## The Problem
 
-[BugMapper](https://www.bugmapper.com.tr/) helps greenhouse teams monitor pests and diseases: traps in the house, a portable PIM® unit for trap photos, a phone app for field work, and a web app for charts and maps.
+[BugMapper](https://www.bugmapper.com.tr/) is a precision pest management platform for commercial greenhouses, deployed in Kayseri, Türkiye. Staff walk the greenhouse, check insect traps, record counts and log treatments.
 
-The hard part was the field. Connectivity inside a greenhouse is unreliable, but work cannot pause. Crews still need to place traps, record counts, and get photos off the PIM unit — then get that data into the cloud so advisors can actually use the web charts.
+Done by hand, counting a trap takes minutes, and the signal inside a greenhouse comes and goes. The work can't stop when the connection does, and nothing recorded offline can be lost.
 
 ## What I Built
 
-I was the **frontend engineer for the mobile and web sides** of that loop — React Native field app for Android greenhouse work, and the web UI where advisors see counts, charts, and maps after data syncs.
+I have been a contract engineer on BugMapper since September 2023, delivered through Jafrix Systems since 2025. I built the **React Native (Expo)** field app and contributed to the web dashboard where administrators review organisations and their deployments.
 
-## Major Features
-
-### For the people in the greenhouse
-
-- **QR trap deploy** — Scan trap and location codes to place a trap at a specific spot.
-- **Count and collect** — Record pest counts on deployed traps, or collect a trap with a final count.
-- **Offline sync queue** — Keep working without signal; review and flush pending deployments when you’re back online.
-- **PIM® photos** — Pull trap images from the on-site PIM unit over the local network, then upload them to the cloud.
-- **Disease scouting** — Log plant and disease observations tied to sector / tunnel / row.
-- **Treatments (PPP)** — Record plant-protection applications by QR or manual entry.
-- **Field and season context** — Switch company, field, and season so every action lands in the right greenhouse.
-
-### For advisors on the web
-
-- **Charts and maps** — Pest density, risk trends, and location views fed by the same cloud the field app uploads into.
-- **Trap and season context** — Review work by greenhouse / season instead of raw dumps of field actions.
-
-### Under the hood (what made that reliable)
-
-- **Local offline queue** — Trap work is stored on-device and synced when the network returns, with a clear Pending Sync screen.
-- **Phone as a data mule** — Discover the PIM unit on the LAN, stage files on the phone, upload to cloud, confirm back — so photos don’t depend on the greenhouse having stable internet.
-- **Separate sync paths** — Trap actions and PIM files don’t share one vague upload button; each backlog is visible on its own.
-- **Typed QR flows** — Trap, location, and chemical codes drive different workflows instead of a generic scanner screen.
+- **QR scanning.** Scan a trap or location QR code with the phone camera to open its record: crop, trap type, field and past counts.
+- **Trap list.** Summary tiles for traps to count, ending soon and not counted yet, with traps near end of life flagged in red.
+- **Counts and observations.** Record trap counts and plant observations by sector, tunnel and row, then collect or finalise a trap on the same screen.
+- **Treatments.** Validated chemical-entry forms and an applications history per product and field.
+- **Offline queue.** Deployments and photos go into a local **SQLite** queue first and sync when the connection returns. Pending, in-progress and failed items are tracked separately, and staff can sync one item or all of them.
+- **Files from the greenhouse.** Encrypted file transfer between the app and an on-site device, with integrity checks, then upload to the cloud.
+- **English and Turkish**, with drawer navigation.
 
 ## Key Challenges
 
-**Offline had to feel normal, not broken.** Deployments needed to sit on the phone safely and sync from a queue you could see and control.
+**Offline has to feel normal.** Every count lands on the phone first, and a Pending Sync screen shows what is waiting, so a greenhouse with no signal loses nothing.
 
-**Photos and trap actions are different jobs.** A failed photo upload should never look like a failed trap deploy.
+**Failed uploads must stay visible.** Trap actions and device files sync on separate paths. A failed photo upload never looks like a failed trap count, and failed items wait to be retried instead of disappearing.
 
-**Mobile and web had to tell one story.** Field capture and advisor charts share the same traps → PIM® → cloud pipeline — not two parallel products.
+**Testing without the hardware.** The on-site device is not always on hand, so I built a mock server for the file transfer, which lets the transfer and its integrity checks be tested without it.
 
 ## Results
 
-Field crews can walk a greenhouse, work offline, pull photos from the PIM® unit, and clear sync when they have signal. That data lands in BugMapper’s cloud for the same charts and maps advisors already use on the web.
+In production in Kayseri, Türkiye. The client reports that recording a trap now takes about **10 seconds**, against **5 to 10 minutes** for a manual count. The platform has been covered in the agricultural trade press, including [Daily Sabah](https://www.dailysabah.com/turkiye/ai-improves-pest-detection-in-kayseris-soilless-farming/news).
 
-Public coverage of the product ([Daily Sabah](https://www.dailysabah.com/turkiye/ai-improves-pest-detection-in-kayseris-soilless-farming/news), AA) reports trap reads in about **10 seconds** versus **5–10 minutes** of manual sticky-trap counting, **30–50% seasonal chemical savings** in geothermal, soil-based, and soilless houses, and deployments across **Kayseri, Yozgat, Afyon, and Mersin**. The broader system is a TÜBİTAK-backed plant-protection decision support stack.
+## Stack Decisions
 
-## Approach
-
-React Native with Expo for Android field devices; web frontend for advisor charts and maps. Local storage for the offline queue and staged photos. Explicit sync and upload screens so pending work stays visible. Stack details live in the sidebar.
+React Native with Expo and TypeScript for the field app. **SQLite** for the offline queue, so counts and photos stay on the phone until they sync. **Zustand** for app state, **Firebase Authentication** for sign-in and **i18next** for English and Turkish.

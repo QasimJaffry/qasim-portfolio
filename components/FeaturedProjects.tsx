@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { getFeaturedProjects, projects } from "@/lib/data/projects";
-import { appTint, getScreens } from "@/lib/screens";
+import { appTint, getScreens, getWebScreen } from "@/lib/screens";
 import WorkStory, { type StoryItem } from "@/components/WorkStory";
 
 export default function FeaturedProjects() {
@@ -12,6 +12,7 @@ export default function FeaturedProjects() {
     year: p.year,
     metrics: p.metrics,
     screens: getScreens(p.slug, p.title),
+    web: getWebScreen(p.slug),
     tint: appTint[p.slug] ?? "#60a5fa",
   }));
   if (items.length === 0) return null;

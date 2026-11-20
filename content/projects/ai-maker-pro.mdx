@@ -1,0 +1,29 @@
+## The Problem
+
+AI Maker Pro is a Flutter app for generating AI images and videos, with 100K+ downloads on Google Play. The app predates my work and has been built by many developers over several years. It still needed someone to own every production release: keep it passing App Store and Google Play review, keep payments working as store rules change, and fix what users hit.
+
+## What I Built
+
+I took over the app at Star Computer Labs and have owned every production release for about 1.5 years: feature work, bug fixes and store submissions, using AI-assisted development (Claude Code). Some of that work:
+
+- **App Store review fixes.** The App Tracking Transparency prompt had never appeared for any user, because it was requested before the first frame. I moved it after launch so it actually shows. A later rejection was about order: the GDPR consent form showed after the tracking prompt. I chained them so consent comes first.
+- **iOS privacy and permissions.** Added an app-level privacy manifest, fixed the ITMS-91056 privacy manifest warning, corrected the camera usage text and removed a microphone permission nothing used.
+- **Play Billing 8.** Google rejects updates on Play Billing older than 8 from August 2026. I upgraded the **RevenueCat** SDK so the app pulls Billing 8 and adapted the purchase code to its new API.
+- **Image moderation.** Added **Google Vision SafeSearch** checks on image uploads in the Python backend. It fails closed: if Vision is down, the upload is rejected rather than let through. The app shows a clear message for each case.
+- **Reliability.** Added request timeouts, signup error handling, and Crashlytics reporting around credits and App Check.
+
+Live on [Google Play](https://play.google.com/store/apps/details?id=com.starcomputer.aimaker).
+
+## Key Challenges
+
+**Working in code I did not write.** The app has years of history from other developers. Each fix starts with finding the real cause, such as when a prompt fires or which library pulls in an old billing version, before changing anything.
+
+**Store rules move.** Apple and Google change review rules and deadlines. A release can be blocked by a privacy manifest or a billing library version, so part of owning releases is keeping ahead of those changes.
+
+## Results
+
+The app has **100K+ downloads** on Google Play, and I have shipped every production release for about 1.5 years since taking it over.
+
+## Stack Decisions
+
+The existing stack was kept: **Flutter** with BLoC on the client, **Firebase** for analytics, Crashlytics, App Check and messaging, **RevenueCat** for subscriptions, and a Python backend on Google Cloud. A live app with this many users does not justify a rewrite, so changes go in as small, reviewed fixes.

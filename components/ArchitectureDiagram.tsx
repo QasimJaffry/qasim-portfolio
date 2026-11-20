@@ -32,7 +32,7 @@ const diagrams: Record<
   "dealflow-ai": {
     title: "Architecture",
     caption:
-      "Next.js product surface over a deal pipeline — intake, scoring, and AI-assisted review sitting on shared auth and data, with clear separation between UI workflows and model calls.",
+      "Next.js product surface over a deal pipeline: intake, scoring and AI-assisted review sitting on shared auth and data, with clear separation between UI workflows and model calls.",
     nodes: [
       { id: "ui", label: "Next.js app", x: 160, y: 24, w: 120 },
       { id: "auth", label: "Auth + DB", x: 40, y: 120 },

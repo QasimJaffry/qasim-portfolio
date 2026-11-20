@@ -1,35 +1,19 @@
 import Link from "next/link";
 import FeaturedProjects from "@/components/FeaturedProjects";
-import WhatITakeOn from "@/components/WhatITakeOn";
 import SkillsGrid from "@/components/SkillsGrid";
 import Testimonials from "@/components/Testimonials";
 import FaqSection from "@/components/FaqSection";
 import ContactSection from "@/components/ContactSection";
 import MobileCta from "@/components/MobileCta";
 import ExperienceTimeline from "@/components/ExperienceTimeline";
-import Phone from "@/components/Phone";
-import { getScreens } from "@/lib/screens";
 import { mailtoHref, site } from "@/lib/site";
-
-// The strongest screen or two from each app, alternating apps so the hero phone shows range.
-const heroPicks: Array<[slug: string, app: string, screen: number]> = [
-  ["innerverse", "Innerverse", 1],
-  ["agenticly", "Agenticly", 4],
-  ["kitty-nip", "Kitty Nip", 2],
-  ["safedeal", "SafeDeal", 3],
-  ["qubio", "Qubio", 3],
-  ["bugmapper", "BugMapper", 3],
-  ["innerverse", "Innerverse", 3],
-  ["agenticly", "Agenticly", 3],
-];
-const heroPlaylist = () =>
-  heroPicks.map(([slug, app, n]) => getScreens(slug, app)[n - 1]).filter(Boolean);
+import { withBasePath } from "@/lib/projectImage";
 
 const proof = [
   ["100K+", "downloads on AI Maker Pro"],
   ["26K", "Agenticly installs"],
   ["9", "engineers led, at most"],
-  ["100%", "crash-free on Kitty Nip"],
+  ["99.9%+", "crash-free users on Kitty Nip"],
 ];
 
 export default function Home() {
@@ -37,30 +21,30 @@ export default function Home() {
     <>
     <div className="mx-auto max-w-[90rem] px-6 sm:px-10">
       <section className="relative pt-8 sm:pt-12">
-        <h1 className="relative z-20 hd whitespace-nowrap text-[calc((100vw-3rem)/6.7)] sm:text-[min(calc((100vw-5rem)/6.7),12.6rem)] leading-[0.85] tracking-[-0.055em] text-foreground">
-          Qasim Hassan
+        <h1 className="relative z-20 hd text-[calc((100vw-3rem)/6.7)] sm:whitespace-nowrap sm:text-[min(calc((100vw-5rem)/9.3),9.2rem)] leading-[0.85] tracking-[-0.055em] text-foreground">
+          Qasim Hassan Jaffry
         </h1>
 
-        <div className="mt-10 grid items-start gap-12 md:grid-cols-[minmax(0,1fr)_17rem] lg:mt-0 lg:grid-cols-[minmax(0,1fr)_20rem] lg:gap-20">
-          <div className="lg:pt-24">
-            <p className="max-w-2xl font-display text-[clamp(1.6rem,3vw,2.6rem)] font-semibold leading-[1.15] text-foreground">
+        <div className="mt-10 grid gap-10 sm:mt-14 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] lg:gap-20">
+          <p className="max-w-2xl font-display text-[clamp(1.6rem,3vw,2.6rem)] font-semibold leading-[1.15] text-foreground">
               I own mobile and web products end to end, from first build to apps with 100K+ downloads.
-            </p>
-            <p className="mt-6 max-w-xl text-lg leading-[1.6] text-foreground/70">
+          </p>
+          <div>
+            <p className="max-w-xl text-lg leading-[1.6] text-foreground/70">
               Senior Full-Stack Engineer at Star Computer Labs, a US product team, and before that tech lead at
               StackUp Solutions. I own the clients, the Firebase backend and the billing, and I&apos;m the one
               trusted with what has to keep working after launch. {site.availability.status}.
             </p>
             <div className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-4">
-              <a href={mailtoHref("Project inquiry")} className="btn-primary px-8 py-4 text-base">
-                Start a project
+              <a href={withBasePath(site.availability.cv)} download className="btn-primary px-8 py-4 text-base">
+                Download CV
               </a>
               <div className="flex items-center gap-x-8">
+                <a href={mailtoHref("Senior role")} className="btn-secondary link-underline">
+                  Email me
+                </a>
                 <Link href="#work" className="btn-secondary link-underline">
                   See the work
-                </Link>
-                <Link href="/resume" className="btn-secondary link-underline">
-                  Resume
                 </Link>
               </div>
             </div>
@@ -74,20 +58,11 @@ export default function Home() {
               ))}
             </dl>
           </div>
-
-          <Phone
-            screens={heroPlaylist()}
-            caption
-            priority
-            interval={2200}
-            className="relative z-10 mx-auto w-[12.5rem] md:w-full lg:-mt-[5vw] lg:w-[18rem]"
-          />
         </div>
       </section>
 
       <div className="mt-20 space-y-24 pb-24 sm:mt-36 sm:space-y-44">
         <FeaturedProjects />
-        <WhatITakeOn />
         <ExperienceTimeline />
         <SkillsGrid />
         <Testimonials />

@@ -35,7 +35,8 @@ export const resumeSkills: Record<string, string[]> = {
   "State and Data": ["Zustand", "Redux Toolkit", "React Query", "RTK Query", "Turborepo monorepos"],
   "AI Integration": ["OpenAI API", "Claude API (Anthropic)", "OpenRouter", "LLM integration", "AI agents"],
   "Payments and Realtime": ["Stripe", "RevenueCat", "MangoPay", "WebRTC", "Agora", "Socket.IO"],
-  "Testing and Tooling": ["Jest", "ESLint", "Prettier", "Git", "GitHub Actions", "Code review"],
+  "Testing and Monitoring": ["Jest", "Detox", "Sentry", "Firebase Crashlytics", "ESLint", "Prettier", "Git", "GitHub Actions", "Code review"],
+  "Analytics and Growth": ["AppsFlyer", "Microsoft Clarity", "HubSpot", "Firebase Analytics"],
   Practices: ["Offline-first sync", "Internationalisation (i18next)", "Agile and Scrum", "Team leadership", "Mentoring", "Technical interviewing"],
 };
 

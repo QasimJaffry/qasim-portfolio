@@ -1,48 +1,36 @@
 ## The Problem
 
-Shopping on Amazon, eBay, or AliExpress means reading long review threads, guessing whether a discount is real, and trusting seller badges that don’t always tell the full story. That work is worse on a phone, where comparison tabs and extension overlays don’t exist.
+Comparing a product across AliExpress, Amazon and eBay means opening each shop one by one, and nothing tells you whether the seller can be trusted. On a phone it is worse: there are no extra tabs or browser extensions to help.
 
-[Safe Deal](https://www.joinsafedeal.com/) already had a desktop browser extension for this. Mobile needed the same decision layer without asking people to leave the product page.
+Safe Deal already had a browser extension for desktop. The mobile app had to bring the same verdict to the phone, on the product page itself.
 
 ## What I Built
 
-I contributed to the Safe Deal mobile app, an Expo shopping browser that opens marketplace product pages in an in-app WebView and shows a green, yellow or red verdict on top of the live page. My part was mainly the in-app browser, state and data:
+I was a contributor on the Safe Deal mobile app in late 2024. It is an **Expo / React Native** shopping browser: each shop loads inside the app in a **WebView**, and a bar under the page turns green, yellow or red with a verdict on the product you are looking at. My part was mainly the in-app browser, state and data:
 
-- Moved state from Redux and Context to **Zustand**, and reworked data fetching with **React Query**.
-- Routed shop links through the app and added a **redirect-loop guard** (15 loads of one URL in 10 seconds).
-- Used the device's user agent and **injected scripts** to hide promo banners, so in-app browsing stays stable.
+- Routed every tapped link through the app, so each product page gets checked. Only http and https requests are allowed.
+- Added a **redirect-loop guard**: more than 15 loads of the same URL within 10 seconds stops the page.
+- Built the WebView user agent from the device's own, so shops treat it like a normal mobile browser.
+- **Injected scripts** that fix the viewport and hide promo banners as the page changes.
+- Moved app state from Redux and React Context to **Zustand**, and reworked data fetching with **React Query**.
+- Fixed the price history chart, review images and insights loading, and the onboarding tour tooltip.
 
-## Major Features
-
-### For shoppers
-
-- **Marketplace hub** — One-tap shortcuts into AliExpress, Amazon, and eBay, plus custom links you add yourself.
-- **In-app browser** — Search or paste a URL, back/forward, and browse product pages without hopping to Chrome or Safari.
-- **Product insights** — Rule checklist for reviews, seller tenure, price vs average, and store satisfaction, plus a price-history chart.
-- **AI insights** — Review text rolled into pros, cons, and “good to know” so you don’t read hundreds of comments.
-- **Customer images & review videos** — Real buyer photos and a YouTube reviews search from the same analysis sheet.
-- **Share into SafeDeal** — Share a product link from another app; Safe Deal opens it and runs the analysis.
-- **Languages** — Large locale set so the same flows work across markets.
-
-### Under the hood
-
-- **Site-aware product detection** — Recognizes Amazon / eBay / AliExpress item URLs so the analysis UI only appears on real product pages.
-- **Injected page cleanup** — WebView scripts tighten the viewport and hide noisy marketplace chrome so the product — and the Safe Deal sheet — stay readable.
-- **Cached analysis by URL** — React Query keeps conclusions keyed to the page you’re on while you move between tabs in the sheet.
-- **Share-intent entry** — OS share target opens the shared product URL directly in the browser shell.
+The app itself has more: a verdict sheet with Insights (shop rating, return policy, delivery time, shipping cost), Reviews (pros, cons and an AI summary of buyer reviews), buyer photos and YouTube reviews, plus price history, a share-into-the-app shortcut and 55 locales. The browser extension and the backend were built by others.
 
 ## Key Challenges
 
-**The app is a browser and a decision UI at once.** Navigation, URL validity, and home shortcuts had to stay simple while the analysis modal stayed one tap away from any product page.
+**Pages that redirect in loops.** A page that keeps redirecting would freeze the browser, so I count loads per URL in a 10-second window and stop past 15.
 
-**Analysis must feel ambient, not bolted on.** The footer shield turns green / amber / red with the conclusion so status is visible while you still see the marketplace page behind the sheet.
+**Looking like a normal browser.** Shops behave differently inside a WebView, so the user agent is built from the device's own with the WebView marker removed.
 
-**Mobile is part of a larger product.** The React Native client had to match Safe Deal’s extension story (same retailers, same “recommended / not recommended” language) without owning the whole desktop pipeline.
+**Keeping the verdict in step with the page.** On each navigation the old verdict resets, and an analysis request goes out only for valid shop and product URLs.
+
+**State in three places.** App and onboarding state moved from Redux and React Context into Zustand stores, while server data stays in React Query.
 
 ## Results
 
-The app is live on [Google Play](https://play.google.com/store/apps/details?id=com.safedeal.navigator&pli=1) with **5,000+ downloads**, alongside the product site at [joinsafedeal.com](https://www.joinsafedeal.com/). The Safe Deal platform also ships as a browser extension across major desktop browsers.
+Live on [Google Play](https://play.google.com/store/apps/details?id=com.safedeal.navigator&pli=1) with **5,000+ downloads**. The product website, [joinsafedeal.com](https://www.joinsafedeal.com/), links to the app and the browser extensions; it is not my work.
 
-## Approach
+## Stack Decisions
 
-React Native with Expo. React Native WebView for the shopping shell, Zustand for state, React Query for analysis fetches. Stack details live in the sidebar.
+Expo and React Native with TypeScript. react-native-webview with injected JavaScript for the shopping browser, Zustand for app state and React Query for analysis requests, so each verdict is cached against the page it belongs to.

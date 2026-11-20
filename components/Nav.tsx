@@ -57,7 +57,7 @@ export default function Nav() {
         }`}
       >
         <Link href="/" className="text-lg tracking-tight text-foreground">
-          <span className="font-display text-lg font-bold tracking-tight">Qasim Hassan</span><span className="text-accent">.</span>
+          <span className="font-display text-lg font-bold tracking-tight">Qasim Hassan Jaffry</span><span className="text-accent">.</span>
         </Link>
 
         <nav className="hidden items-center gap-8 sm:flex">

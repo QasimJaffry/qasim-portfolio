@@ -1,6 +1,6 @@
 /** Central site config — update calendlyUrl when you have a booking link. */
 export const site = {
-  name: "Qasim Hassan",
+  name: "Qasim Hassan Jaffry",
   title: "Senior React Native and Full-Stack Engineer",
   positioning: "React Native and Next.js products, owned end to end, from first build to live release.",
   email: "qhassan1214@gmail.com",
@@ -11,7 +11,9 @@ export const site = {
   calendlyUrl: null as string | null,
   replySla: "I respond within 24 hours.",
   availability: {
-    status: "Open to senior remote roles, relocation and freelance projects",
+    status: "Available immediately for senior remote roles, as an employee or a contractor. Open to relocation with visa sponsorship",
+    /** Public CV, copied from the Portfolio Kit (cv/Qasim-Jaffry-CV.pdf). */
+    cv: "/Qasim-Hassan-Jaffry-CV.pdf",
   },
   social: {
     github: "https://github.com/QasimJaffry",

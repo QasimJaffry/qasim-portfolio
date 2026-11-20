@@ -14,18 +14,4 @@ export const testimonials: Testimonial[] = [
     role: "Leadership, StackUp Solutions",
     source: "LinkedIn",
   },
-  {
-    quote:
-      "Looking back, the time we worked together was one of the most important phases of my growth. You set high standards, pushed us to improve, and led by example.",
-    name: "Former teammate",
-    role: "Engineering, StackUp Solutions",
-    source: "LinkedIn",
-  },
-  {
-    quote:
-      "A huge part of my own growth as an engineer came from working alongside you. From React Native and full-stack development to problem-solving and ownership, I learned lessons that still help me every day.",
-    name: "Engineer mentored",
-    role: "Former direct report",
-    source: "LinkedIn",
-  },
 ];
