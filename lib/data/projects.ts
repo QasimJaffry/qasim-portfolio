@@ -97,7 +97,6 @@ export const projects: Project[] = [
     },
     images: [
       "/images/projects/innerverse/hero.jpg",
-      "/images/projects/innerverse/slide-1.jpg",
       "/images/projects/innerverse/slide-2.jpg",
       "/images/projects/innerverse/slide-3.jpg",
       "/images/projects/innerverse/slide-4.jpg",
