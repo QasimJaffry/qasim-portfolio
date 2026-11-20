@@ -25,5 +25,7 @@ export const skills: Record<string, string[]> = {
   ],
   "Data & Cloud": ["Firebase", "Supabase", "PostgreSQL", "MongoDB", "AWS", "Vercel"],
   Payments: ["Stripe", "RevenueCat"],
+  "Testing & monitoring": ["Jest", "Detox", "Sentry", "Firebase Crashlytics", "ESLint", "GitHub Actions"],
+  "Analytics & growth": ["AppsFlyer", "Microsoft Clarity", "HubSpot", "Firebase Analytics"],
   Tools: ["Cursor (Plan · Agents · MCP)", "Claude", "Git", "CI/CD", "ViroReact", "n8n", "Docker"],
 };

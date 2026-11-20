@@ -17,7 +17,7 @@ export default function WhatITakeOn() {
   
   return (
     <section id="services" className="scroll-mt-16">
-      <h2 className="hd text-[clamp(2.8rem,7vw,5.5rem)] text-foreground">How I can help</h2>
+      <h2 className="hd text-[clamp(2.8rem,7vw,5.5rem)] text-foreground">Freelance: how I can help</h2>
 
       <div className="mt-12 grid gap-4 md:grid-cols-2 lg:grid-cols-6">
         <article className={`${card} md:col-span-2 lg:col-span-4`}>

@@ -1,33 +1,29 @@
 ## The Problem
 
-A business client needed scheduling for two audiences — **staff** managing availability and jobs, and **customers** booking appointments — without two backends that would drift apart.
+A business client needed scheduling for two audiences: **staff** running the day's jobs, and **customers** booking appointments. Two separate systems would drift apart, so both had to read and write one schedule.
 
 ## What I Built
 
-BSchedule is **two React Native apps** (staff/admin and customer) against one **Laravel REST API** / MySQL:
+At StackUp Solutions I built BSchedule as **two React Native apps**, staff and customer, on one **Laravel** backend that holds the scheduling and payment logic.
 
-- Appointments create/edit/search; calendar and timeline (notes, reminders).
-- Staff and customer management; job cards; notice board.
-- Garage-style service categories (Service, Repair, MOT, Tyres, Diagnostic).
-- Google Sign-in for staff and customer accounts.
-
-Product host: [bscheduled.co.uk](https://bscheduled.co.uk/).
-
-## Major Features
-
-- **Dual portals** — staff depth vs customer booking surface on the same schedule.
-- **Calendar + jobs** — day views, job cards, notices, vehicle reminders.
-- **Single API** — availability and bookings live in one place.
-- **Auth** — Google Sign-in across both apps.
+- **Timeline.** Every job by the hour: time, length, assigned staff, customer and price.
+- **Month view.** A coloured dot on each day for every appointment category, with a tag on days that have notes.
+- **Customers.** A list you can search by name, with phone and address.
+- **Admin tools.** The staff app adds staff management, weekly revenue and disabled dates.
+- **New jobs.** Pick staff, category, date, time and duration.
+- **Premium.** Later the client wanted a subscription product. I led the **in-app purchase** work, so premium users can add, edit and remove their own appointment categories and change which fields the appointment form shows.
+- **Job alerts.** I led the **OneSignal** push notifications that tell staff when a job is assigned to them.
 
 ## Key Challenges
 
-One REST API had to serve different permissions and shapes of the same schedule: staff needed broad read/write; customers needed a narrow booking surface. Endpoint design up front mattered more than shipping two “almost the same” APIs.
+**One API, two kinds of user.** Staff needed broad read and write access; customers needed a narrow booking view of the same schedule. Getting the endpoints right up front mattered more than shipping two almost-identical APIs.
+
+**Two apps that feel like one.** Both apps share the same screens, and the staff app adds a More tab for staff, revenue and disabled dates, so a customer and a staff member see the same schedule in the same layout.
 
 ## Results
 
-BSchedule shipped as a production booking system — staff and customer apps on one shared API — so scheduling data couldn’t fork.
+Both apps shipped on iOS and Android. They have since been taken out of the stores.
 
 ## Stack Decisions
 
-A single Laravel API was chosen specifically to avoid the classic failure mode of staff/customer systems: two stacks, two truths. React Native + Redux kept both clients shippable on the same design language without a web-only compromise.
+One Laravel API so staff and customer data could not fork into two versions of the truth. React Native with Redux kept both apps on one codebase and one design, with SQLite on the device, in-app purchases for premium and OneSignal for alerts.

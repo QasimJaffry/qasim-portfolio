@@ -15,7 +15,7 @@ export default function Footer() {
       <div className="mx-auto flex max-w-6xl flex-col gap-8 px-6 py-10 text-sm text-muted sm:flex-row sm:items-end sm:justify-between">
         <div className="space-y-1.5">
           <p className="font-display text-lg font-bold tracking-tight text-foreground">
-            Qasim Hassan<span className="text-accent">.</span>
+            Qasim Hassan Jaffry<span className="text-accent">.</span>
           </p>
           <p>
             {site.title} · {site.location}

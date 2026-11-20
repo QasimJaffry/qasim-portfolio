@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
+import WhatITakeOn from "@/components/WhatITakeOn";
 import ExperienceTimeline from "@/components/ExperienceTimeline";
 import { stats } from "@/lib/data/stats";
 import { site } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "About",
+  alternates: { canonical: `${site.url}/about/` },
   description: `${site.name}, ${site.title} in Lahore, Pakistan. Apps with 10K+ and 100K+ downloads, teams of up to nine.`,
 };
 
@@ -41,13 +43,14 @@ export default function AboutPage() {
             <p>
               Right now I work remotely with a US team at Star Computer Labs. Agenticly, an AI crypto research
               assistant, has 26K installs across web, Android and iOS. I took over full ownership of Kitty Nip,
-              which now reports 100% crash-free on Crashlytics. I also own releases for AI Maker Pro, a Flutter
+              which now reports 99.9%+ crash-free users on Crashlytics. I also own releases for AI Maker Pro, a Flutter
               app with 100K+ downloads.
             </p>
             <p>
-              On the side I run Jafrix Systems, a small software studio. Its longest engagement is BugMapper, a
-              greenhouse pest-monitoring platform used in Kayseri, Türkiye: recording a trap went from 5 to 10
-              minutes on paper to about 10 seconds.
+              Alongside that I take on contract work, run through my studio Jafrix Systems since 2025. The longest
+              is BugMapper (since 2023), a greenhouse pest-monitoring platform used in Kayseri, Türkiye: recording a
+              trap went from 5 to 10 minutes on paper to about 10 seconds. Innerverse, my own app on Google Play,
+              is built under Jafrix too.
             </p>
             <p>
               Before that I was Tech Lead at StackUp Solutions for four years, leading teams of up to nine across
@@ -65,8 +68,10 @@ export default function AboutPage() {
             <div>
               <h2 className="eyebrow">Available for</h2>
               <div className="mt-3 space-y-1.5 text-muted">
-                <p>Senior React Native, mobile and full-stack roles ($50K–$120K)</p>
-                <p>Remote, or relocating</p>
+                <p>Senior React Native, mobile and full-stack roles</p>
+                <p>Available immediately, remote as an employee or contractor</p>
+                <p>Open to relocation with visa sponsorship</p>
+                <p>Lahore, Pakistan (UTC+5)</p>
                 <p>Freelance projects</p>
               </div>
             </div>
@@ -98,6 +103,7 @@ export default function AboutPage() {
           </dl>
         </section>
         <ExperienceTimeline />
+        <WhatITakeOn />
       </div>
     </>
   );

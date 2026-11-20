@@ -6,7 +6,7 @@ import { withBasePath } from "@/lib/projectImage";
 export type Screen = { src: string; app: string; video?: string; contain?: boolean };
 
 // Captures that are 9:16 rather than a full-height phone screen; shown whole instead of cropped.
-const containSlugs = new Set(["innerverse"]);
+const containSlugs = new Set<string>([]);
 
 /** Phone screenshots for a project, from public/images/screens/<slug>/ (1.jpg, 2.jpg, ...). */
 export function getScreens(slug: string, app: string): Screen[] {
@@ -25,6 +25,12 @@ export function getScreens(slug: string, app: string): Screen[] {
         ...(containSlugs.has(slug) ? { contain: true } : {}),
       };
     });
+}
+
+/** Desktop capture (public/images/screens/<slug>/web.jpg, 16:10) for products with a web app. */
+export function getWebScreen(slug: string): string | undefined {
+  const file = path.join(process.cwd(), "public/images/screens", slug, "web.jpg");
+  return fs.existsSync(file) ? withBasePath(`/images/screens/${slug}/web.jpg`) : undefined;
 }
 
 /** Glow colour behind the phone, picked from each app's own UI. */

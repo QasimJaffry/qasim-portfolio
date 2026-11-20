@@ -147,7 +147,7 @@ export default function CaseStudyLayout({
       )}
 
       {gallery.length > 0 && (
-        <div className="mx-auto mt-10 grid max-w-6xl gap-5 px-4 sm:mt-12 sm:gap-6 sm:px-6 md:grid-cols-2">
+        <div className="mx-auto mt-10 grid max-w-6xl gap-5 px-4 sm:mt-12 sm:gap-6 sm:px-6 md:grid-cols-2 md:[&>*:last-child:nth-child(odd)]:col-span-2 md:[&>*:last-child:nth-child(odd)]:mx-auto md:[&>*:last-child:nth-child(odd)]:w-[calc(50%-0.75rem)]">
           {gallery.map((src, i) => (
             <FigurePlate
               key={src}
@@ -206,8 +206,8 @@ export default function CaseStudyLayout({
           Building something in this space?
         </p>
         <p className="mt-3 max-w-xl text-sm leading-relaxed text-muted sm:text-[15px]">
-          I ship mobile, web, and AI product surfaces end-to-end — from product UI to payments and
-          store releases.
+          I ship mobile, web and AI products end to end, from the first screen to payments and store
+          releases.
         </p>
         <Link
           href="/#contact"

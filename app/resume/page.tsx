@@ -11,9 +11,11 @@ import {
   resumeSummary,
 } from "@/lib/data/resume";
 import { mailtoHref, site } from "@/lib/site";
+import { withBasePath } from "@/lib/projectImage";
 
 export const metadata: Metadata = {
   title: "Resume",
+  alternates: { canonical: `${site.url}/resume/` },
   description: `Resume — ${site.name}, ${site.title}. React Native, Next.js, AI products.`,
 };
 
@@ -35,10 +37,15 @@ export default function ResumePage() {
             Resume
           </h1>
           <p className="mt-2 text-sm text-muted">
-            ATS-oriented single-column layout. Use Print → Save as PDF for applications.
+            ATS-friendly single-column layout. Download the PDF, or print this page.
           </p>
         </div>
-        <ResumePrintButton />
+        <div className="flex flex-wrap items-center gap-x-6 gap-y-3 print:hidden">
+          <a href={withBasePath(site.availability.cv)} download className="btn-primary mt-8 sm:mt-14">
+            Download CV (PDF)
+          </a>
+          <ResumePrintButton />
+        </div>
       </div>
 
       <article className="mt-10 space-y-8 border-t border-border pt-10 text-[15px] leading-relaxed text-foreground print:mt-0 print:space-y-6 print:border-0 print:pt-0 print:text-[12.5px] print:leading-snug">

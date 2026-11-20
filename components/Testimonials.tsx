@@ -10,7 +10,7 @@ export default function Testimonials() {
 
   return (
     <section id="proof" className="scroll-mt-20">
-      <h2 className="hd text-[clamp(2.8rem,7vw,5.5rem)] text-foreground">What teammates say</h2>
+      <h2 className="hd text-[clamp(2.8rem,7vw,5.5rem)] text-foreground">In their words</h2>
       <div>
         <figure className="mt-8">
           <blockquote
@@ -28,6 +28,7 @@ export default function Testimonials() {
                 {item.source ? `, via ${item.source}` : ""}
               </p>
             </div>
+            {count > 1 && (
             <div className="flex items-center gap-3">
               <button
                 type="button"
@@ -49,6 +50,7 @@ export default function Testimonials() {
                 {index + 1} of {count}
               </span>
             </div>
+            )}
           </figcaption>
         </figure>
       </div>

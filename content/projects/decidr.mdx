@@ -1,34 +1,30 @@
 ## The Problem
 
-Hard decisions rarely fail because of a lack of information — they fail because that information never gets structured into a clear comparison. Spreadsheets and chat threads bury the trade-offs; Decidr is a personal project exploring whether an AI-native tool can make the structuring step feel obvious.
+Hard decisions rarely stall for lack of information. They stall because the information never gets laid out as a clear comparison: the trade-offs stay buried in spreadsheets and chat threads. Decidr is a personal project that tests whether an AI tool can make that structuring step easy.
 
 ## What I Built
 
-Decidr turns a messy dilemma into a **weighted option × criteria matrix** with explainable scoring — not another chat wrapper.
+Decidr turns a messy dilemma into a **weighted matrix of options and criteria** with scoring you can follow.
 
-- Paste a dilemma or walk a multi-step wizard (problem → options → criteria → weights).
-- AI extracts options and criteria into structured JSON via OpenRouter (model-agnostic).
-- Server-side ranking with risk, confidence, and a maturity score; results show ranked tables, charts, heatmaps, and an expandable reasoning trace.
-- What-if weight simulation recomputes locally without another AI call; side-by-side decision compare; public share links and PDF via print.
-- Email auth and Supabase data on a Next.js App Router stack.
+- **Intake.** Paste a dilemma in plain text, or step through a wizard: problem, options, criteria, weights.
+- **Extraction.** AI pulls the options and criteria into structured JSON through **OpenRouter**, so the model can be swapped.
+- **Scoring.** Ranking runs on the server with risk, confidence and a maturity score. Results show ranked tables, charts, heatmaps and a reasoning trace you can expand.
+- **What-if.** Change the weights and the ranking recomputes in the browser without another AI call.
+- **Compare and share.** Put two decisions side by side, share a public `/d/[token]` link, or print to PDF.
+- **Accounts.** Email sign-in and data on **Supabase**, with the Next.js App Router.
 
-Try it live: [decidr-henna.vercel.app](https://decidr-henna.vercel.app/).
-
-## Major Features
-
-- **Decision wizard** — plain-text or step-by-step intake that lands in a scored matrix.
-- **Explainable AI scoring** — ranked options with reasoning you can expand, not a black-box “pick this.”
-- **What-if simulation** — drag weights and see rankings update without re-calling the model.
-- **Compare & share** — side-by-side decisions and public `/d/[token]` links.
+Try it: [decidr-henna.vercel.app](https://decidr-henna.vercel.app/).
 
 ## Key Challenges
 
-Using OpenRouter instead of a single model provider means prompts and output parsing have to stay model-agnostic — structured JSON extraction has to work across vendors, not tuned to one model’s quirks. Keeping the matrix as the product surface (not a chat log) forced clear UX boundaries between AI assistance and user-owned weights.
+**Prompts that work across models.** With OpenRouter in front of several providers, the prompts and the JSON parsing can't rely on one model's habits. Extraction has to return the same structure whichever model answers.
+
+**The matrix is the product, not the chat.** Keeping the matrix at the centre meant a clear line between what the AI suggests and the weights the user owns.
 
 ## Results
 
-Decidr is a personal prototype, deployed publicly during development: the core decision flow, charts and share links work on a public Vercel deploy.
+A personal prototype, deployed publicly during development. The decision flow, charts and share links work on the public Vercel deploy.
 
 ## Stack Decisions
 
-OpenRouter avoids locking decision intelligence to one vendor’s pricing and availability. Supabase covers auth and data without a custom backend, so product time stayed on the matrix UX and scoring pipeline rather than infrastructure.
+OpenRouter so the scoring is not tied to one vendor's pricing or availability. Supabase for auth and data without a custom backend, so the time went into the matrix and the scoring rather than infrastructure.

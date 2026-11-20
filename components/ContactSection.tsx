@@ -10,10 +10,10 @@ export default function ContactSection() {
     <section id="contact" className="scroll-mt-12 bg-accent text-accent-foreground">
       <div className="mx-auto max-w-[90rem] px-6 py-20 sm:px-10 sm:py-32">
         <h2 className="hd text-balance text-[clamp(3.4rem,11vw,10rem)] leading-[0.9] tracking-[-0.05em]">
-          Let&apos;s build your app.
+          Hiring? Let&apos;s talk.
         </h2>
         <p className="mt-6 max-w-lg text-lg leading-[1.6] text-accent-foreground/75">
-          Open to senior remote roles, relocation and freelance projects. {site.replySla}
+          {site.availability.status}. {site.replySla}
         </p>
 
         <a
@@ -41,7 +41,7 @@ export default function ContactSection() {
         </div>
 
         <p className="mt-20 text-sm text-accent-foreground/70">
-          {site.location}. © {new Date().getFullYear()} Qasim Hassan
+          {site.location}. © {new Date().getFullYear()} {site.name}
         </p>
       </div>
     </section>

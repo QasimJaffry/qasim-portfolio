@@ -1,36 +1,39 @@
 ## The Problem
 
-Buying furniture from a flat product photo is a gamble. Scale, proportion, and how a piece sits next to what you already own only become clear after delivery — when returns are expensive and rooms already feel wrong.
+Buying furniture from a flat product photo is a gamble. Scale, proportion and how a piece sits next to what you already own only become clear after delivery, when returns are expensive.
 
 ## What I Built
 
-Interio started as my **final-year project in 2019**, then called Interior Assistant, and is still a side project I return to. The current Expo / React Native build closes the buy-before-you-see gap in three steps:
+This is one project in two versions. It started in **2019** as my final-year project, **Interior Assistant**, built on **React Native 0.62** with a custom **TensorFlow Lite** model and react-viro for AR. In **2026** I rebuilt it as **Interio** on **Expo SDK 53 and React Native 0.79**: ML Kit replaced the custom model, ViroReact replaced react-viro, and Expo Router and Zustand replaced the old navigation and state, with a custom development build for the camera and AR.
 
-1. **Scan** — point the camera at a room; on-device ML Kit object detection classifies furniture (sofa, chair, table, …) with a confidence score.
-2. **Match** — a post-scan screen shows layout tips, interior inspiration for that category, and catalogue picks that complement what was detected.
-3. **Place** — ViroReact AR places true-to-scale GLB models in the live camera view — drag, pinch, and rotate until the piece feels right.
+The current app works in three steps:
 
-Firebase handles auth, favourites, and the furniture catalogue. The original build ran on **React Native 0.62** with a custom **TensorFlow Lite** model and react-viro. In 2026 I rebuilt it on **Expo SDK 53 and React Native 0.79**: ML Kit replaced the custom model, ViroReact replaced react-viro, and Expo Router and Zustand replaced the old navigation and state, with a custom development build for camera and AR.
+1. **Scan.** Point the camera at a room. On-device ML Kit object detection labels the furniture (sofa, chair, table and so on) with a confidence score.
+2. **Match.** A results screen shows layout tips, inspiration for that type of furniture, and catalogue pieces that go with what was found.
+3. **Place.** ViroReact puts true-scale 3D models into the live camera view. Drag, pinch and rotate until the piece looks right.
 
-## Major Features
+Around that:
 
-- **On-device furniture detection** — no server round-trip for classification; labels map into catalogue types with a clear empty state when nothing is found.
-- **Post-scan guidance** — layout tips, inspiration cards, and filtered catalogue for the detected type.
-- **True-scale AR studio** — floor-plane placement, multi-piece editing, undo/clear, and save AR room shots to Saved.
-- **Catalogue + favourites** — browse/search pieces; favourites sync through Firestore with local fallback.
-- **Inspiration feed** — curated spaces on home to seed ideas before you scan.
+- **Catalogue and favourites.** Browse and search pieces. Favourites sync through Firestore and fall back to local storage.
+- **AR studio.** Floor placement, several pieces at once, undo and clear, and saving AR room shots.
+- **Inspiration.** Curated rooms on the home screen to start from before you scan.
+
+Firebase handles sign-in, favourites and the catalogue.
 
 ## Key Challenges
 
-- **Convincing placement** — models need real-world scale and stable anchors as the camera moves; Viro’s metre-based scene plus careful default scales mattered more than fancy UI.
-- **On-device detection** — mapping ML Kit’s generic labels into catalogue types without a backend, and recovering gracefully when nothing is detected.
-- **Native stack** — Viro + ML Kit require a custom Expo development build (not Expo Go), New Architecture enabled, and a physical device for camera AR.
-- **Longevity** — keeping a student FYP idea alive across RN CLI → Expo rewrites without losing the scan → suggest → place story.
+**Placement that looks real.** Models need real-world scale and anchors that hold as the camera moves. Viro's scene works in metres, so getting the default scales right mattered more than the interface.
+
+**Detection without a server.** ML Kit returns generic labels, so they are mapped to catalogue types on the phone, with a clear empty state when nothing is found.
+
+**The native stack.** Viro and ML Kit need a custom Expo development build (not Expo Go), the New Architecture, and a physical device for camera AR.
+
+**Keeping a 2019 idea alive.** Moving from a React Native CLI app to Expo without losing the scan, suggest and place flow that the final-year project was built around.
 
 ## Results
 
-Shipped an end-to-end mobile flow: detection → curated suggestions → AR try-on. The product is complete as a portfolio-ready build and remains an active side project I still iterate on.
+The app runs the whole flow on a device: detect furniture, suggest pieces, try them in AR. It is a side project I still work on, and the code is on [GitHub](https://github.com/QasimJaffry/InteriorDesign).
 
 ## Stack Decisions
 
-ViroReact kept AR inside React Native instead of a separate native ARKit/ARCore app. ML Kit’s on-device detector avoided shipping images to a backend for classification. Expo Router + Zustand kept navigation and scan/favourite state small enough to reason about while the native plugins did the heavy lifting.
+ViroReact kept AR inside React Native instead of a separate ARKit or ARCore app. ML Kit's on-device detector means room photos are not sent to a server to be classified. Expo Router and Zustand keep navigation and state small, while the native modules do the heavy work.

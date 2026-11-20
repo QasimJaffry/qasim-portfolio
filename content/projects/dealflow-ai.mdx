@@ -1,31 +1,27 @@
 ## The Problem
 
-Freelancers juggle leads, proposals, and deals across spreadsheets, email threads, and half-adopted CRMs — none of which are built around how a solo operator actually works, or use AI to cut the manual tracking overhead.
+Freelancers keep leads, proposals and deals across spreadsheets, email threads and CRMs they never fully set up. Most CRMs are built for sales teams, not for one person running their own clients, and they leave all the tracking to you.
 
 ## What I Built
 
-Dealflow AI is a personal **AI-native CRM**: a Next.js web app and Expo mobile app sharing one Supabase backend.
+Dealflow AI is a personal project: a CRM for freelancers, with a **Next.js** web app and an **Expo** mobile app on one **Supabase** backend. The code is on [GitHub](https://github.com/QasimJaffry/DealFlow).
 
-- Clients, deals (kanban + list), tasks, activity timeline, and dashboard KPIs.
-- Deal workspace with notes, reminders, and file uploads (Supabase Storage).
-- AI that summarizes a deal, extracts next actions, drafts follow-ups, and can transcribe audio — with an **approve → create tasks** path so suggestions don’t silently mutate the pipeline.
-- Server-only `/api/ai/*` routes so model calls stay off the client.
-
-## Major Features
-
-- **Dual clients, one data model** — web and mobile stay in sync through Supabase + shared packages.
-- **Pipeline that matches freelance work** — clients → deals → tasks → activity, not enterprise CRM bloat.
-- **AI in the workflow** — summarize, extract actions, draft follow-ups; human approval before tasks land.
-- **Typed monorepo** — `@dealflow/shared` + `@dealflow/ui` keep web and mobile consistent.
+- **Pipeline.** Clients, deals (kanban and list), tasks, an activity timeline and a dashboard.
+- **Deal workspace.** Notes, reminders and file uploads to Supabase Storage.
+- **AI help.** Summarise a deal, pull out next actions, draft a follow-up or transcribe audio. Suggestions go through an **approve, then create tasks** step, so nothing changes in the pipeline without you.
+- **Server-only AI routes.** Model calls run in `/api/ai/*` on the server, so keys stay off the client.
+- **Typed monorepo.** `@dealflow/shared` and `@dealflow/ui` keep the web and mobile apps on the same types and components.
 
 ## Key Challenges
 
-Sharing a clean data model between Next.js and Expo without a custom API layer, while keeping AI calls fast enough to feel like part of the deal workspace — not a separate chatbot tab.
+**One data model, two clients, no custom API.** Next.js and Expo both read the same Supabase data through shared typed packages instead of a separate API layer.
+
+**AI inside the workspace.** AI calls had to be quick enough to feel like part of the deal page rather than a separate chatbot tab, and they never write to the pipeline without approval.
 
 ## Results
 
-Dealflow AI is in development as a mobile + web AI CRM: core pipeline screens and AI action flow are in place. Roadmap items (email/calendar sync, push, offline write queue) are still open.
+In development. The pipeline screens and the AI flow work. Email and calendar sync, push notifications and an offline write queue are still to come.
 
 ## Stack Decisions
 
-Supabase was chosen so both clients get typed access to the same Postgres data without maintaining a separate API. Server-only AI routes keep keys off the client; OpenRouter / OpenAI / Groq give flexibility for text and transcription without rewriting the product surface.
+Supabase so both clients get typed access to the same Postgres data without maintaining an API. Server-only AI routes keep keys off the client. OpenRouter, OpenAI and Groq cover text and transcription, so the provider can change without touching the product.

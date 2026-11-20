@@ -44,11 +44,12 @@ export default function Phone({
   }, []);
 
   useEffect(() => {
-    if (paused || !visible || screens.length < 2) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (paused || !visible || screens.length < 2 || reduced) return;
+    // A clip holds the screen until it ends (onEnded advances).
+    if (screens[index]?.video) return;
     const id = window.setInterval(() => setIndex((i) => (i + 1) % screens.length), interval);
     return () => window.clearInterval(id);
-  }, [paused, visible, screens, interval]);
+  }, [paused, visible, screens, interval, index, reduced]);
 
   const current = screens[index] ?? screens[0];
 
@@ -82,7 +83,8 @@ export default function Phone({
                     poster={s.src}
                     autoPlay
                     muted
-                    loop
+                    loop={screens.length < 2}
+                    onEnded={() => setIndex((n) => (n + 1) % screens.length)}
                     playsInline
                     aria-hidden
                     className={`absolute inset-0 h-full w-full ${fit}`}
