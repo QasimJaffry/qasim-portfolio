@@ -50,7 +50,7 @@ export default function WorkStory({ items }: { items: StoryItem[] }) {
             className="grid grid-cols-[6.5rem_minmax(0,1fr)] gap-x-5 border-t border-border py-10 sm:grid-cols-[9rem_minmax(0,1fr)] sm:gap-x-8 lg:flex lg:min-h-[88vh] lg:flex-col lg:justify-center lg:py-24"
           >
             {p.screens.length > 0 && <Phone screens={p.screens} compact className="row-span-2 w-full lg:hidden" />}
-            <div className="self-center">
+            <div className="self-center lg:self-start">
               <p className="text-sm text-muted sm:text-base">
                 {p.category}, {p.year}
               </p>
